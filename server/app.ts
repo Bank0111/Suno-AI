@@ -878,6 +878,11 @@ ${context.referenceGuidance || "ไม่มีเพลงอ้างอิง
 # 12. FEW-SHOT CRAFTSMANSHIP & EXEMPLAR GUIDANCE
 ${context.fewShotGuidanceBlock || "ไม่มีตัวอย่าง Few-shot เพิ่มเติม"}${context.rolePromptBlock || ""}${blueprintPromptBlock}${hookCraftPromptBlock}
 
+# 13. MASTER SONGWRITING & DYNAMIC CONTRAST DIRECTIVE
+- Show, Don't Tell: ถ่ายทอดความรู้สึกผ่านวัตถุรูปธรรม บรรยากาศ แสง เสียง และประสาทสัมผัส ห้ามบอกอารมณ์ตรงๆ
+- Dynamic Contrast: วางสิ่งตรงข้ามไว้ด้วยกันในแต่ละท่อน (เช่น อบอุ่น vs เย็นชา, คนธรรมดา vs สิ่งที่เอื้อมไม่ถึง)
+- Golden Hook Pattern: ท่อน Chorus ต้องมีวลีจำที่ใช้โครงสร้างประโยคคู่ขนาน (Parallel Pattern) หรือการเล่นคำซ้ำ เพื่อให้ติดหูทันที
+
 # OUTPUT RULE
 - ส่งเฉพาะ JSON ตาม Schema (title, stylePrompt, sections) ห้ามส่ง internal analysis หรือความคิดภายใน`;
 

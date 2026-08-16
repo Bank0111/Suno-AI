@@ -67,6 +67,10 @@ export async function buildHookCandidates(
    - Reinforcement line (ประโยคตอกย้ำความหมาย: จำนวนพยางค์ควรล้อกับ Setup line)
    - Emotional payoff (ประโยคจุดสูงสุดของอารมณ์ในฮุค: สัมผัสคล้องกับ Reinforcement line)
    - Repetition plan ('exact_repeat' หรือ 'controlled_variation' พร้อมเหตุผล)
+9. Golden Hook Pattern & Dynamic Contrast:
+   - ใช้โครงสร้างประโยคคู่ขนาน (Parallel Hook Pattern) หรือการซ้ำกริยา/ประธาน (เช่น "พี่ก็... หนูก็...", "คำว่ารักที่... คำสัญญาที่...") เพื่อสร้างความติดหูและจำได้ในรอบแรก
+   - ผสานความขัดแย้ง (Contrast) ที่คมคายลงในท่อนฮุก (เช่น สิ่งที่เห็น vs ความจริง, ความหวัง vs ความเจ็บปวด)
+   - เลี่ยงคำบอกอารมณ์ตรงๆ เน้นใช้ภาพและภาษาพูดที่จริงใจ ชัดถ้อยชัดคำ   
 
 ส่งคืนผลลัพธ์เป็น JSON ตรงตาม Schema เท่านั้น`;
 
