@@ -74,7 +74,7 @@ function sendApiError(res: express.Response, err: any, defaultMessage: string = 
     ok: false,
     error: err.message || defaultMessage,
   });
-}//
+}
 
 // ฟังก์ชันดึงข้อมูลศิลปินและเพศจาก MusicBrainz
 async function fetchArtistGenderFromMusicBrainz(artistName: string): Promise<string | null> {
@@ -589,6 +589,7 @@ ${context.referenceGuidanceBlock}
           analysis: {
             type: Type.OBJECT,
             properties: {
+              stylePrompt: { type: Type.STRING, description: "Suno AI Style of Music Prompt ภาษาอังกฤษ 8 เลเยอร์ คั่นด้วยจุลภาค" },
               genre: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Genre/Subgenre จากที่ได้ยินในเพลงจริง" },
               mood: { type: Type.ARRAY, items: { type: Type.STRING }, description: "อารมณ์และบรรยากาศเสียงเพลง" },
               tempo: { type: Type.STRING, description: "ความเร็ว BPM และ Meter ของเพลงจริง เช่น '128 BPM (4/4)'" },
@@ -601,7 +602,7 @@ ${context.referenceGuidanceBlock}
               productionCharacter: { type: Type.STRING, description: "ลักษณะโปรดักชัน ซาวด์สเตจ และ energy curve" },
               overallDirection: { type: Type.STRING, description: "สรุปหลักการทางดนตรีและ reference DNA" },
             },
-            required: ["genre", "mood", "tempo", "vocal", "instrumentation", "rhythm"],
+            required: ["stylePrompt", "genre", "mood", "tempo", "vocal", "instrumentation", "rhythm"],
           },
         },
         required: ["analysis"],
@@ -611,43 +612,38 @@ ${context.referenceGuidanceBlock}
       let finalModelMeta: any = null;
       let mediaAnalysisSucceeded = false;
 
-      if (sourceType === "youtube" && canonicalUrl) {
-    const officialArtistInfo = confirmedArtist ? await fetchArtistGenderFromMusicBrainz(confirmedArtist) : null;
+      // ดึงข้อมูลศิลปินระดับบนสุดเพื่อให้ใช้ได้ทั้งโหมด YouTube และ Text Fallback
+      const officialArtistInfo = confirmedArtist ? await fetchArtistGenderFromMusicBrainz(confirmedArtist) : null;
 
-    const multimodalPrompt = `คุณคือ Master Musicologist, Elite Audio Engineer และ AI Music Prompt Architect ระดับโลก
+      if (sourceType === "youtube" && canonicalUrl) {
+        const multimodalPrompt = `คุณคือ Master Musicologist, Sound Designer และ Lead AI Prompt Architect
 ได้รับวิดีโอเพลง YouTube อ้างอิงต่อไปนี้:
 - Canonical URL: ${canonicalUrl}
 - ยืนยันตัวตน: "${confirmedTitle}" ${confirmedArtist ? `โดย ${confirmedArtist}` : ''}
 ${officialArtistInfo ? `- ข้อมูลทางการจาก MusicBrainz: "${officialArtistInfo}"` : ''}
 ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลเพิ่มเติมจากผู้ใช้: "${songText.trim()}"` : ''}
 
-ภารกิจสูงสุด: ถอดรหัส DNA ทางดนตรีแบบเจาะลึก (Deep Sonic Deconstruction) เพื่อสร้าง Style Prompt ที่แม่นยำที่สุด
-ห้ามวิเคราะห์แบบผิวเผิน ให้ฟังอย่างละเอียดและแยกแยะตามมิติต่อไปนี้อย่างเคร่งครัด:
+ภารกิจ: ถอดรหัสโครงสร้างเสียงจริง (Deep Sonic Fingerprinting) จากวิดีโอ เพื่อสร้าง Suno AI Style of Music Prompt ที่คมชัดที่สุด
 
-1. ANCHOR & IDENTITY (ข้อมูลตั้งต้น):
-   - ตรวจสอบเพศและศิลปินจากข้อมูล MusicBrainz เป็นหลัก ห้ามเดาสลับเพศเด็ดขาด
+กฎเหล็ก 8 ลำดับการเรียงคำ (Suno Left-to-Right Token Weighting Formula):
+1. Sub-genre & Cultural Root: ระบุรากเหง้าดนตรีและแนวเพลงย่อย (เช่น Luk Thung, Molam, Southern Thai Indie Rock, 90s City Pop)
+2. Emotional Tone: โทนอารมณ์เพลง (เช่น sad melancholic, raw heartache, nostalgic bittersweet)
+3. Vocal Texture & Articulation: เพศ + เนื้อเสียง + เทคนิคการร้อง (เช่น expressive female vocals with traditional ornamentation and vibrato, raspy male chest voice)
+4. Tempo & Micro-groove: ค่า BPM แน่นอน + ลักษณะจังหวะ (เช่น steady mid-tempo 88 BPM groove, half-time slow groove)
+5. Percussion & Transients: ชนิดกลองและไดนามิก (เช่น prominent acoustic-like kick drum, syncopated snare and hi-hat, punchy tight 808)
+6. Melodic Lead & Technique: เครื่องดนตรีนำ + วิธีเล่น (เช่น expressively melancholic Phin lute, fingerpicked acoustic guitar, screaming electric guitar riff)
+7. Harmonic Bed & Bass: ภาคเบสและคอร์ดรอง (เช่น warm acoustic bass, deep sub-bass, Rhodes piano comping)
+8. Soundstage & Atmosphere: มิติเสียงและแอมเบียนต์ (เช่น atmospheric synthesizer pads, clean balanced studio quality sound stage, vintage tape saturation)
 
-2. DEEP SONIC DECONSTRUCTION (การแยกส่วนประกอบดนตรีเชิงลึก):
-   - A. RHYTHM & GROOVE (โครงสร้างจังหวะ):
-     * ระบุช่วง BPM ที่แม่นยำ (เช่น 85-90 BPM) และ Time Signature (เช่น 4/4, 6/8)
-     * อธิบาย Groove (เช่น laid-back, driving, syncopated, swing, tight)
-     * เจาะจงชุดกลอง/เพอร์คัชชัน (เช่น tight 808 kick, crisp acoustic snare, shaker, traditional Thai taphon)
-   - B. HARMONIC & MELODIC TIMBRE (เสียงประสานและเครื่องดนตรีนำ):
-     * เครื่องดนตรีนำ (Lead) & เทคนิคการเล่น (เช่น fingerpicked acoustic guitar, overdriven electric riff, traditional Thai Phin picking, Khaen melody)
-     * เครื่องดนตรีรองรับ (Rhythm/Chords) (เช่น strummed acoustic rhythm, warm Rhodes piano, clean electric comping)
-     * เสียงย่านต่ำ (Bass Layer) (เช่น deep synth sub-bass, round electric bass, acoustic upright bass)
-   - C. TEXTURE & ATMOSPHERE (บรรยากาศและมวลเสียง):
-     * เสียงสังเคราะห์หรือบรรยากาศรองพื้น (เช่น ambient synth pads, vinyl crackle, lush string section, raw acoustic room tone)
-   - D. VOCAL PROFILING (โปรไฟล์เสียงร้อง):
-     * ระบุเพศ และเนื้อเสียงที่แท้จริง (เช่น raspy, breathy, clear, emotional belting, luk thung vibrato, intimate whisper)
-   - E. PRODUCTION & MIX (ลักษณะโปรดักชัน):
-     * โทนการมิกซ์ (เช่น pristine studio, lo-fi vintage, raw live recording, warm analog)
+ข้อห้ามเด็ดขาด (Anti-Fluff Rules):
+- ห้ามใช้คำบรรยายทั่วไป เช่น "beautiful melody", "nice song", "catchy tune", "a song about..."
+- บังคับใช้เฉพาะ "Acoustic Descriptors + Playing Techniques + Mixing Environments"
+- ต้องต่อกันด้วยจุลภาค (Comma-separated) ความยาวไม่เกิน 180-200 ตัวอักษร เพื่อให้ Suno ประมวลผลได้ครบทุกคีย์เวิร์ด
 
-3. SUNO AI TRANSLATION RULE:
-   - แปลงและสังเคราะห์ข้อมูลจากข้อ 2 ทั้งหมด ให้ออกมาเป็น "English Keywords" ที่สั้น กระชับ คั่นด้วยจุลภาค (Comma-separated) เพื่อใช้งานเป็น Style Prompt
-   - โครงสร้างบังคับ: [Micro-Genre], [BPM/Groove], [Lead Instruments + Playing Style], [Bass & Rhythm section], [Vocal Style], [Production Vibe]
+ตัวอย่างผลลัพธ์มาตรฐานที่ต้องยึดถือ (Gold Standard):
+"Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
 
-ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นหรือคำอธิบายใดๆ นอกเหนือจาก JSON`;
+ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นนอกเหนือจาก JSON`;
 
         try {
           const contents = [
@@ -688,18 +684,35 @@ ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลเพ�
 ${confirmedArtist ? `- ศิลปิน/ช่อง: "${confirmedArtist}"` : ''}
 ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลที่ผู้ใช้ระบุเพิ่มเติม: "${songText.trim()}"` : ''}`;
 
-        const prompt = `วิเคราะห์คุณลักษณะทางดนตรีและสไตล์การเขียนเพลงจากข้อมูลเพลงอ้างอิง:
+        const textPrompt = `คุณคือ Master Musicologist, Sound Designer และ Lead AI Prompt Architect
+ได้รับข้อมูลเพลงอ้างอิง:
 ${promptSourceDesc}
+${officialArtistInfo ? `- ข้อมูลทางการจาก MusicBrainz: "${officialArtistInfo}"` : ''}
 
-คำสั่ง:
-1. วิเคราะห์คุณลักษณะเฉพาะทางดนตรี สไตล์การเขียนเพลง อารมณ์ จังหวะ และโปรดักชันของเพลง "${confirmedTitle}" ${confirmedArtist ? `โดย ${confirmedArtist}` : ''}
-2. ห้ามเดาหรือขยายขอบเขตเกินหลักฐานที่ระบุ (DO NOT OVER-INFER)
-3. ห้ามคัดลอกเนื้อเพลงต้นฉบับ
+ภารกิจ: ถอดรหัสโครงสร้างดนตรีและสำเนียงเสียงของศิลปิน/เพลงต้นแบบ เพื่อสร้าง Suno AI Style of Music Prompt ที่คมชัดที่สุด
 
-ส่งผลลัพธ์ใน JSON Schema`;
+กฎเหล็ก 8 ลำดับการเรียงคำ (Suno Left-to-Right Token Weighting Formula):
+1. Sub-genre & Cultural Root: ระบุรากเหง้าดนตรีและแนวเพลงย่อย (เช่น Luk Thung, Molam, Southern Thai Indie Rock, 90s City Pop)
+2. Emotional Tone: โทนอารมณ์เพลง (เช่น sad melancholic, raw heartache, nostalgic bittersweet)
+3. Vocal Texture & Articulation: เพศ + เนื้อเสียง + เทคนิคการร้อง (เช่น expressive female vocals with traditional ornamentation and vibrato, raspy male chest voice)
+4. Tempo & Micro-groove: ค่า BPM แน่นอน + ลักษณะจังหวะ (เช่น steady mid-tempo 88 BPM groove, half-time slow groove)
+5. Percussion & Transients: ชนิดกลองและไดนามิก (เช่น prominent acoustic-like kick drum, syncopated snare and hi-hat, punchy tight 808)
+6. Melodic Lead & Technique: เครื่องดนตรีนำ + วิธีเล่น (เช่น expressively melancholic Phin lute, fingerpicked acoustic guitar, screaming electric guitar riff)
+7. Harmonic Bed & Bass: ภาคเบสและคอร์ดรอง (เช่น warm acoustic bass, deep sub-bass, Rhodes piano comping)
+8. Soundstage & Atmosphere: มิติเสียงและแอมเบียนต์ (เช่น atmospheric synthesizer pads, clean balanced studio quality sound stage, vintage tape saturation)
+
+ข้อห้ามเด็ดขาด (Anti-Fluff Rules):
+- ห้ามใช้คำบรรยายทั่วไป เช่น "beautiful melody", "nice song", "catchy tune"
+- บังคับใช้เฉพาะ "Acoustic Descriptors + Playing Techniques + Mixing Environments"
+- ต้องต่อกันด้วยจุลภาค (Comma-separated) ความยาวไม่เกิน 180-200 ตัวอักษร
+
+ตัวอย่างผลลัพธ์มาตรฐาน (Gold Standard):
+"Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
+
+ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นนอกเหนือจาก JSON`;
 
         const { response, modelMeta } = await callGeminiWithFallback(ai, {
-          contents: prompt,
+          contents: textPrompt,
           config: {
             responseMimeType: "application/json",
             responseSchema,
@@ -715,6 +728,7 @@ ${promptSourceDesc}
       const rawAnalysis = analysisResult?.analysis || {};
 
       const sanitizedAnalysis = {
+        stylePrompt: cleanStr(rawAnalysis.stylePrompt) || cleanStr(rawAnalysis.overallDirection),
         genre: cleanArr(rawAnalysis.genre),
         mood: cleanArr(rawAnalysis.mood),
         tempo: cleanStr(rawAnalysis.tempo),
@@ -839,6 +853,8 @@ ${promptSourceDesc}
   * คำสุดท้ายของบรรทัดที่ 1 ต้องมีสัมผัสสระและตัวสะกดคล้องจองกับ คำที่ 1-3 ของบรรทัดที่ 2
   * คำสุดท้ายของบรรทัดที่ 2 ต้องสัมผัสสระคล้องจองกับ คำสุดท้ายของบรรทัดที่ 4
 - [ห้ามเขียนแบบร้อยแก้ว (Anti-Prose)]: ห้ามนำประโยคเล่าเรื่องยาวๆ มาตัดบรรทัด ต้องกลั่นให้เป็นคำสั้น กระชับ มีน้ำหนักทางอารมณ์
+- [PHONETIC RESONANCE FOR SUNO]: คำท้ายวรรคของท่อน Chorus / Hook ต้องลงท้ายด้วย "สระเสียงยาว" (อา, อี, อู, โอ, ไอ, เออ) หรือ "ตัวสะกดคำเป็น" (แม่กน, กง, เกย, เกอว, กม) ห้ามลงท้ายท่อน Chorus ด้วยคำตายหรือสระเสียงสั้นเด็ดขาด เพื่อเปิดช่องเสียงให้นักร้อง AI ลากเสียง Belt และ Ad-lib ได้ก้องกังวาน ไม่บีบแบน
+- [SECTION LENGTH & TIME BUDGET]: คุมจำนวนบรรทัดให้พอดีกับความยาวเพลง 3 นาที: Verse บังคับ 4 บรรทัดพอดี, Pre-Chorus บังคับ 2-4 บรรทัด, Chorus บังคับ 4-6 บรรทัด, Bridge บังคับ 2-4 บรรทัด
 ${context.isTargetThai
   ? "- ภาษาไทย: บังคับสัมผัสสระข้ามบรรทัด (Cross-line Rhyme) เลี่ยงการลงท้ายด้วยคำตายหรือสระเสียงสั้นในท่อนฮุก เน้นสระเสียงยาวเพื่อให้เอื้อต่อการลากเสียงร้อง"
   : `- ภาษา ${context.targetContentLanguage}: บังคับ Meter, Syllable Stress, Singability, Rhyme Scheme ตามหลักสากลของภาษานั้นๆ ห้ามมีคำภาษาไทยปน`}
