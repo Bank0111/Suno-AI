@@ -589,18 +589,46 @@ ${context.referenceGuidanceBlock}
           analysis: {
             type: Type.OBJECT,
             properties: {
-              stylePrompt: { type: Type.STRING, description: "Suno AI Style of Music Prompt ภาษาอังกฤษ 8 เลเยอร์ คั่นด้วยจุลภาค" },
-              genre: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Genre/Subgenre จากที่ได้ยินในเพลงจริง" },
-              mood: { type: Type.ARRAY, items: { type: Type.STRING }, description: "อารมณ์และบรรยากาศเสียงเพลง" },
-              tempo: { type: Type.STRING, description: "ความเร็ว BPM และ Meter ของเพลงจริง เช่น '128 BPM (4/4)'" },
-              vocal: { type: Type.STRING, description: "ลักษณะเสียงร้อง เทคนิค และ Vocal processing ที่ได้ยินจริง" },
-              instrumentation: { type: Type.ARRAY, items: { type: Type.STRING }, description: "เครื่องดนตรีและ sound palette ที่ได้ยินในเพลง" },
-              rhythm: { type: Type.STRING, description: "จังหวะ กรู๊ฟ เบสแพตเทิร์น คิก และ percussion groove" },
-              structure: { type: Type.ARRAY, items: { type: Type.STRING }, description: "โครงสร้างท่อนเพลงที่ได้ยิน" },
-              lyricApproach: { type: Type.STRING, description: "ลักษณะการแบ่งวรรค ความยาวท่อน และกลยุทธ์การย้ำคำ" },
-              rhymeApproach: { type: Type.STRING, description: "สไตล์สัมผัสและจังหวะคำ" },
-              productionCharacter: { type: Type.STRING, description: "ลักษณะโปรดักชัน ซาวด์สเตจ และ energy curve" },
-              overallDirection: { type: Type.STRING, description: "สรุปหลักการทางดนตรีและ reference DNA" },
+              stylePrompt: { 
+                type: Type.STRING, 
+                description: "Suno AI Style of Music Prompt 8 เลเยอร์ คั่นด้วยจุลภาค (Strictly English for Suno API ONLY. No Thai words allowed.)" 
+              },
+              genre: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING }, 
+                description: "แนวเพลงภาษาไทยสำหรับแสดงบน UI เช่น 'ลูกทุ่ง', 'หมอลำ', 'โฟล์กคันทรี'" 
+              },
+              mood: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING }, 
+                description: "อารมณ์เพลงภาษาไทยสำหรับแสดงบน UI เช่น 'เศร้าสะเทือนใจ', 'อาลัยอาวรณ์', 'คิดถึง'" 
+              },
+              tempo: { 
+                type: Type.STRING, 
+                description: "ความเร็ว BPM และ Meter เช่น '74 BPM (4/4)'" 
+              },
+              vocal: { 
+                type: Type.STRING, 
+                description: "ลักษณะเสียงร้องและเทคนิคภาษาไทยสำหรับแสดงบน UI" 
+              },
+              instrumentation: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING }, 
+                description: "รายการเครื่องดนตรีภาษาไทยสำหรับแสดงบน UI เช่น 'กีตาร์โปร่ง', 'ขลุ่ยไทย', 'เบส', 'กลองชุด'" 
+              },
+              rhythm: { 
+                type: Type.STRING, 
+                description: "ลักษณะจังหวะและกรูฟภาษาไทยสำหรับแสดงบน UI" 
+              },
+              structure: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING }, 
+                description: "โครงสร้างท่อนเพลงที่ได้ยิน" 
+              },
+              lyricApproach: { type: Type.STRING, description: "ลักษณะการแบ่งวรรคและการใช้คำภาษาไทย" },
+              rhymeApproach: { type: Type.STRING, description: "สไตล์สัมผัสและจังหวะคำภาษาไทย" },
+              productionCharacter: { type: Type.STRING, description: "ลักษณะโปรดักชันและมิติเสียงภาษาไทย" },
+              overallDirection: { type: Type.STRING, description: "สรุปภาพรวมและแนวทางดนตรีภาษาไทยสำหรับแสดงบน UI" },
             },
             required: ["stylePrompt", "genre", "mood", "tempo", "vocal", "instrumentation", "rhythm"],
           },
@@ -642,7 +670,17 @@ ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลเพ�
 
 ตัวอย่างผลลัพธ์มาตรฐานที่ต้องยึดถือ (Gold Standard):
 "Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
+# 🚨 DUAL-LANGUAGE MANDATE (กฎเหล็กการแยกภาษา)
+ระบบของคุณทำหน้าที่ 2 ส่วนพร้อมกัน คุณต้องแยกภาษาอย่างเด็ดขาด ห้ามปะปนกัน:
 
+1. ข้อมูลสำหรับแสดงบนหน้าจอ (UI Display)
+- ฟิลด์: genre, mood, vocal, instrumentation, rhythm, overallDirection, lyricApproach, rhymeApproach, productionCharacter
+- กฎ: ต้องแปลหรือเขียนออกมาเป็น "ภาษาไทย 100%" ทั้งหมด เพื่อให้ผู้ใช้อ่านและเข้าใจได้ง่ายที่สุด ห้ามทับศัพท์ภาษาอังกฤษหากไม่จำเป็น
+
+2. ข้อมูลสำหรับส่งให้ Suno AI (Suno Engine)
+- ฟิลด์: stylePrompt
+- กฎ: ต้องส่งออกเป็น "ภาษาอังกฤษล้วน 100% (Strictly English)" ตามหลักการเขียน Prompt ของ Suno API
+- ห้ามมีตัวอักษรภาษาไทยหลุดเข้าไปในฟิลด์ stylePrompt โดยเด็ดขาด เพราะจะทำให้ระบบ Suno ทำงานผิดพลาด
 ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นนอกเหนือจาก JSON`;
 
         try {
@@ -708,7 +746,17 @@ ${officialArtistInfo ? `- ข้อมูลทางการจาก MusicBra
 
 ตัวอย่างผลลัพธ์มาตรฐาน (Gold Standard):
 "Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
+# 🚨 DUAL-LANGUAGE MANDATE (กฎเหล็กการแยกภาษา)
+ระบบของคุณทำหน้าที่ 2 ส่วนพร้อมกัน คุณต้องแยกภาษาอย่างเด็ดขาด ห้ามปะปนกัน:
 
+1. ข้อมูลสำหรับแสดงบนหน้าจอ (UI Display)
+- ฟิลด์: genre, mood, vocal, instrumentation, rhythm, overallDirection, lyricApproach, rhymeApproach, productionCharacter
+- กฎ: ต้องแปลหรือเขียนออกมาเป็น "ภาษาไทย 100%" ทั้งหมด เพื่อให้ผู้ใช้อ่านและเข้าใจได้ง่ายที่สุด ห้ามทับศัพท์ภาษาอังกฤษหากไม่จำเป็น
+
+2. ข้อมูลสำหรับส่งให้ Suno AI (Suno Engine)
+- ฟิลด์: stylePrompt
+- กฎ: ต้องส่งออกเป็น "ภาษาอังกฤษล้วน 100% (Strictly English)" ตามหลักการเขียน Prompt ของ Suno API
+- ห้ามมีตัวอักษรภาษาไทยหลุดเข้าไปในฟิลด์ stylePrompt โดยเด็ดขาด เพราะจะทำให้ระบบ Suno ทำงานผิดพลาด
 ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นนอกเหนือจาก JSON`;
 
         const { response, modelMeta } = await callGeminiWithFallback(ai, {

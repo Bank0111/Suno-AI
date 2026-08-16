@@ -82,7 +82,19 @@ export const CATEGORIZED_VOCABULARY: VocabularyItem[] = [
     { id: 'north-07', word: 'อิดหล้า', category: 'Thai Regional & Dialect', tags: ['เหนื่อยล้า', 'เหนือ'], regionalTag: 'north', weight: 8 },
     { id: 'north-08', word: 'ยะหยัง', category: 'Thai Regional & Dialect', tags: ['ทำอะไร', 'เหนือ'], regionalTag: 'north', weight: 9 },
     { id: 'north-09', word: 'บ่าได้กา', category: 'Thai Regional & Dialect', tags: ['ไม่ได้เหรอ', 'เหนือ'], regionalTag: 'north', weight: 9 }, // แก้ไขจาก บ่าได้ก๋า
-    { id: 'north-10', word: 'ขะใจ๋', category: 'Thai Regional & Dialect', tags: ['รีบๆ', 'เหนือ'], regionalTag: 'north', weight: 8 }
+    { id: 'north-10', word: 'ขะใจ๋', category: 'Thai Regional & Dialect', tags: ['รีบๆ', 'เหนือ'], regionalTag: 'north', weight: 8 },
+
+    // === หมวดอุปมาอุปไมย และการสร้างภาพ (Metaphor & Visual Imagery) ===
+    { id: 'meta-01', word: 'กอดตัวเอง', category: 'Poetic & Metaphorical', tags: ['เหงา', 'อ้างว้าง', 'show-dont-tell'], weight: 10 },
+    { id: 'meta-02', word: 'ซ่อนน้ำตาในหน้าฝน', category: 'Poetic & Metaphorical', tags: ['ร้องไห้', 'ปกปิด', 'เศร้า'], weight: 10 },
+    { id: 'meta-03', word: 'เข็มนาฬิกาหยุดเดิน', category: 'Poetic & Metaphorical', tags: ['รอคอย', 'เวลา', 'คิดถึง'], weight: 9 },
+    { id: 'meta-04', word: 'รอยยิ้มเปื้อนฝุ่น', category: 'Poetic & Metaphorical', tags: ['เหนื่อยล้า', 'ฝืนยิ้ม', 'ชีวิต'], weight: 9 },
+    { id: 'meta-05', word: 'ปล่อยมือกลางทาง', category: 'Poetic & Metaphorical', tags: ['เลิกรา', 'ทิ้งขว้าง', 'อกหัก'], weight: 10 },
+    { id: 'meta-06', word: 'กำแพงที่มองไม่เห็น', category: 'Poetic & Metaphorical', tags: ['ห่างเหิน', 'อุปสรรค', 'ความสัมพันธ์'], weight: 9 },
+    { id: 'meta-07', word: 'กวาดเศษใจ', category: 'Poetic & Metaphorical', tags: ['เจ็บปวด', 'พังทลาย', 'เยียวยา'], weight: 10 },
+    { id: 'meta-08', word: 'หนังสือเล่มเก่า', category: 'Poetic & Metaphorical', tags: ['ความทรงจำ', 'อดีต', 'บทสรุป'], weight: 8 },
+    { id: 'meta-09', word: 'ฤดูกาลที่หายไป', category: 'Poetic & Metaphorical', tags: ['เปลี่ยนไป', 'ความหลัง', 'กาลเวลา'], weight: 9 },
+    { id: 'meta-10', word: 'เถ้าถ่านความทรงจำ', category: 'Poetic & Metaphorical', tags: ['สิ้นหวัง', 'อดีต', 'สูญเสีย'], weight: 9 }
 ];
 
 /**
