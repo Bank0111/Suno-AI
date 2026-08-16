@@ -170,6 +170,14 @@ export async function buildSongBlueprint(
 6. Character Voice Contract:
    - กำหนด register, vocabularyStyle, sentenceBehavior, humorLevel, directness, emotionalOpenness ให้ตรงกับโจทย์ ห้ามเปลี่ยนไประหว่างทาง
 
+7. Master Songwriting & Dynamic Contrast (สร้างมิติและความขัดแย้ง):
+   - Show, Don't Tell: เล่าด้วยภาพ วัตถุ แสง บรรยากาศ หรือประสาทสัมผัส (กลิ่น, เสียง, สัมผัส) ห้ามบอกอารมณ์ตรงๆ
+   - Contrast: วางสิ่งตรงข้ามไว้ด้วยกันเสมอ (เช่น ความอบอุ่น vs ความเย็นชา, คนธรรมดาติดดิน vs สิ่งที่เอื้อมไม่ถึง)
+
+8. Golden Hook Architecture (โครงสร้างท่อนฮุกจำง่าย):
+   - ท่อน Chorus ต้องมี Punchline ที่ติดหูและจำได้ทันที
+   - ใช้โครงสร้างประโยคคู่ขนาน (Parallel Hook Pattern) หรือการเล่นคำซ้ำกริยา/วลี เพื่อให้ร้องตามได้ง่ายในรอบแรก
+      
 ส่งคืนผลลัพธ์เป็น JSON ตรงตาม Schema เท่านั้น`;
 
   const prompt = `โปรดสร้าง Song Blueprint สำหรับเพลงนี้:
