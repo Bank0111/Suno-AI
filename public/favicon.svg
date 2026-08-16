@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="fav-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <linearGradient id="sparkle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#08070D" />
+  <circle cx="16" cy="16" r="13" fill="#0D0B14" stroke="url(#fav-border)" stroke-width="2" />
+  <!-- Sparkle Icon -->
+  <path d="M16 7 C16 11.5 19.5 15 24 15 C19.5 15 16 18.5 16 23 C16 18.5 12.5 15 8 15 C12.5 15 16 11.5 16 7 Z" fill="url(#sparkle-grad)" />
+  <circle cx="21" cy="9" r="1.5" fill="#38BDF8" />
+</svg>

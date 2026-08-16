@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Remix Intelligent AI Song Writer",
+  "description": "Turn your story into a song. An AI Songwriting Studio for structuring lyrics and generating Suno style prompts \u0026 YouTube exports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

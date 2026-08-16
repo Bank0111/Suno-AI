@@ -1,0 +1,498 @@
+import { GoogleGenAI } from '@google/genai';
+import { BuiltCreativeContext } from '../creativeContext';
+import {
+  LanguageLyricProfile,
+  UniversalCraftScores,
+  LanguageSpecificScores,
+  CraftIssue,
+  CraftStrategyType,
+  EditorLineDecision,
+} from './profiles/types';
+import { getLanguageProfile } from './profiles';
+import { buildLexicalContextVector } from '../vocabulary/contextVector';
+import { determineEvidenceTier, evaluateGenericnessAndSpecificity, evaluateNarrativeUtility } from '../vocabulary/ranker';
+
+export interface LineCraftAssessment {
+  lineIndex: number;
+  sectionIndex: number;
+  sectionType: string;
+  originalText: string;
+  status: EditorLineDecision;
+  universalScores: UniversalCraftScores;
+  languageScores: LanguageSpecificScores;
+  issues: CraftIssue[];
+  rewriteRecommendation?: {
+    reason: string;
+    strategy: CraftStrategyType;
+    suggestedDirection?: string;
+  };
+  isProtected: boolean;
+  selectedText?: string;
+}
+
+export interface SectionCraftAssessment {
+  sectionIndex: number;
+  sectionType: string;
+  lines: LineCraftAssessment[];
+  sectionStatus: 'PASS' | 'REVIEW' | 'REWRITE';
+  sectionCraftScore: number;
+}
+
+export interface LyricCraftEditorialReport {
+  language: string;
+  languageProfileUsed: string;
+  isLanguageProfileAvailable: boolean;
+  overallStatus: 'PASS' | 'REVIEW' | 'REWRITE';
+  overallCraftScore: number; // 1.0 - 5.0
+  sections: SectionCraftAssessment[];
+  totalLinesEvaluated: number;
+  linesKeptOriginal: number;
+  linesReviewed: number;
+  linesRewritten: number;
+  universalSummary: UniversalCraftScores;
+  languageSummary: LanguageSpecificScores;
+  timestamp: string;
+}
+
+export interface LyricCraftExecutionResult {
+  updatedSections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }>;
+  report: LyricCraftEditorialReport;
+}
+
+/**
+ * Section-specific craft weighting and purpose guidelines.
+ */
+interface SectionCraftExpectation {
+  primaryGoal: string;
+  expectedTension: string;
+  specificityWeight: number;
+  memorabilityWeight: number;
+  narrativeWeight: number;
+}
+
+function getSectionExpectation(sectionType: string): SectionCraftExpectation {
+  const norm = sectionType.toLowerCase();
+  if (norm.includes('verse')) {
+    return {
+      primaryGoal: 'Storytelling, concrete sensory anchoring, and progression',
+      expectedTension: 'Moderate / Grounded scene setup',
+      specificityWeight: 1.3,
+      memorabilityWeight: 0.9,
+      narrativeWeight: 1.4,
+    };
+  }
+  if (norm.includes('pre-chorus') || norm.includes('prechorus') || norm.includes('lift')) {
+    return {
+      primaryGoal: 'Tension build-up, emotional escalation, and dynamic transition',
+      expectedTension: 'Rising / Anticipatory',
+      specificityWeight: 1.0,
+      memorabilityWeight: 1.1,
+      narrativeWeight: 1.2,
+    };
+  }
+  if (norm.includes('chorus') || norm.includes('hook')) {
+    return {
+      primaryGoal: 'Core emotional truth, universal resonance, and peak memorability',
+      expectedTension: 'Peak / Direct catharsis',
+      specificityWeight: 1.0,
+      memorabilityWeight: 1.5,
+      narrativeWeight: 1.0,
+    };
+  }
+  if (norm.includes('bridge')) {
+    return {
+      primaryGoal: 'Perspective shift, critical realization, and fresh emotional contrast',
+      expectedTension: 'Intense / Reflective contrast',
+      specificityWeight: 1.2,
+      memorabilityWeight: 1.2,
+      narrativeWeight: 1.3,
+    };
+  }
+  if (norm.includes('outro')) {
+    return {
+      primaryGoal: 'Emotional closure, fading sensory imagery, and lingering afterglow',
+      expectedTension: 'Releasing / Atmospheric',
+      specificityWeight: 1.1,
+      memorabilityWeight: 1.2,
+      narrativeWeight: 1.0,
+    };
+  }
+  return {
+    primaryGoal: 'General lyrical balance',
+    expectedTension: 'Balanced',
+    specificityWeight: 1.0,
+    memorabilityWeight: 1.0,
+    narrativeWeight: 1.0,
+  };
+}
+
+/**
+ * Universal Line-Level Craft Evaluator
+ * Evaluates semantic precision, character voice, scene fit, narrative utility,
+ * emotional specificity, imagery quality, and memorability across any language.
+ */
+function evaluateUniversalLineCraft(
+  line: string,
+  sectionType: string,
+  context: BuiltCreativeContext,
+  languageProfile: LanguageLyricProfile
+): { scores: UniversalCraftScores; issues: CraftIssue[]; recommendedStrategy: CraftStrategyType; reason: string } {
+  const trimmed = line.trim();
+  const issues: CraftIssue[] = [];
+  const expectation = getSectionExpectation(sectionType);
+
+  // Baseline scores (5.0 scale)
+  let semanticPrecision = 4.8;
+  let contextualFit = 4.8;
+  let characterVoice = 4.8;
+  let narrativeUtility = 4.7;
+  let imageryQuality = 4.7;
+  let emotionalSpecificity = 4.6;
+  let memorability = 4.6;
+
+  let recommendedStrategy: CraftStrategyType = 'preserve_original';
+  let reason = 'Line demonstrates strong craft, naturalness, and narrative grounding.';
+
+  const story = context.story || '';
+  const isThai = languageProfile.languageCode === 'th';
+  
+  // 1. Scene & Contextual Grounding via Evidence Tier
+  if (isThai) {
+    const songConfigForVector = {
+      story: context.story,
+      genres: context.allGenres || [],
+      moods: context.allMoods || [],
+      songwritingStyle: context.songwritingStyleStr || '',
+      wordTone: context.wordToneStr || '',
+      languageStyle: context.languageStyleStr || '',
+      language: context.targetContentLanguage || 'ไทย',
+      bpm: Number(context.bpmStr) || 100,
+      vocal: context.vocalStr || '',
+      rhythm: context.rhythmStr || '',
+      structure: context.structureStr || '',
+    };
+    const vector = buildLexicalContextVector(songConfigForVector as any);
+    const tier = determineEvidenceTier(trimmed, vector);
+    const utility = evaluateNarrativeUtility(trimmed, undefined, vector, tier);
+    const genericness = evaluateGenericnessAndSpecificity(trimmed, vector, tier);
+
+    narrativeUtility = Math.max(1.0, utility.narrativeUtility * 5.0);
+    imageryQuality = Math.max(1.0, genericness.specificityScore * 5.0);
+    emotionalSpecificity = Math.max(1.0, (1.0 - genericness.genericnessRisk) * 5.0 + 1.0);
+
+    if (tier === 'TIER_3_GENRE_DECORATION' && utility.narrativeUtility < 0.35) {
+      contextualFit -= 1.8;
+      imageryQuality -= 1.5;
+      issues.push({
+        type: 'unsupported-genre-decoration',
+        severity: 'warning',
+        diagnosis: `Line contains ungrounded genre decoration (${utility.reason})`,
+        evidence: trimmed,
+        suggestedAction: 'Replace decorative object with concrete story action or emotional anchor.',
+        strategy: 'reduce_decoration',
+      });
+      recommendedStrategy = 'reduce_decoration';
+      reason = 'Contains decorative trope not grounded in user story facts.';
+    }
+
+    if (genericness.genericnessRisk >= 0.6) {
+      emotionalSpecificity -= 1.8;
+      memorability -= 1.2;
+      issues.push({
+        type: 'generic-emotional-filler',
+        severity: 'warning',
+        diagnosis: `Line is overly generic/flat ("Good but not great" detection): ${genericness.reason}`,
+        evidence: trimmed,
+        suggestedAction: 'Elevate with personal story specificity.',
+        strategy: 'replace_generic_emotion',
+      });
+      if (recommendedStrategy === 'preserve_original') {
+        recommendedStrategy = 'replace_generic_emotion';
+        reason = 'Generic emotional statement lacking distinct song identity.';
+      }
+    }
+  } else {
+    // English & Generic Universal Heuristics
+    // "Good but not great" generic line detection
+    const lower = trimmed.toLowerCase();
+    const genericEnglishPhrases = [
+      'i miss you so much',
+      'thinking of you all night',
+      'love you forever',
+      'nothing feels the same',
+      'sitting in the dark',
+      'tears in my eyes',
+      'can\'t get you out of my head',
+      'time goes by so slow',
+    ];
+
+    for (const gep of genericEnglishPhrases) {
+      if (lower.includes(gep)) {
+        emotionalSpecificity -= 1.5;
+        memorability -= 1.2;
+        issues.push({
+          type: 'generic-emotional-filler',
+          severity: 'warning',
+          diagnosis: `Line uses standard generic filler phrase ("${gep}") which could appear in any pop song.`,
+          evidence: gep,
+          suggestedAction: 'Replace with specific situational action or distinct sensory observation.',
+          strategy: 'replace_generic_emotion',
+        });
+        recommendedStrategy = 'replace_generic_emotion';
+        reason = 'Formulaic emotional phrase lacking distinct situational imagery.';
+        break;
+      }
+    }
+  }
+
+  // 2. Section-specific alignment check
+  if (sectionType.toLowerCase().includes('verse') && emotionalSpecificity < 3.2 && imageryQuality < 3.2) {
+    narrativeUtility -= 0.8;
+    issues.push({
+      type: 'low-narrative-progression',
+      severity: 'info',
+      diagnosis: 'Verse line lacks concrete story movement or sensory anchor.',
+      evidence: trimmed,
+      suggestedAction: 'Introduce concrete movement or sensory detail from the song world.',
+      strategy: 'increase_specificity',
+    });
+    if (recommendedStrategy === 'preserve_original') {
+      recommendedStrategy = 'increase_specificity';
+      reason = 'Verse requires tangible story progression.';
+    }
+  }
+
+  if (sectionType.toLowerCase().includes('chorus') && memorability < 3.5) {
+    issues.push({
+      type: 'weak-chorus-memorability',
+      severity: 'info',
+      diagnosis: 'Chorus line lacks emotional punch or resonant phrasing.',
+      evidence: trimmed,
+      suggestedAction: 'Strengthen emotional truth and phrase symmetry.',
+      strategy: 'improve_memorability',
+    });
+  }
+
+  // Calculate Weighted Universal Craft Quality
+  const craftQuality = Number(
+    (
+      (semanticPrecision * 1.0 +
+        contextualFit * 1.1 +
+        characterVoice * 1.1 +
+        narrativeUtility * expectation.narrativeWeight +
+        imageryQuality * expectation.specificityWeight +
+        emotionalSpecificity * 1.1 +
+        memorability * expectation.memorabilityWeight) /
+      (1.0 + 1.1 + 1.1 + expectation.narrativeWeight + expectation.specificityWeight + 1.1 + expectation.memorabilityWeight)
+    ).toFixed(2)
+  );
+
+  const scores: UniversalCraftScores = {
+    semanticPrecision: Number(Math.max(1.0, Math.min(5.0, semanticPrecision)).toFixed(1)),
+    contextualFit: Number(Math.max(1.0, Math.min(5.0, contextualFit)).toFixed(1)),
+    characterVoice: Number(Math.max(1.0, Math.min(5.0, characterVoice)).toFixed(1)),
+    narrativeUtility: Number(Math.max(1.0, Math.min(5.0, narrativeUtility)).toFixed(1)),
+    imageryQuality: Number(Math.max(1.0, Math.min(5.0, imageryQuality)).toFixed(1)),
+    emotionalSpecificity: Number(Math.max(1.0, Math.min(5.0, emotionalSpecificity)).toFixed(1)),
+    memorability: Number(Math.max(1.0, Math.min(5.0, memorability)).toFixed(1)),
+    craftQuality: Number(Math.max(1.0, Math.min(5.0, craftQuality)).toFixed(2)),
+  };
+
+  return { scores, issues, recommendedStrategy, reason };
+}
+
+/**
+ * Execute the Language-Agnostic Lyric Craft Editorial Pass
+ * Operates directly between Targeted Rewrite and Phrasing / Final QA.
+ */
+export async function executeLyricCraftEditorialPass(
+  draft: { sections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }> },
+  context: BuiltCreativeContext,
+  ai?: GoogleGenAI,
+  options: { protectedHookLines?: string[] } = {}
+): Promise<LyricCraftExecutionResult> {
+  const targetLanguage = context.targetContentLanguage || 'ไทย';
+  const languageProfile = getLanguageProfile(targetLanguage);
+
+  console.log(`[Lyric Craft Editor] Initiating editorial pass for language: "${targetLanguage}" using profile: "${languageProfile.languageName}" (Supported: ${languageProfile.isSupported})`);
+
+  const protectedSet = new Set((options.protectedHookLines || []).map((h) => h.trim().toLowerCase()));
+  if (context.creativeAnalysis?.imageryAnchors) {
+    context.creativeAnalysis.imageryAnchors.forEach((anchor) => protectedSet.add(anchor.trim().toLowerCase()));
+  }
+  if (context.creativeAnalysis?.keyMotifs) {
+    context.creativeAnalysis.keyMotifs.forEach((motif) => protectedSet.add(motif.trim().toLowerCase()));
+  }
+
+  const evaluatedSections: SectionCraftAssessment[] = [];
+  let totalLines = 0;
+  let keptOriginal = 0;
+  let reviewed = 0;
+  let rewritten = 0;
+
+  const sumUniversal: UniversalCraftScores = {
+    semanticPrecision: 0,
+    contextualFit: 0,
+    characterVoice: 0,
+    narrativeUtility: 0,
+    imageryQuality: 0,
+    emotionalSpecificity: 0,
+    memorability: 0,
+    craftQuality: 0,
+  };
+
+  const sumLanguage: LanguageSpecificScores = {
+    naturalness: 0,
+    collocationFit: 0,
+    syntaxIntegrity: 0,
+    rhymeProsodyFit: 0,
+    clicheAvoidance: 0,
+    languageIntegrityScore: 0,
+  };
+
+  const updatedSections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }> = [];
+
+  for (let sIdx = 0; sIdx < draft.sections.length; sIdx++) {
+    const sec = draft.sections[sIdx];
+    const evaluatedLines: LineCraftAssessment[] = [];
+    const updatedLyrics: string[] = [];
+
+    for (let lIdx = 0; lIdx < (sec.lyrics || []).length; lIdx++) {
+      const lineText = sec.lyrics[lIdx];
+      totalLines++;
+
+      const isProtected = protectedSet.has(lineText.trim().toLowerCase());
+
+      // 1. Universal Craft Assessment
+      const universalResult = evaluateUniversalLineCraft(lineText, sec.type, context, languageProfile);
+
+      // 2. Language-Specific Assessment
+      const languageResult = languageProfile.evaluateLanguageSpecifics(lineText, sec.type, {
+        story: context.story,
+        genres: context.allGenres,
+        moods: context.allMoods,
+        characterVoice: context.wordToneStr || context.languageStyleStr,
+        targetContentLanguage: targetLanguage,
+      });
+
+      const combinedIssues = [...universalResult.issues, ...languageResult.issues];
+
+      // Tally Scores
+      Object.keys(sumUniversal).forEach((k) => {
+        (sumUniversal as any)[k] += (universalResult.scores as any)[k];
+      });
+      Object.keys(sumLanguage).forEach((k) => {
+        (sumLanguage as any)[k] += (languageResult.scores as any)[k];
+      });
+
+      // 3. Determine Line Editorial Status
+      let status: EditorLineDecision = 'PASS';
+      if (isProtected) {
+        status = 'PROTECTED_KEEP';
+        keptOriginal++;
+      } else if (combinedIssues.some((i) => i.severity === 'critical')) {
+        status = 'REWRITE';
+        rewritten++;
+      } else if (combinedIssues.length > 0 || universalResult.scores.craftQuality < 3.8) {
+        status = 'REVIEW';
+        reviewed++;
+      } else {
+        status = 'PASS';
+        keptOriginal++;
+      }
+
+      const assessment: LineCraftAssessment = {
+        lineIndex: lIdx,
+        sectionIndex: sIdx,
+        sectionType: sec.type,
+        originalText: lineText,
+        status,
+        universalScores: universalResult.scores,
+        languageScores: languageResult.scores,
+        issues: combinedIssues,
+        isProtected,
+        selectedText: lineText,
+      };
+
+      if (status === 'REVIEW' || status === 'REWRITE') {
+        assessment.rewriteRecommendation = {
+          reason: universalResult.reason,
+          strategy: universalResult.recommendedStrategy,
+          suggestedDirection: combinedIssues[0]?.suggestedAction || 'Refine line for optimal emotional precision and naturalness',
+        };
+      }
+
+      evaluatedLines.push(assessment);
+      updatedLyrics.push(lineText);
+    }
+
+    const secScores = evaluatedLines.map((l) => l.universalScores.craftQuality);
+    const avgSecScore = secScores.length > 0 ? Number((secScores.reduce((a, b) => a + b, 0) / secScores.length).toFixed(2)) : 5.0;
+    const hasRewrites = evaluatedLines.some((l) => l.status === 'REWRITE');
+    const hasReviews = evaluatedLines.some((l) => l.status === 'REVIEW');
+
+    evaluatedSections.push({
+      sectionIndex: sIdx,
+      sectionType: sec.type,
+      lines: evaluatedLines,
+      sectionStatus: hasRewrites ? 'REWRITE' : hasReviews ? 'REVIEW' : 'PASS',
+      sectionCraftScore: avgSecScore,
+    });
+
+    updatedSections.push({
+      ...sec,
+      lyrics: updatedLyrics,
+    });
+  }
+
+  // Summary Metrics
+  const totalCount = Math.max(1, totalLines);
+  const universalSummary: UniversalCraftScores = {
+    semanticPrecision: Number((sumUniversal.semanticPrecision / totalCount).toFixed(2)),
+    contextualFit: Number((sumUniversal.contextualFit / totalCount).toFixed(2)),
+    characterVoice: Number((sumUniversal.characterVoice / totalCount).toFixed(2)),
+    narrativeUtility: Number((sumUniversal.narrativeUtility / totalCount).toFixed(2)),
+    imageryQuality: Number((sumUniversal.imageryQuality / totalCount).toFixed(2)),
+    emotionalSpecificity: Number((sumUniversal.emotionalSpecificity / totalCount).toFixed(2)),
+    memorability: Number((sumUniversal.memorability / totalCount).toFixed(2)),
+    craftQuality: Number((sumUniversal.craftQuality / totalCount).toFixed(2)),
+  };
+
+  const languageSummary: LanguageSpecificScores = {
+    naturalness: Number((sumLanguage.naturalness / totalCount).toFixed(2)),
+    collocationFit: Number((sumLanguage.collocationFit / totalCount).toFixed(2)),
+    syntaxIntegrity: Number((sumLanguage.syntaxIntegrity / totalCount).toFixed(2)),
+    rhymeProsodyFit: Number((sumLanguage.rhymeProsodyFit / totalCount).toFixed(2)),
+    clicheAvoidance: Number((sumLanguage.clicheAvoidance / totalCount).toFixed(2)),
+    languageIntegrityScore: Number((sumLanguage.languageIntegrityScore / totalCount).toFixed(2)),
+  };
+
+  const overallStatus = evaluatedSections.some((s) => s.sectionStatus === 'REWRITE')
+    ? 'REWRITE'
+    : evaluatedSections.some((s) => s.sectionStatus === 'REVIEW')
+    ? 'REVIEW'
+    : 'PASS';
+
+  const report: LyricCraftEditorialReport = {
+    language: targetLanguage,
+    languageProfileUsed: languageProfile.languageName,
+    isLanguageProfileAvailable: languageProfile.isSupported,
+    overallStatus,
+    overallCraftScore: universalSummary.craftQuality,
+    sections: evaluatedSections,
+    totalLinesEvaluated: totalLines,
+    linesKeptOriginal: keptOriginal,
+    linesReviewed: reviewed,
+    linesRewritten: rewritten,
+    universalSummary,
+    languageSummary,
+    timestamp: new Date().toISOString(),
+  };
+
+  console.log(`[Lyric Craft Editor] Completed Editorial Pass. Overall Craft Score: ${report.overallCraftScore}/5.0. Status: ${report.overallStatus} (Kept: ${keptOriginal}, Reviewed: ${reviewed}, Rewritten: ${rewritten})`);
+
+  return {
+    updatedSections,
+    report,
+  };
+}
