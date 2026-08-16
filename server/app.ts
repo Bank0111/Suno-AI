@@ -612,24 +612,42 @@ ${context.referenceGuidanceBlock}
       let mediaAnalysisSucceeded = false;
 
       if (sourceType === "youtube" && canonicalUrl) {
-        const officialArtistInfo = confirmedArtist ? await fetchArtistGenderFromMusicBrainz(confirmedArtist) : null;
+    const officialArtistInfo = confirmedArtist ? await fetchArtistGenderFromMusicBrainz(confirmedArtist) : null;
 
-        const multimodalPrompt = `คุณคือผู้เชี่ยวชาญด้านดนตรีวิทยา (Musicologist) และ Audio Engineer ระดับมืออาชีพ
+    const multimodalPrompt = `คุณคือ Master Musicologist, Elite Audio Engineer และ AI Music Prompt Architect ระดับโลก
 ได้รับวิดีโอเพลง YouTube อ้างอิงต่อไปนี้:
 - Canonical URL: ${canonicalUrl}
 - ยืนยันตัวตน: "${confirmedTitle}" ${confirmedArtist ? `โดย ${confirmedArtist}` : ''}
-${officialArtistInfo ? `- ข้อมูลทางการจากฐานข้อมูลดนตรีโลก (MusicBrainz): "${officialArtistInfo}"` : ''}
+${officialArtistInfo ? `- ข้อมูลทางการจาก MusicBrainz: "${officialArtistInfo}"` : ''}
 ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลเพิ่มเติมจากผู้ใช้: "${songText.trim()}"` : ''}
 
-ภารกิจสำคัญ: 
-1. ตรวจสอบข้อมูลศิลปินและเพศจากฐานข้อมูลทางการที่ระบุไว้ข้างต้นเป็นหลัก (หากระบุเพศชัดเจน เช่น Male / Female ห้ามเดาสลับเพศเด็ดขาด)
-2. วิเคราะห์องค์ประกอบดนตรีจริงจากแทร็กเสียง:
-   - VOCAL CHARACTER & GENDER: ระบุเพศและลักษณะเสียงร้องตามจริง
-   - GENRE & SUBGENRE: แนวเพลงที่แท้จริง
-   - TEMPO & BPM: ความเร็ว BPM
-   - INSTRUMENTATION: เครื่องดนตรีที่ได้ยินจริง
+ภารกิจสูงสุด: ถอดรหัส DNA ทางดนตรีแบบเจาะลึก (Deep Sonic Deconstruction) เพื่อสร้าง Style Prompt ที่แม่นยำที่สุด
+ห้ามวิเคราะห์แบบผิวเผิน ให้ฟังอย่างละเอียดและแยกแยะตามมิติต่อไปนี้อย่างเคร่งครัด:
 
-ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นนอกเหนือจาก JSON`;
+1. ANCHOR & IDENTITY (ข้อมูลตั้งต้น):
+   - ตรวจสอบเพศและศิลปินจากข้อมูล MusicBrainz เป็นหลัก ห้ามเดาสลับเพศเด็ดขาด
+
+2. DEEP SONIC DECONSTRUCTION (การแยกส่วนประกอบดนตรีเชิงลึก):
+   - A. RHYTHM & GROOVE (โครงสร้างจังหวะ):
+     * ระบุช่วง BPM ที่แม่นยำ (เช่น 85-90 BPM) และ Time Signature (เช่น 4/4, 6/8)
+     * อธิบาย Groove (เช่น laid-back, driving, syncopated, swing, tight)
+     * เจาะจงชุดกลอง/เพอร์คัชชัน (เช่น tight 808 kick, crisp acoustic snare, shaker, traditional Thai taphon)
+   - B. HARMONIC & MELODIC TIMBRE (เสียงประสานและเครื่องดนตรีนำ):
+     * เครื่องดนตรีนำ (Lead) & เทคนิคการเล่น (เช่น fingerpicked acoustic guitar, overdriven electric riff, traditional Thai Phin picking, Khaen melody)
+     * เครื่องดนตรีรองรับ (Rhythm/Chords) (เช่น strummed acoustic rhythm, warm Rhodes piano, clean electric comping)
+     * เสียงย่านต่ำ (Bass Layer) (เช่น deep synth sub-bass, round electric bass, acoustic upright bass)
+   - C. TEXTURE & ATMOSPHERE (บรรยากาศและมวลเสียง):
+     * เสียงสังเคราะห์หรือบรรยากาศรองพื้น (เช่น ambient synth pads, vinyl crackle, lush string section, raw acoustic room tone)
+   - D. VOCAL PROFILING (โปรไฟล์เสียงร้อง):
+     * ระบุเพศ และเนื้อเสียงที่แท้จริง (เช่น raspy, breathy, clear, emotional belting, luk thung vibrato, intimate whisper)
+   - E. PRODUCTION & MIX (ลักษณะโปรดักชัน):
+     * โทนการมิกซ์ (เช่น pristine studio, lo-fi vintage, raw live recording, warm analog)
+
+3. SUNO AI TRANSLATION RULE:
+   - แปลงและสังเคราะห์ข้อมูลจากข้อ 2 ทั้งหมด ให้ออกมาเป็น "English Keywords" ที่สั้น กระชับ คั่นด้วยจุลภาค (Comma-separated) เพื่อใช้งานเป็น Style Prompt
+   - โครงสร้างบังคับ: [Micro-Genre], [BPM/Groove], [Lead Instruments + Playing Style], [Bass & Rhythm section], [Vocal Style], [Production Vibe]
+
+ส่งผลลัพธ์ใน JSON Schema ที่กำหนดเท่านั้น ห้ามมีข้อความอื่นหรือคำอธิบายใดๆ นอกเหนือจาก JSON`;
 
         try {
           const contents = [
