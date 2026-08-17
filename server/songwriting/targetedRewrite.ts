@@ -131,8 +131,8 @@ export async function executeTargetedRewrite(
 ${originalLines.map((l, i) => `  [${i + 1}] "${l}"`).join('\n')}
 
 === บริบทแวดล้อม (Context) ===
-- บรรทัดก่อนหน้า: ${contextBefore.map((l) => `"${l}"`).join(' | ') || '(ต้นท่อน)'}
-- บรรทัดถัดไป: ${contextAfter.map((l) => `"${l}"`).join(' | ') || '(ท้ายท่อน)'}
+- บรรทัดก่อนหน้า: ${contextBefore.map((l: string) => `"${l}"`).join(' | ') || '(ต้นท่อน)'}
+- บรรทัดถัดไป: ${contextAfter.map((l: string) => `"${l}"`).join(' | ') || '(ท้ายท่อน)'}
 
 === ข้อบกพร่องที่ Critic วินิจฉัย (Issues to Fix) ===
 ${issuesSummary}
@@ -141,7 +141,7 @@ ${issuesSummary}
 โปรดสร้าง Candidate พร้อมประเมินคุณภาพในแต่ละด้าน (1-5) และระบุว่า Candidate ใดดีกว่าบรรทัดเดิมอย่างแท้จริง ส่งคืนเป็น JSON`;
 
     try {
-      const { response } = await callGeminiWithFallback(ai, {
+      const { response } = await callGeminiWithFallback(ai!, {
         contents: prompt,
         config: {
           systemInstruction,
