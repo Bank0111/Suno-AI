@@ -443,7 +443,7 @@ export function buildLexicalContextVector(
     wordTone: config.wordTone || 'เข้าถึงง่าย เป็นธรรมชาติ',
     languageStyle: config.languageStyle || 'ภาษาพูดเป็นธรรมชาติ',
     tempo: config.tempo || 'ปานกลาง (80–100 BPM)',
-    bpm: config.bpm,
+    bpm: config.bpm ?? undefined,
     vocalType: config.vocalType || 'ชาย',
     referenceDerivedDirection: refDirection,
     characterVoice,
