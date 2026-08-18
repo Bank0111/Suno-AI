@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { BuiltCreativeContext } from '../creativeContext';
 import { callGeminiWithFallback } from '../modelRouter';
+import { generateDynamicLexiconPalette } from '../lexicon/lexiconEngine';
 import {
   ChorusBlueprint,
   HookCandidate,
@@ -118,6 +119,7 @@ PART 2: 🌟 ADVANCED POETIC DEVICES & LYRICAL MASTERY (กฎกวีศาส
 - อารมณ์: ${context.moodsStr}
 - ภาษาเป้าหมาย: ${context.targetContentLanguage}
 - โจทย์/เรื่องราว: ${context.story || 'เพลงรักร่วมสมัย'}
+${generateDynamicLexiconPalette(context.story || '')}
 
 [คำสั่งเน้นย้ำ]: Hook และ Chorus ต้องสะท้อน Core Truth และเป็น Emotional Compression ไม่เล่าเหตุการณ์ตามลำดับเวลา`;
 
