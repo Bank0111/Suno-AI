@@ -337,8 +337,8 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
           pointOfView: fixture.config.pointOfView,
           wordTone: fixture.config.wordTone,
           languageStyle: fixture.config.languageStyle,
-          bpm: fixture.config.bpm,
-          vocalType: fixture.config.vocalType,
+          bpm: fixture.config.bpm ?? 120,
+          vocalType: fixture.config.vocalType ?? 'Any',
           fewShotContextInjected: false,
         },
         lyrics: item.lyrics,
@@ -373,8 +373,8 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
           pointOfView: fixture.config.pointOfView,
           wordTone: fixture.config.wordTone,
           languageStyle: fixture.config.languageStyle,
-          bpm: fixture.config.bpm,
-          vocalType: fixture.config.vocalType,
+          bpm: fixture.config.bpm ?? 120,
+          vocalType: fixture.config.vocalType ?? 'Any',
           fewShotContextInjected: true,
         },
         lyrics: item.lyrics,
@@ -427,7 +427,7 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
 
     const avgMetrics = (runs: BenchmarkRunRecord[]) => {
       const avgOf = (k: keyof BenchmarkMetrics) =>
-        Number((runs.reduce((acc, r) => acc + r.metrics[k], 0) / runs.length).toFixed(2));
+        Number((runs.reduce((acc, r) => acc + (r.metrics?.[k] ?? 0), 0) / (runs.length || 1)).toFixed(2));
       const failureCount = Number((runs.reduce((acc, r) => acc + r.criticalFailureCount, 0) / runs.length).toFixed(2));
 
       return {
