@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { BuiltCreativeContext } from '../creativeContext';
 import { callGeminiWithFallback } from '../modelRouter';
+import { matchLexiconByStory } from '../lexicon/thaiLexicon';
 import {
   BlueprintValidationResult,
   SectionBlueprintPlan,
@@ -206,6 +207,7 @@ PART 2: 🌟 ADVANCED POETIC DEVICES & LYRICAL MASTERY (กฎกวีศาส
 - โทนคำ: ${context.wordToneStr} / วิธีใช้ภาษา: ${context.languageStyleStr}
 - มุมมองการเล่าเรื่อง (POV): ${context.povStr}
 - เพลงอ้างอิง/ศิลปิน: ${context.referenceGuidance || 'ไม่มี'}
+${matchLexiconByStory(context.story || '')}
 
 โปรดวางแผนทุกส่วนอย่างละเอียด สมจริง เป็นรูปธรรม และตอบคำถามทางศิลปะการประพันธ์ทั้งหมดอย่างรัดกุม`;
 
