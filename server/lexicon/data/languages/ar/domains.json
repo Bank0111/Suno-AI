@@ -1,0 +1,45 @@
+{
+  "language": "ar",
+  "domains": [
+    {
+      "domain": "الناس_الحياة_المجتمع",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "الطبيعة_البيئة",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "العمل_الأعمال",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "الحب_المشاعر",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "التكنولوجيا_العلوم",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    }
+  ]
+}

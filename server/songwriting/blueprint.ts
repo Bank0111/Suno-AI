@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { BuiltCreativeContext } from '../creativeContext';
 import { callGeminiWithFallback } from '../modelRouter';
-import { matchLexiconByStory } from '../lexicon/thaiLexicon';
+import { generateDynamicLexiconPalette } from '../lexicon/lexiconEngine';
 import {
   BlueprintValidationResult,
   SectionBlueprintPlan,
@@ -27,6 +27,27 @@ export function invalidateBlueprintCache(songId?: string): void {
   }
 }
 
+// วางต่อจากบรรทัดที่ 27 ใน server/songwriting/blueprint.ts
+
+/**
+ * 🌟 Universal Dynamic Genre Persona
+ * ปรับบทบาทครูเพลงตามทุกแนวดนตรีบนโลกโดยอัตโนมัติ
+ */
+function resolveGenrePersonaDoctrine(genresStr: string = '', moodsStr: string = ''): string {
+  const targetGenre = genresStr.trim() || 'ดนตรีร่วมสมัยสากล';
+  const targetMood = moodsStr.trim() || 'สะท้อนอารมณ์ลึกซึ้ง';
+
+  return `[UNIVERSAL MASTER SONGWRITER PERSONA]
+- บทบาทของคุณ: คุณคือ "บรมครูและโปรดิวเซอร์นักแต่งเพลงระดับตำนาน" ผู้เชี่ยวชาญศาสตร์แห่งแนวดนตรี "${targetGenre}" โดยเฉพาะ
+- อารมณ์เพลงหลัก: ${targetMood}
+
+กฎการปรับสำนวนตามแนวดนตรีอัตโนมัติ (Genre-Adaptive Mastery):
+1. [ขนบและจริตเฉพาะของแนวเพลง]: ปรับวิถีการใช้คำ กรูฟจังหวะ และฉันทลักษณ์ให้เข้ากับจิตวิญญาณดั้งเดิมของแนว "${targetGenre}" อย่างแท้จริง
+2. [Natural Vocal Phrasing]: ออกแบบวรรคคำให้สอดรับกับเครื่องดนตรีและจังหวะตก (Downbeat/Groove) ของแนวนี้โดยธรรมชาติ
+3. [Authentic Imagery]: เลือกใช้ภาพจำ บรรยากาศ และสัจธรรมความรู้สึกที่ผู้ฟังแนวดนตรีนี้เชื่อมโยงถึงได้ทันที
+4. [Anti-Cliche & Anti-Jargon]: หลีกเลี่ยงศัพท์วิชาการ/ภาษาทางการ และห้ามยัดเยียดอุปกรณ์สิ่งของหากไม่เข้ากับบริบทของเรื่อง`;
+}
+
 /**
  * Validate that a SongBlueprint meets all compositional integrity requirements.
  */
@@ -45,69 +66,6 @@ export function validateSongBlueprint(blueprint: SongBlueprint): BlueprintValida
   }
   if (!blueprint.sectionPlans || blueprint.sectionPlans.length === 0) {
     errors.push('Missing sectionPlans in SongBlueprint');
-  }
-
-  // Check section-specific compositional obligations
-  let hasVerse2 = false;
-  let verse2HasNewInfo = false;
-  let hasBridge = false;
-  let bridgeHasShift = false;
-  let hasChorus = false;
-
-  blueprint.sectionPlans.forEach((plan) => {
-    const typeNorm = plan.sectionType.toLowerCase();
-    if (!plan.purpose || !plan.narrativeJob) {
-      errors.push(`Empty purpose or narrativeJob in section: ${plan.sectionType}`);
-    }
-
-    if (typeNorm.includes('verse 2')) {
-      hasVerse2 = true;
-      if (plan.informationToReveal && plan.informationToReveal.length > 0) {
-        verse2HasNewInfo = true;
-      }
-      if (!plan.mustNotRepeat || plan.mustNotRepeat.length === 0) {
-        warnings.push('Verse 2 should have explicit mustNotRepeat constraints against Verse 1');
-      }
-    }
-
-    if (typeNorm.includes('bridge')) {
-      hasBridge = true;
-      if (
-        plan.narrativeJob.toLowerCase().includes('shift') ||
-        plan.narrativeJob.toLowerCase().includes('realization') ||
-        plan.narrativeJob.toLowerCase().includes('perspective') ||
-        plan.emotionalJob.toLowerCase().includes('shift') ||
-        plan.emotionalJob.toLowerCase().includes('contrast') ||
-        plan.purpose.toLowerCase().includes('shift')
-      ) {
-        bridgeHasShift = true;
-      }
-    }
-
-    if (typeNorm.includes('chorus')) {
-      hasChorus = true;
-    }
-  });
-
-  if (hasVerse2 && !verse2HasNewInfo) {
-    errors.push('Verse 2 must specify new informationToReveal (anti-repetition rule)');
-  }
-  if (hasBridge && !bridgeHasShift) {
-    warnings.push('Bridge should specify an emotional or perspective shift job');
-  }
-  if (!hasChorus) {
-    warnings.push('SongBlueprint does not contain a Chorus section plan');
-  }
-
-  // Phase 5.7: Composition validation
-  if (!blueprint.narrativeCompression?.chosenDramaticMoments || blueprint.narrativeCompression.chosenDramaticMoments.length === 0) {
-    warnings.push('SongBlueprint should have chosenDramaticMoments in narrativeCompression');
-  }
-  if (!blueprint.bridgeEpiphany?.psychologicalShift) {
-    warnings.push('SongBlueprint should specify bridgeEpiphany psychological shift');
-  }
-  if (!blueprint.outroClosure?.finalLingeringImage) {
-    warnings.push('SongBlueprint should specify outroClosure final lingering image');
   }
 
   return {
@@ -136,80 +94,56 @@ export async function buildSongBlueprint(
 
   console.log(`[SongBlueprint] Building compositional blueprint for song...`);
 
-  const systemInstruction = `คุณคือ "Executive Song Architect & Master Lyric Dramaturg" สตูดิโอออกแบบโครงสร้างเพลงและกวีศาสตร์ชั้นครู
-หน้าที่ของคุณคือสร้าง "SONG BLUEPRINT" (แผนผังการประพันธ์เพลงเชิงสถาปัตยกรรม) ที่สมบูรณ์แบบ ทั้งในแง่โครงเรื่อง จังหวะดนตรี และภาษาบทกวี
+  // 🌟 เรียกใช้ตรงนี้
+  const genrePersonaDoctrine = resolveGenrePersonaDoctrine(context.genresStr, context.moodsStr);
+
+  const systemInstruction = `คุณคือ "Executive Master Songwriter & Lyrical Architect"
+หน้าที่ของคุณคือสร้าง "SONG BLUEPRINT" (แผนผังการประพันธ์เพลง) โดยสวมบทบาทตามแนวดนตรีที่ระบุอย่างสมบูรณ์แบบ:
+
+${genrePersonaDoctrine}
 
 =======================================================
-PART 1: BLUEPRINT & COMPOSITION PLANNING (ผังโครงสร้าง)
+หลักการออกแบบพิมพ์เขียวเพลง (Compositional Architecture)
 =======================================================
-1. 9 Core Dimensions (ตอบ 9 คำถามหลักให้กระจ่าง):
-   - WHO (ใครพูด/บุคลิก/น้ำเสียง), TO WHOM (พูดกับใคร), WHERE (สถานที่เฉพาะ), WHEN (เวลา/บรรยากาศ)
-   - WHAT HAPPENED (เกิดอะไรขึ้น), WHAT CHANGED (จุดเปลี่ยน), WHAT DOES SPEAKER WANT (ต้องการอะไร)
-   - WHAT IS AT STAKE (สิ่งที่ต้องสูญเสีย), WHAT IS THE CENTRAL TRUTH (แก่นความจริงสูงสุด)
+1. 9 มิติของเรื่องราว:
+   - ผู้เล่า (WHO), ผู้ฟัง (TO WHOM), บรรยากาศ/สถานที่ (WHERE/WHEN)
+   - ปมความขัดแย้ง (CONFLICT) และ แก่นความจริงสูงสุด (CORE TRUTH)
 
-2. Narrative Compression (การกลั่นกรองเรื่องเล่า):
-   - chosenDramaticMoments: เลือกเฉพาะ 2-3 ภาพจำ/เหตุการณ์ที่ทรงพลังที่สุด
-   - deliberatelyOmittedEvents: ตัดรายละเอียดการเดินทางหรือการกระทำย่อยๆ ทิ้ง (เช่น ขี่รถ, ถอดหมวก, เปิดประตู)
+2. ยุทธศาสตร์พัฒนาการของเพลง (Scene & Emotion Progression):
+   - Verse 1: ปูอารมณ์ จุดเกิดเหตุ หรือสถานการณ์ตั้งต้น
+   - Pre-Chorus / Build-up: ยกระดับแรงดันอารมณ์ หรือเร่งจังหวะส่งเข้าฮุก
+   - Chorus / Drop: แก่นสัจธรรมของเพลง + ประโยคจดจำ (Golden Punchline)
+   - Verse 2: บังคับเปลี่ยนมุมมอง เล่าผลกระทบ ความทรงจำ หรือก้าวต่อไป (ห้ามใช้ภาพและฉากซ้ำจาก Verse 1)
+   - Bridge: จุดตระหนักรู้ การยอมรับความจริง หรือการระเบิดอารมณ์
+   - Outro: ภาพจำสุดท้ายที่ตกผลึกในใจผู้ฟัง
 
-3. Section Information Budget & Density (การกระจายเนื้อหาแต่ละท่อน):
-   - Verse 1 (30%): วางฉาก ตัวละคร และสถานการณ์เริ่มต้น (ห้ามเฉลยบทสรุป)
-   - Pre-Chorus (10%): ยกระดับแรงดันอารมณ์และส่งเข้า Hook
-   - Chorus (20%): แก่นสัจธรรมของเพลง (Song Truth) + Hook จำง่าย (ห้ามเล่าลำดับเหตุการณ์ซ้ำ)
-   - Verse 2 (20%): มุมมองใหม่/ผลลัพธ์ที่ตามมา (ห้ามเล่าซ้ำ Verse 1)
-   - Bridge (15%): จุดตระหนักรู้ในใจ/การพลิกผันทางอารมณ์ (Epiphany)
-   - Outro (5%): ภาพสัมผัสสุดท้ายที่ตกตะกอน (Final Lingering Image)
-
-4. Character Voice Contract:
-   - กำหนด register, vocabularyStyle, sentenceBehavior, directness, emotionalOpenness ให้ตรงกับโจทย์ตลอดทั้งเพลง
-
-=======================================================
-PART 2: 🌟 ADVANCED POETIC DEVICES & LYRICAL MASTERY (กฎกวีศาสตร์ขั้นสูง)
-=======================================================
-1. STRICT NARRATIVE LOGIC (ตรรกะเนื้อเรื่องต้องสมเหตุสมผล 100%):
-   - ตรรกะของประโยคต้องตรงกับความเป็นจริงและบริบทของเรื่อง (เช่น แพ้คนรวย คือแพ้ความสบาย/แพ้เงิน ไม่ใช่แพ้ความลำบาก)
-
-2. NATURAL PHRASING & NO ACADEMIC JARGON (ภาษาคนพูดจริง):
-   - ใช้ภาษาพูดและภาษาเพลงที่มนุษย์สื่อสารกันจริง
-   - ห้ามใช้ศัพท์วิชาการ ภาษาบทความ หรือภาษาแปลเด็ดขาด (ห้ามเด็ดขาด เช่น "กำแพงทางสังคม", "บริบท", "ขับเคลื่อน", "มิติ")
-   - ห้ามสร้างรูปประโยคผิดธรรมชาติ (เช่น "แลกความรักพ้นผ่านไปไม่ได้")
-
-3. BALANCE "SHOW" AND "TELL" (สมดุลภาพจำและความรู้สึก):
-   - Show: ดึงภาพจำจากวัตถุจริงตามอาชีพ/สถานที่ในเรื่อง (เช่น ประแจ, คราบน้ำมัน, กระป๋องเหรียญ)
-   - Tell: บอกความรู้สึกตรงๆ ซื่อๆ เมื่อต้องการกระแทกอารมณ์ (เช่น "เจ็บเหลือเกิน", "สู้เขาไม่ไหว")
-
-4. RHYME, RHYTHM & 4/4 CADENCE (สัมผัสและจังหวะเคาะ):
-   - ความยาวแต่ละวรรคต้องกระชับประมาณ 6-8 คำ เพื่อให้ลงห้องดนตรี 4/4 และจังหวะตก (Downbeat) ได้พอดี
-   - บังคับให้มี "สัมผัสใน" (เสียงสระ/พยัญชนะคล้องจอง) ในทุกวรรคเพื่อให้ร้องเข้าปากและเกิดกรูฟ
-
-5. ZERO CLICHÉS (แบนคำโหล):
-   - หลีกเลี่ยงประโยคสำเร็จรูป (เช่น "ดวงดาวในคืนนี้", "ไม่มีเธอจะอยู่ยังไง", "ขอให้โชคดี") ให้เล่าด้วยมุมมองเฉพาะตัว
-
-6. LINGUISTIC PURITY (ความกระชับ ไม่ฟุ่มเฟือย):
-   - ใช้คำง่ายแต่ทรงพลัง (Simple words, Deep impact) ตัดคำสร้อยเยิ่นเย้อ (ใช้ "ฝนตก" แทน "ฝนตกพรำ", ใช้ "มือสั่น" แทน "มือสั่นเทา")
-
-7. GOLDEN HOOK & PARALLEL PATTERN (โครงสร้างประโยคฮุกคู่ขนาน):
-   - ท่อน Chorus ต้องมี Punchline คมคาย นิยมใช้ประโยคตัดพ้อคู่ขนาน (เช่น "มือพี่เปื้อนคราบน้ำมัน... มือเขามีแหวนเพชรให้เธอ")
-
-8. POETIC FOLK EMOTION (อารมณ์ลูกทุ่งเพื่อชีวิต):
-   - ผูกความเจ็บปวดเข้ากับความจริงใจและศักดิ์ศรีของคนธรรมดา เจ็บแต่ยอมรับความจริง (Dignified Heartbreak)
+3. กฎเหล็กของภาษาและการเลือกภาพ:
+   - ใช้ภาษาเพลงที่มนุษย์สื่อสารจริงตามจริตของแนวดนตรีนั้นๆ
+   - ห้ามใช้ศัพท์วิชาการ/บทความ (เช่น กำแพงชนชั้น, ปัจจัย, มิติ)
+   - ห้ามยัดเยียดอุปกรณ์เฉพาะทางหรือเครื่องมือช่างลงในช่อง dramatic moments, speaker หรือ epiphany
+   - เน้นภาพจำเชิงอารมณ์ สภาพแวดล้อม และพฤติกรรมมนุษย์
 
 ส่งคืนผลลัพธ์เป็น JSON ตรงตาม Schema เท่านั้น`;
 
   const prompt = `โปรดสร้าง Song Blueprint สำหรับเพลงนี้:
 
 === CREATIVE SETTINGS & CONTEXT ===
-- แนวเพลง (Genres): ${context.genresStr}
-- อารมณ์ (Moods): ${context.moodsStr}
-- ภาษาเป้าหมาย (Target Language): ${context.targetContentLanguage}
-- เรื่องราว/โจทย์ (Story Prompt): ${context.story || 'เพลงรักร่วมสมัยที่สื่อสารอารมณ์อย่างลึกซึ้ง'}
-- โครงสร้างที่กำหนด (Structure): ${context.structureStr}
-- สไตล์การแต่งเพลง: ${context.songwritingStyleStr}
-- โทนคำ: ${context.wordToneStr} / วิธีใช้ภาษา: ${context.languageStyleStr}
-- มุมมองการเล่าเรื่อง (POV): ${context.povStr}
-- เพลงอ้างอิง/ศิลปิน: ${context.referenceGuidance || 'ไม่มี'}
-${matchLexiconByStory(context.story || '')}
+- แนวดนตรีหลัก (Genres): ${context.genresStr}
+- อารมณ์เพลง (Moods): ${context.moodsStr}
+- ภาษาเป้าหมาย (Language): ${context.targetContentLanguage}
+- เรื่องราว/โจทย์ (Story Prompt): ${context.story || 'เพลงที่ถ่ายทอดอารมณ์อย่างลึกซึ้ง'}
+- โครงสร้างท่อน (Structure): ${context.structureStr}
+- สไตล์การประพันธ์: ${context.songwritingStyleStr}
+- เพลงอ้างอิง/แนวทาง: ${context.referenceGuidance || 'ไม่มี'}
 
-โปรดวางแผนทุกส่วนอย่างละเอียด สมจริง เป็นรูปธรรม และตอบคำถามทางศิลปะการประพันธ์ทั้งหมดอย่างรัดกุม`;
+${generateDynamicLexiconPalette(context.story || '', context.targetContentLanguage || 'th')}
+
+--- 🎯 DIRECTIVE CONSTRAINTS ---
+1. วางแผนให้ตรงกับจิตวิญญาณของแนวดนตรี [${context.genresStr}] อย่างแท้จริง
+2. Chorus ต้องสั้น กระชับ คมคาย และเป็นแก่นหลักของเพลง
+3. วาง dramatic moments และ bridge epiphany ให้เป็นภาพอารมณ์ ไม่ใช่การแจกแจงอุปกรณ์สิ่งของ
+
+โปรดวางแผนทุกส่วนอย่างละเอียด สมจริง และพร้อมสำหรับการประพันธ์คำร้อง`;
 
   try {
     const { response } = await callGeminiWithFallback(ai!, {
@@ -454,7 +388,8 @@ ${matchLexiconByStory(context.story || '')}
         ? parsed.sectionInformationBudget
         : [
             { sectionType: 'Verse 1', newInformationQuota: 'บรรยากาศและจุดเริ่มต้น', forbiddenRedundancy: [], lyricDensityLevel: 'balanced' },
-            { sectionType: 'Chorus', newInformationQuota: 'แก่นความจริงหลักและ Hook', forbiddenRedundancy: ['การเล่าเหตุการณ์ซ้ำ'], lyricDensityLevel: 'balanced' },
+            { sectionType: 'Chorus', newInformationQuota: 'แก่นความจริงหลักและ Hook', forbiddenRedundancy: ['การเล่าเหตุการณ์ซ้ำ', 'คำศัพท์เครื่องมือช่าง', 'อุปกรณ์เฉพาะทาง'], lyricDensityLevel: 'balanced' },
+            { sectionType: 'Verse 2', newInformationQuota: 'ข้อมูลใหม่และผลกระทบ', forbiddenRedundancy: ['ฉากเปิด Verse 1', 'อุปกรณ์และสิ่งของที่ใช้ไปแล้วใน Verse 1'], lyricDensityLevel: 'balanced' },
           ],
       bridgeEpiphany: {
         psychologicalShift: parsed.bridgeEpiphany?.psychologicalShift || 'การยอมรับความจริงในใจ',
@@ -466,233 +401,50 @@ ${matchLexiconByStory(context.story || '')}
       },
     };
 
-    // Validate Blueprint
-    const validation = validateSongBlueprint(blueprint);
-    if (!validation.isValid) {
-      console.warn(`[SongBlueprint] Blueprint validation warnings/errors:`, validation.errors.join(', '));
-    }
-
     // Cache valid blueprint
     blueprintCache.set(cacheKey, { blueprint, timestamp: Date.now() });
 
-    // Structured Log (Rule 29: Development logs)
-    console.log(`[SongBlueprint]`);
+    console.log(`[SongBlueprint] Generated successfully for genre: ${context.genresStr}`);
     console.log(`coreTruth: ${blueprint.coreTruth}`);
-    console.log(`conflict: ${blueprint.centralConflict}`);
-    console.log(`speaker: ${blueprint.speaker.identity} (${blueprint.speaker.personality})`);
-    console.log(`sections: ${blueprint.sectionPlans.map((s) => s.sectionType).join(', ')}`);
     console.log(`hookNeed: ${blueprint.centralHookNeed}`);
-    console.log(`chosenDramaticMoments: ${blueprint.narrativeCompression.chosenDramaticMoments.join(' | ')}`);
-    console.log(`bridgeEpiphany: ${blueprint.bridgeEpiphany.psychologicalShift}`);
 
     return blueprint;
   } catch (err: any) {
-    console.error(`[SongBlueprint] Error creating blueprint, generating robust fallback:`, err.message);
-
-    // Robust Fallback Blueprint
-    const fallbackSections: SectionBlueprintPlan[] = (context.structureStr.split(',') || ['Verse 1', 'Chorus', 'Verse 2', 'Bridge', 'Chorus', 'Outro']).map((secRaw, idx) => {
-      const s = secRaw.trim();
-      const sNorm = s.toLowerCase();
-      let purpose = 'สร้างบรรยากาศและเรื่องราว';
-      let narrativeJob = 'ดำเนินเรื่องราว';
-      let emotionalJob = 'ถ่ายทอดอารมณ์';
-      let infoToReveal = ['รายละเอียดของสถานการณ์'];
-      let mustNotRepeat: string[] = [];
-
-      if (sNorm.includes('verse 1')) {
-        purpose = 'เปิดฉาก แนะนำตัวละคร และวางสถานการณ์ตั้งต้น';
-        narrativeJob = 'แนะนำตัวละครและฉาก';
-        emotionalJob = 'สร้างความผูกพันแรกเริ่ม';
-        infoToReveal = ['จุดเริ่มต้นของเรื่องราว', 'ฉากและบรรยากาศ'];
-      } else if (sNorm.includes('pre-chorus')) {
-        purpose = 'เพิ่มแรงกดดันทางอารมณ์และส่งต่อเข้าสู่ Hook';
-        narrativeJob = 'เร่งจังหวะอารมณ์';
-        emotionalJob = 'ยกระดับความรู้สึกก่อน Hook';
-        infoToReveal = ['ความรู้สึกลึก ๆ ที่ไม่อาจเก็บไว้'];
-      } else if (sNorm.includes('chorus')) {
-        purpose = 'ส่งมอบแก่นความจริงหลัก (Central Truth) และประโยค Hook จำง่าย';
-        narrativeJob = 'สรุปแก่นความรู้สึกหลัก';
-        emotionalJob = 'จุดสูงสุดของอารมณ์';
-        infoToReveal = ['ความจริงในใจที่สำคัญที่สุด'];
-      } else if (sNorm.includes('verse 2')) {
-        purpose = 'พัฒนาเรื่องราวด้วยข้อมูลใหม่หรือผลลัพธ์ที่ตามมา';
-        narrativeJob = 'บอกเล่าเหตุการณ์ใหม่และผลกระทบ';
-        emotionalJob = 'ความรู้สึกที่ลึกซึ้งขึ้นหลังจากเหตุการณ์แรก';
-        infoToReveal = ['ผลของการกระทำหรือการเปลี่ยนแปลงของเวลา'];
-        mustNotRepeat = ['การบรรยายฉากเริ่มต้นซ้ำจาก Verse 1'];
-      } else if (sNorm.includes('bridge')) {
-        purpose = 'เปลี่ยนมุมมองทางอารมณ์ (Perspective Shift) หรือการตระหนักรู้';
-        narrativeJob = 'เปิดเผยความจริงหรือมุมมองใหม่';
-        emotionalJob = 'การตระหนักรู้ลึกซึ้ง (Epiphany)';
-        infoToReveal = ['มุมมองที่เปลี่ยนไปต่อความสัมพันธ์'];
-      } else if (sNorm.includes('outro')) {
-        purpose = 'สรุปความรู้สึกและทิ้งภาพจำสุดท้าย';
-        narrativeJob = 'ปิดฉาก';
-        emotionalJob = 'ความรู้สึกตกผลึก';
-        infoToReveal = ['ภาพจำสุดท้ายที่ตกค้างในใจ'];
-      }
-
-      return {
-        sectionType: s,
-        purpose,
-        narrativeJob,
-        emotionalJob,
-        informationToReveal: infoToReveal,
-        requiredConcreteDetails: ['ภาพเหตุการณ์ที่จับต้องได้'],
-        mustNotRepeat,
-        transitionFromPrevious: idx > 0 ? 'เชื่อมโยงอารมณ์จากท่อนก่อน' : 'เริ่มต้น',
-        transitionToNext: 'ส่งต่อไปยังท่อนถัดไปอย่างลื่นไหล',
-        needsConcreteDetail: false,
-      };
-    });
-
-    const fallbackBlueprint: SongBlueprint = {
-      coreTruth: 'ความรู้สึกจริงใจที่สะท้อนผ่านเรื่องราว',
-      centralConflict: 'ความปรารถนากับความเป็นจริงที่ต้องเผชิญ',
-      emotionalArc: ['เริ่มต้นบรรยากาศ', 'ยกระดับความรู้สึก', 'สรุปแก่นอารมณ์'],
-      speaker: {
-        identity: 'ผู้เล่าเรื่องตามโจทย์',
-        personality: 'จริงใจและสื่อสารอย่างเป็นธรรมชาติ',
-        voice: 'เป็นธรรมชาติ',
-      },
-      listener: 'ผู้ฟังหรือบุคคลในเพลง',
-      setting: 'ฉากที่สอดคล้องกับเรื่องราว',
-      storyPremise: context.story || 'เรื่องราวที่ถ่ายทอดอารมณ์อย่างลึกซึ้ง',
-      sectionPlans: fallbackSections,
-      visualMotifs: ['ภาพความทรงจำ', 'บรรยากาศเฉพาะตัว'],
-      concreteDetails: ['รายละเอียดที่จับต้องได้'],
-      protectedStoryFacts: [context.story || ''],
-      centralHookNeed: 'ประโยคหลักที่สื่อถึงใจความสำคัญ',
-      songWorld: {
-        places: ['สถานที่ในเพลง'],
-        objects: ['สิ่งของที่มีความหมาย'],
-        people: ['ตัวละครหลัก'],
-        habits: ['ความเคยชิน'],
-        timeCues: ['ช่วงเวลา'],
-        sensoryCues: ['ภาพและเสียง'],
-        socialContext: 'ชีวิตประจำวัน',
-      },
-      speakerVoiceContract: {
-        register: 'spoken',
-        vocabularyStyle: context.languageStyleStr || 'ภาษาพูดธรรมชาติ',
-        sentenceBehavior: 'กระชับ สื่อความหมายชัดเจน',
-        humorLevel: 'none',
-        directness: 'ตรงไปตรงมา',
-        emotionalOpenness: 'เปิดเผย',
-        socialTone: 'สนทนา',
-      },
-      abstractEmotionDensity: {
-        score: 0.2,
-        flaggedSections: [],
-        needsConcreteDetail: false,
-      },
-      titleStrategy: 'titleIsHook',
-      narrativeCompression: {
-        chosenDramaticMoments: ['จุดเริ่มต้นของเรื่องราว', 'ช่วงเวลาสำคัญที่เกิดความรู้สึก'],
-        deliberatelyOmittedEvents: ['ขั้นตอนการเดินทางปลีกย่อย', 'การกระทำจุกจิกที่ไม่มีผลต่ออารมณ์'],
-      },
-      negativeSpaceDirectives: {
-        unspokenEmotions: ['ความรู้สึกที่ซ่อนอยู่ในแววตา', 'ความเงียบระหว่างบทสนทนา'],
-        clicheAvoidanceZones: ['การบอกรักสำเร็จรูป', 'การพร่ำเพ้อเรื่องความเจ็บปวด'],
-      },
-      sectionInformationBudget: [
-        { sectionType: 'Verse 1', newInformationQuota: 'บรรยากาศและจุดเริ่มต้น', forbiddenRedundancy: [], lyricDensityLevel: 'balanced' },
-        { sectionType: 'Pre-Chorus', newInformationQuota: 'แรงผลักดันอารมณ์', forbiddenRedundancy: [], lyricDensityLevel: 'balanced' },
-        { sectionType: 'Chorus', newInformationQuota: 'แก่นความจริงหลักและ Hook', forbiddenRedundancy: ['การเล่าเหตุการณ์ซ้ำ'], lyricDensityLevel: 'balanced' },
-        { sectionType: 'Verse 2', newInformationQuota: 'ข้อมูลใหม่และผลกระทบ', forbiddenRedundancy: ['ฉากเปิด Verse 1'], lyricDensityLevel: 'balanced' },
-        { sectionType: 'Bridge', newInformationQuota: 'การตระหนักรู้มุมมองใหม่', forbiddenRedundancy: ['การตัดพ้อเดิม'], lyricDensityLevel: 'spacious' },
-        { sectionType: 'Outro', newInformationQuota: 'ภาพจำสุดท้าย', forbiddenRedundancy: ['การร้อง Hook ซ้ำไร้เป้าหมาย'], lyricDensityLevel: 'spacious' },
-      ],
-      bridgeEpiphany: {
-        psychologicalShift: 'การยอมรับความจริงในใจ',
-        contrastingAngle: 'มุมมองที่ลึกซึ้งกว่าภาพแรกเริ่ม',
-      },
-      outroClosure: {
-        finalLingeringImage: 'ภาพบรรยากาศสุดท้ายที่ทิ้งค้างไว้',
-        closingThought: 'ความคิดตกผลึกที่ยังคงอยู่',
-      },
-    };
-
-    blueprintCache.set(cacheKey, { blueprint: fallbackBlueprint, timestamp: Date.now() });
-    return fallbackBlueprint;
+    console.error(`[SongBlueprint] Error creating blueprint:`, err.message);
+    throw err;
   }
 }
 
 /**
- * Format SongBlueprint into a clean, disciplined compositional instruction block for the Lyric Writer.
+ * Format SongBlueprint into a clean instruction block for the Lyric Writer.
  */
 export function formatBlueprintForPrompt(blueprint: SongBlueprint): string {
   const lines: string[] = [];
 
-  lines.push('=== 3. SONG BLUEPRINT (COMPOSITIONAL ARCHITECTURE & DRAMATIC SELECTION PLAN) ===');
-  lines.push(`[กฎเหล็กการใช้ Blueprint]:`);
-  lines.push(`1. Blueprint นี้คือ "แผนผังการประพันธ์ (Compositional Plan)" และ "ตัวเลือกทางศิลปะ"`);
-  lines.push(`2. Story Facts คือ "ความจริงแท้ของเรื่อง" | Composition Plan คือ "ยุทธศาสตร์การคัดเลือกว่าจะเขียนอะไรและจะไม่เขียนอะไร"`);
-  lines.push(`3. ห้ามเขียนเนื้อเพลงแบบ "ร้อยแก้ว/บันทึกประจำวัน" ที่เล่าเรียงลำดับเหตุการณ์ทั้งหมด (Anti-Prose & Anti-Event Listing)`);
-  lines.push(`4. ห้ามบอกอารมณ์ตรงๆ ทันทีหลังสร้างภาพฉาก (เช่น มีภาพสิ่งของแล้ว ห้ามตามด้วย "ฉันเหงาเหลือเกิน") ให้ผู้ฟังรู้สึกผ่านภาพแทน`);
-  lines.push('');
-  lines.push(`- แก่นความจริงหลัก (Core Song Truth): "${blueprint.coreTruth}"`);
-  lines.push(`- ความขัดแย้งหลัก (Central Conflict): ${blueprint.centralConflict}`);
+  lines.push('=== 3. SONG BLUEPRINT (COMPOSITIONAL ARCHITECTURE) ===');
+  lines.push(`- แก่นความจริงหลัก (Core Truth): "${blueprint.coreTruth}"`);
+  lines.push(`- ความขัดแย้งหลัก (Conflict): ${blueprint.centralConflict}`);
   lines.push(`- ผู้เล่า (Speaker): ${blueprint.speaker.identity} (${blueprint.speaker.personality}) | น้ำเสียง: ${blueprint.speaker.voice}`);
   lines.push(`- ผู้รับฟัง (Listener): ${blueprint.listener}`);
-  lines.push(`- ฉากและสถานที่ (Setting): ${blueprint.setting}`);
-  lines.push(`- พัฒนาการทางอารมณ์ (Emotional Arc): ${blueprint.emotionalArc.join(' -> ')}`);
+  lines.push(`- ฉาก/บรรยากาศ (Setting): ${blueprint.setting}`);
+  lines.push(`- พัฒนาการทางอารมณ์: ${blueprint.emotionalArc.join(' -> ')}`);
   lines.push('');
 
-  // Phase 5.7: Narrative Compression & Negative Space
-  lines.push(`[COMPOSITION DISCIPLINE & NARRATIVE COMPRESSION]:`);
-  lines.push(`  * ช่วงเวลาสำคัญที่เลือกมาเขียนในเพลง (Chosen Dramatic Moments - โฟกัสเฉพาะสิ่งนี้):`);
-  blueprint.narrativeCompression.chosenDramaticMoments.forEach((m) => lines.push(`    - ${m}`));
-  lines.push(`  * สิ่งที่ต้องตัดออกโดยเจตนา (Deliberately Omitted Events - ห้ามนำมาเล่าในเพลง):`);
-  blueprint.narrativeCompression.deliberatelyOmittedEvents.forEach((om) => lines.push(`    - [ห้ามเล่า/ห้ามแจกแจง]: ${om}`));
-  lines.push('');
-
-  lines.push(`[NEGATIVE SPACE: WHAT NOT TO SAY DIRECTLY]:`);
-  lines.push(`  * อารมณ์ที่ต้องสื่อผ่านภาพ ห้ามพูดบอกตรงๆ (Unspoken Emotions): ${blueprint.negativeSpaceDirectives.unspokenEmotions.join(', ')}`);
-  lines.push(`  * โซนคำและวลีที่ห้ามใช้ซ้ำซาก (Cliche Avoidance): ${blueprint.negativeSpaceDirectives.clicheAvoidanceZones.join(', ')}`);
+  lines.push(`[COMPOSITION DISCIPLINE & DRAMATIC MOMENTS]:`);
+  blueprint.narrativeCompression.chosenDramaticMoments.forEach((m) => lines.push(`  - [โฟกัสฉากนี้]: ${m}`));
+  blueprint.narrativeCompression.deliberatelyOmittedEvents.forEach((om) => lines.push(`  - [ห้ามเล่า/ห้ามแจกแจง]: ${om}`));
   lines.push('');
 
   lines.push(`[Character Voice Contract]:`);
   lines.push(`  - ระดับภาษา: ${blueprint.speakerVoiceContract.register} | ลีลาคำศัพท์: ${blueprint.speakerVoiceContract.vocabularyStyle}`);
-  lines.push(`  - ลักษณะไรม์และประโยค: ${blueprint.speakerVoiceContract.sentenceBehavior} | ความตรงไปตรงมา: ${blueprint.speakerVoiceContract.directness}`);
-  lines.push(`  - การเปิดเผยอารมณ์: ${blueprint.speakerVoiceContract.emotionalOpenness} | โทนความสัมพันธ์: ${blueprint.speakerVoiceContract.socialTone}`);
+  lines.push(`  - การเปิดเผยอารมณ์: ${blueprint.speakerVoiceContract.emotionalOpenness} | โทน: ${blueprint.speakerVoiceContract.socialTone}`);
   lines.push('');
 
-  lines.push(`[Song World & Concrete Detail Anchors]:`);
-  if (blueprint.songWorld.places.length > 0) lines.push(`  - สถานที่ (Places): ${blueprint.songWorld.places.join(', ')}`);
-  if (blueprint.songWorld.objects.length > 0) lines.push(`  - สิ่งของรูปธรรม (Objects): ${blueprint.songWorld.objects.join(', ')}`);
-  if (blueprint.songWorld.sensoryCues.length > 0) lines.push(`  - สัมผัสและบรรยากาศ (Sensory): ${blueprint.songWorld.sensoryCues.join(', ')}`);
-  lines.push('');
-
-  lines.push(`[Section Information Budget & Density Plan]:`);
-  blueprint.sectionInformationBudget.forEach((b) => {
-    lines.push(`  - [${b.sectionType}] Density: ${b.lyricDensityLevel} | โควตาข้อมูลใหม่: ${b.newInformationQuota}${b.forbiddenRedundancy.length > 0 ? ` | ห้ามซ้ำ: ${b.forbiddenRedundancy.join(', ')}` : ''}`);
-  });
-  lines.push('');
-
-  lines.push(`[Bridge Epiphany & Revelation]:`);
-  lines.push(`  - จุดเปลี่ยนมุมมองในใจ (Psychological Shift): ${blueprint.bridgeEpiphany.psychologicalShift}`);
-  lines.push(`  - มุมมองที่ขัดแย้ง/ลึกซึ้งกว่าเดิม (Contrasting Angle): ${blueprint.bridgeEpiphany.contrastingAngle}`);
-  lines.push(`  - [คำสั่งสำหรับ Bridge]: ห้ามเขียน Bridge เป็นเพียง Verse 3 ที่เล่าเหตุการณ์เพิ่ม ต้องเป็นการตระหนักรู้ใหม่หรือการยอมรับความจริง`);
-  lines.push('');
-
-  lines.push(`[Outro Final Lingering Image & Closure]:`);
-  lines.push(`  - ภาพสัมผัสสุดท้าย (Final Lingering Image): ${blueprint.outroClosure.finalLingeringImage}`);
-  lines.push(`  - ความคิดตกผลึก (Closing Thought): ${blueprint.outroClosure.closingThought}`);
-  lines.push(`  - [คำสั่งสำหรับ Outro]: ห้ามแค้วนซ้ำ Hook 3 ครั้งอย่างไร้จุดหมาย ให้จบลงด้วยภาพสัมผัสสุดท้ายที่ตรึงใจ`);
-  lines.push('');
-
-  lines.push(`[Section-by-Section Detailed Directives]:`);
-  blueprint.sectionPlans.forEach((plan, idx) => {
-    lines.push(`- Section [${plan.sectionType}]:`);
-    lines.push(`    * หน้าที่หลัก (Narrative Job): ${plan.narrativeJob}`);
-    lines.push(`    * หน้าที่ทางอารมณ์ (Emotional Job): ${plan.emotionalJob}`);
-    lines.push(`    * ข้อมูลที่ต้องเปิดเผย (Info to Reveal): ${plan.informationToReveal.join('; ')}`);
+  lines.push(`[Section-by-Section Plan]:`);
+  blueprint.sectionPlans.forEach((plan) => {
+    lines.push(`- Section [${plan.sectionType}]: ${plan.narrativeJob} | ${plan.emotionalJob}`);
     if (plan.mustNotRepeat.length > 0) {
-      lines.push(`    * [ข้อห้ามเด็ดขาด (Must Not Repeat)]: ${plan.mustNotRepeat.join('; ')}`);
-    }
-    if (plan.needsConcreteDetail) {
-      lines.push(`    * [คำเตือน]: ท่อนนี้ต้องใส่ Concrete Sensory Details ให้ชัดเจน เลี่ยงคำบอกอารมณ์ลอย ๆ`);
+      lines.push(`    * [ห้ามซ้ำ]: ${plan.mustNotRepeat.join('; ')}`);
     }
   });
 

@@ -1,7 +1,7 @@
 import { GoldenTestFixture } from '../types';
 
 /**
- * GOLDEN TEST FIXTURES DATASET
+ * GOLDEN TEST FIXTURES DATASET (PHASE 5.7 GOLDEN STANDARDS)
  * Benchmark test definitions for automated evaluation across core genres.
  */
 export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
@@ -25,12 +25,23 @@ export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
       requiredVoicePersona: 'หนุ่มบ้าน ๆ จริงใจ ขี้เล่น ตรงไปตรงมา (Playful & Sincere Folk Narrator)',
       targetRegister: 'spoken',
       mustIncludeSemanticThemes: ['ความแอบชอบ', 'วิถีชีวิตข้างบ้าน', 'ความเขิน', 'ความจริงใจ'],
-      mustAvoidPatterns: ['คูณสอง', 'บวกหนึ่ง', 'วิ่งแส่', 'ใจมันพองโตขึ้นมา', 'ดวงฤทัย', 'ดาวดึงส์'],
+      mustAvoidPatterns: [
+        'คูณสอง',
+        'บวกหนึ่ง',
+        'วิ่งแส่',
+        'ใจมันพองโตขึ้นมา',
+        'ดวงฤทัย',
+        'ดาวดึงส์',
+        'ประแจ',
+        'น็อต',
+        'คราบน้ำมัน',
+      ],
     },
     knownFailurePatternsToDetect: [
       'robotic-math-metaphor',
       'awkward-slang',
       'poetic-register-mismatch',
+      'unsupported-genre-decoration',
     ],
     sourceType: 'synthetic-expert',
   },
@@ -55,12 +66,20 @@ export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
       requiredVoicePersona: 'คนเมืองร่วมสมัย ถ่ายทอดความรู้สึกลึกซึ้ง (Modern Urban Narrator)',
       targetRegister: 'conversational',
       mustIncludeSemanticThemes: ['ความทรงจำ', 'ไออุ่น', 'แววตา', 'ความเงียบ', 'ความรู้สึกส่วนตัว'],
-      mustAvoidPatterns: ['คำหยาบกระด้าง', 'กอดเสาเถียง', 'คำถิ่นที่ไม่เข้าบริบทเมือง', 'น้ำตารินไหลอาบแก้ม'],
+      mustAvoidPatterns: [
+        'คำหยาบกระด้าง',
+        'กอดเสาเถียง',
+        'คำถิ่นที่ไม่เข้าบริบทเมือง',
+        'น้ำตารินไหลอาบแก้ม',
+        'ทำให้ฉันรู้สึกเศร้า',
+        'อธิบายความเจ็บ',
+      ],
     },
     knownFailurePatternsToDetect: [
       'cliche-overload',
       'dialect-leak',
       'rhythm-stumble',
+      'emotional-over-explanation',
     ],
     sourceType: 'synthetic-expert',
   },
@@ -85,11 +104,23 @@ export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
       requiredVoicePersona: 'Street / Hip-Hop Voice (มั่นใจ มุ่งมั่น สตรีท)',
       targetRegister: 'spoken',
       mustIncludeSemanticThemes: ['การต่อสู้', 'เมืองหลวง', 'ความฝัน', 'หยาดเหงื่อ', 'สองมือ'],
-      mustAvoidPatterns: ['ข้าพเจ้า', 'สุริยัน', 'นภา', 'ภิรมย์', 'นฤมิต', 'ธารกำนัล'],
+      mustAvoidPatterns: [
+        'ข้าพเจ้า',
+        'สุริยัน',
+        'นภา',
+        'ภิรมย์',
+        'นฤมิต',
+        'ธารกำนัล',
+        'บริบท',
+        'ขับเคลื่อน',
+        'จากนั้นก็',
+      ],
     },
     knownFailurePatternsToDetect: [
       'archaic-poetic-mismatch',
       'passive-sentimentality',
+      'awkward-collocation',
+      'narrative-prose-reporting',
     ],
     sourceType: 'synthetic-expert',
   },
@@ -114,10 +145,16 @@ export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
       requiredVoicePersona: 'Modern English Songwriter',
       targetRegister: 'conversational',
       mustIncludeSemanticThemes: ['heart', 'stay', 'remember', 'coast', 'drive', 'glow'],
-      mustAvoidPatterns: ['Thai script', 'any Thai loan words'],
+      mustAvoidPatterns: [
+        'Thai script',
+        'any Thai loan words',
+        'bottom of my heart',
+        'tears falling down like waterfalls',
+      ],
     },
     knownFailurePatternsToDetect: [
       'language-cross-contamination',
+      'generic-emotional-filler',
     ],
     sourceType: 'synthetic-expert',
   },

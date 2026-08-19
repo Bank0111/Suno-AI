@@ -1,0 +1,151 @@
+{
+  "language": "vi",
+  "domains": [
+    {
+      "domain": "con_nguoi_cuoc_song_xa_hoi",
+      "keywords": [
+        "cuộc sống",
+        "con người",
+        "người máy",
+        "người",
+        "xã hội",
+        "phụ nữ",
+        "đàn ông",
+        "bạn",
+        "社會學",
+        "xã hội học"
+      ],
+      "objects": [
+        "cuộc sống",
+        "con người",
+        "người máy",
+        "người",
+        "xã hội",
+        "phụ nữ",
+        "đàn ông",
+        "bạn",
+        "社會學",
+        "xã hội học"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "tu_nhien_moi_truong",
+      "keywords": [
+        "nước",
+        "Lào",
+        "cây",
+        "đậu",
+        "nước tiểu",
+        "sen",
+        "nước mắm",
+        "cỏ",
+        "trái cây",
+        "ghi-ta",
+        "bút bi",
+        "động vật",
+        "tỏi",
+        "hành tây",
+        "nho",
+        "chanh",
+        "nhà nước",
+        "đất nước",
+        "nước ngoài",
+        "môi trường",
+        "cỏ may",
+        "nước mắt",
+        "thược dược",
+        "hướng dương",
+        "bằng lăng",
+        "lục bình",
+        "bèo tây",
+        "gừng"
+      ],
+      "objects": [
+        "nước",
+        "Lào",
+        "cây",
+        "đậu",
+        "nước tiểu",
+        "sen",
+        "nước mắm",
+        "cỏ",
+        "trái cây",
+        "ghi-ta",
+        "bút bi",
+        "động vật",
+        "tỏi",
+        "hành tây",
+        "nho",
+        "chanh",
+        "nhà nước",
+        "đất nước",
+        "nước ngoài",
+        "môi trường",
+        "cỏ may",
+        "nước mắt",
+        "thược dược",
+        "hướng dương",
+        "bằng lăng",
+        "lục bình",
+        "bèo tây",
+        "gừng"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "cong_viec_kinh_doanh",
+      "keywords": [
+        "經濟",
+        "經濟學",
+        "kinh tế",
+        "công việc",
+        "kinh doanh",
+        "công ty"
+      ],
+      "objects": [
+        "經濟",
+        "經濟學",
+        "kinh tế",
+        "công việc",
+        "kinh doanh",
+        "công ty"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "tinh_yeu_cam_xuc",
+      "keywords": [
+        "tình yêu"
+      ],
+      "objects": [
+        "tình yêu"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "cong_nghe_khoa_hoc",
+      "keywords": [
+        "khoa học",
+        "máy tính",
+        "công nghệ"
+      ],
+      "objects": [
+        "khoa học",
+        "máy tính",
+        "công nghệ"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    }
+  ]
+}

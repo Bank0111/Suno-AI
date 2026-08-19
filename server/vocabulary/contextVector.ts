@@ -2,26 +2,26 @@ import { SongConfig } from '../../src/types/songwriting';
 import { LexicalContextVector, LexicalRegister } from './types';
 
 /**
- * Common concrete Thai scene and physical entity anchors
+ * Common concrete Thai scene and physical entity anchors (Phase 5.7 Expanded)
  */
 const KNOWN_SCENE_ANCHORS = [
   // Countryside / Folk / Nature
-  'ทุ่งนา', 'คันไถนา', 'กลิ่นฟาง', 'ฟางข้าว', 'กองฟาง', 'ฟาง', 'ควันไฟ', 'เตาฟืน', 'เตาถ่าน',
+  'ทุ่งนา', 'คันนา', 'คันไถนา', 'กลิ่นฟาง', 'ฟางข้าว', 'กองฟาง', 'ฟาง', 'ควันไฟ', 'เตาฟืน', 'เตาถ่าน',
   'นกเอี้ยง', 'นกเขา', 'ต้นตาล', 'เถียงนา', 'กระท่อม', 'ควาย', 'วัว', 'โคลน', 'กลิ่นโคลน',
   'รวงข้าว', 'เกี่ยวข้าว', 'สายลม', 'ลมหนาว', 'ลมเย็น', 'แดดบ่าย', 'แดดร่ม', 'พลบค่ำ',
   'ยามเย็น', 'ตอนเย็น', 'ค่ำลง', 'แม่น้ำ', 'ลำธาร', 'ต้นไม้', 'ใบไม้', 'ดอกหญ้า', 'บ้านนอก',
   'ชนบท', 'บ้านนา', 'กลิ่นดิน', 'หยาดเหงื่อ', 'หยดเหงื่อ', 'ตะวัน', 'ดอกไม้', 'กลิ่นฝน',
 
-  // Urban / Modern / Transit
+  // Urban / Modern / Transit / Street
   'คอนโด', 'ตึกสูง', 'ถนน', 'ไฟท้าย', 'รถติด', 'ป้ายรถเมล์', 'รถไฟฟ้า', 'บีทีเอส', 'สถานี',
   'ทางข้าม', 'ไฟแดง', 'สี่แยก', 'แก้วกาแฟ', 'คาเฟ่', 'ห้องสี่เหลี่ยม', 'หน้าต่าง', 'ระเบียง',
   'ฝนตก', 'ดึกสงัด', 'เที่ยงคืน', 'หูฟัง', 'มือถือ', 'หน้าจอ', 'แสงไฟ', 'เมืองหลวง', 'กรุงเทพ',
-  'แสงสี', 'ห้องนอน', 'ร้านกาแฟ',
+  'แสงสี', 'ห้องนอน', 'ร้านกาแฟ', 'สะพานลอย', 'ห้องเช่า', 'พัดลมเก่า', 'ทางเท้า', 'เก้าอี้ว่าง',
 
   // Intimate / Memory / Relics
   'รูปถ่าย', 'จดหมาย', 'ข้อความ', 'เสื้อตัวเก่า', 'กลิ่นหอม', 'สัมผัส', 'สายตา', 'รอยยิ้ม',
   'เสียงหัวเราะ', 'น้ำตา', 'นาฬิกา', 'เวลา', 'ปฏิทิน', 'วันวาน', 'คืนนั้น', 'ที่เดิม',
-  'โต๊ะตัวเดิม', 'มุมเดิม', 'คำสัญญา', 'แววตา', 'ไออุ่น'
+  'โต๊ะตัวเดิม', 'มุมเดิม', 'คำสัญญา', 'แววตา', 'ไออุ่น', 'สมุดบันทึก', 'รอยขีดเขียน'
 ];
 
 /**
@@ -30,7 +30,7 @@ const KNOWN_SCENE_ANCHORS = [
 const KNOWN_SENSORY_CUES = [
   'กลิ่น', 'เสียง', 'ไออุ่น', 'หนาว', 'ร้อน', 'เย็น', 'อบอุ่น', 'ควัน', 'ฝน', 'แดด',
   'สายลม', 'ลมพัด', 'กลิ่นฝน', 'กลิ่นฟาง', 'กลิ่นดิน', 'กลิ่นหอม', 'แสง', 'เงา', 'มืด',
-  'สว่าง', 'เงียบ', 'ดัง', 'เสียงคลื่น', 'เสียงนก'
+  'สว่าง', 'เงียบ', 'ดัง', 'เสียงคลื่น', 'เสียงนก', 'สัมผัส', 'สะท้อน'
 ];
 
 /**
@@ -164,7 +164,7 @@ export function extractNarrativeSignals(
 }
 
 /**
- * Builds section lexical intent mapping from blueprint or standard structure
+ * Builds section lexical intent mapping from blueprint or standard structure (Phase 5.7)
  */
 export function buildSectionLexicalIntent(
   sectionPlans?: any[],
@@ -182,17 +182,22 @@ export function buildSectionLexicalIntent(
       emotionalFocus: ['ความหวั่นไหว', 'ความอัดอั้น', 'การตัดสินใจ'],
     },
     Chorus: {
-      purpose: 'แก่นแท้ สัจธรรมความรู้สึก ท่อนจำและวลีเด็ด',
+      purpose: 'แก่นแท้ สัจธรรมความรู้สึก ท่อนจำและวลีเด็ด (งดการยัดรายชื่อเครื่องมือ)',
       sensoryFocus: ['หัวใจ', 'ความจริง'],
       emotionalFocus: ['อารมณ์สูงสุด', 'ข้อความหลัก'],
     },
+    Hook: {
+      purpose: 'หมัดฮุก แก่นสัจธรรม และประโยคจำหลักของเพลง',
+      sensoryFocus: ['แก่นอารมณ์', 'สัจธรรม'],
+      emotionalFocus: ['จุดจำสูงสุด', 'แก่นความจริง'],
+    },
     Bridge: {
-      purpose: 'มุมมองใหม่ การตระหนักรู้ หรือจุดหักเหของเรื่องราว',
+      purpose: 'มุมมองใหม่ การตระหนักรู้ หรือจุดหักเหของเรื่องราว (Perspective Shift)',
       sensoryFocus: ['กาลเวลา', 'ความทรงจำ'],
       emotionalFocus: ['การยอมรับ', 'การเข้าใจความจริง'],
     },
     Outro: {
-      purpose: 'ทิ้งความรู้สึก ทวนประโยคจำ และสรุปจบอย่างน่าประทับใจ',
+      purpose: 'ทิ้งความรู้สึก ทวนประโยคจำ และสรุปจบด้วยภาพตกผลึก (Negative Space)',
       sensoryFocus: ['ภาพสุดท้ายที่เลือนหาย'],
       emotionalFocus: ['ความหวัง', 'ความอาลัย', 'ความสงบ'],
     },
@@ -247,8 +252,14 @@ export function inferCharacterVoice(config: SongConfig): {
     story.includes('กลิ่นฟาง') ||
     story.includes('อีสาน');
 
+  const isRnbOrSoul = genres.some((g) => g.includes('r&b') || g.includes('soul') || g.includes('rnb') || g.includes('neo-soul'));
+  const isIndie = genres.some((g) => g.includes('indie') || g.includes('อินดี้') || g.includes('bedroom pop'));
+  const isHiphop = genres.some((g) => g.includes('hip-hop') || g.includes('rap') || g.includes('trap'));
+
   const isUrban =
-    genres.some((g) => g.includes('hip-hop') || g.includes('rap') || g.includes('r&b') || g.includes('city pop') || g.includes('indie')) ||
+    isHiphop ||
+    isRnbOrSoul ||
+    genres.some((g) => g.includes('city pop')) ||
     langStyle.includes('สตรีท') ||
     langStyle.includes('ทันสมัย');
 
@@ -259,7 +270,7 @@ export function inferCharacterVoice(config: SongConfig): {
   if (isRustic && isPlayful) {
     targetRegister = 'spoken';
     colloquialLevel = 'high';
-  } else if (isUrban && (genres.some((g) => g.includes('hip-hop') || g.includes('rap')) || langStyle.includes('สตรีท'))) {
+  } else if (isHiphop || langStyle.includes('สตรีท')) {
     targetRegister = 'spoken';
     colloquialLevel = 'high';
   } else if (genres.some((g) => g.includes('traditional') || g.includes('วรรณคดี') || g.includes('คลาสสิก'))) {
@@ -272,7 +283,6 @@ export function inferCharacterVoice(config: SongConfig): {
     targetRegister = 'conversational';
     colloquialLevel = 'high';
   } else {
-    // Default for Thai music is natural conversational
     targetRegister = 'conversational';
     colloquialLevel = 'medium';
   }
@@ -283,10 +293,16 @@ export function inferCharacterVoice(config: SongConfig): {
     personaType = 'หนุ่มบ้าน ๆ จริงใจ ขี้เล่น ตรงไปตรงมา (Playful & Sincere Folk Narrator)';
   } else if (isRustic) {
     personaType = 'คนจริงใจ เล่าเรื่องชีวิตจริง (Sincere Rustic Storyteller)';
+  } else if (isHiphop) {
+    personaType = 'Street / Hip-Hop Voice (มั่นใจ มุ่งมั่น สตรีท)';
+  } else if (isRnbOrSoul) {
+    personaType = 'คนเมืองร่วมสมัย ถ่ายทอดความรู้สึกลึกซึ้ง (Modern Urban R&B Narrator)';
+  } else if (isIndie) {
+    personaType = 'นักเล่าเรื่องสาย Indie ช่างสังเกต (Indie Storyteller)';
   } else if (isUrban && isPlayful) {
     personaType = 'คนเมืองรุ่นใหม่ อารมณ์ดี มีลูกเล่น (Playful Modern Urban Speaker)';
   } else if (isUrban) {
-    personaType = 'คนเมืองร่วมสมัย ถ่ายทอดความรู้สึกลึกซึ้ง (Modern Urban Narrator)';
+    personaType = 'คนเมืองร่วมสมัย (Modern Urban Narrator)';
   }
 
   const toneDescription = `${wordTone || 'เข้าถึงง่าย เป็นธรรมชาติ'} / ${langStyle || 'ภาษาพูดสนทนา'}`;
@@ -310,9 +326,10 @@ export function buildLexicalContextVector(
   blueprint?: any,
   sectionType?: string
 ): LexicalContextVector {
-  const targetLanguage = config.language === 'Custom' && config.customLanguage
-    ? config.customLanguage.trim()
-    : (config.language?.trim() || 'ไทย');
+  const targetLanguage =
+    config.language === 'Custom' && config.customLanguage
+      ? config.customLanguage.trim()
+      : (config.language?.trim() || 'ไทย');
 
   const isTargetThai = targetLanguage === 'ไทย' || targetLanguage.toLowerCase() === 'thai';
 
@@ -333,7 +350,11 @@ export function buildLexicalContextVector(
   // Region detection
   const story = (config.story || '').toLowerCase();
   let region: 'isan' | 'northern' | 'southern' | 'central' | 'general' | null = null;
-  if (story.includes('อีสาน') || story.includes('คิดฮอด') || rawGenres.some((g) => g.toLowerCase().includes('หมอลำ') || g.toLowerCase().includes('อีสาน'))) {
+  if (
+    story.includes('อีสาน') ||
+    story.includes('คิดฮอด') ||
+    rawGenres.some((g) => g.toLowerCase().includes('หมอลำ') || g.toLowerCase().includes('อีสาน'))
+  ) {
     region = 'isan';
   } else if (story.includes('เชียงใหม่') || story.includes('เหนือ') || story.includes('คำเมือง')) {
     region = 'northern';
@@ -367,7 +388,6 @@ export function buildLexicalContextVector(
   const userEvidenceSet = new Set<string>();
   storyTokens.forEach((t) => userEvidenceSet.add(t));
   if (config.story) {
-    // Extract explicitly stated nouns/anchors in story
     for (const anchor of KNOWN_SCENE_ANCHORS) {
       if (config.story.includes(anchor)) userEvidenceSet.add(anchor);
     }
@@ -401,9 +421,10 @@ export function buildLexicalContextVector(
   if (rawMoods.length > 0) coreThemes.push(...rawMoods);
   if (rawGenres.length > 0) coreThemes.push(...rawGenres);
 
-  const songwritingStyle = (typeof config.songwritingStyle === 'string' && config.songwritingStyle)
-    ? config.songwritingStyle
-    : 'Storytelling';
+  const songwritingStyle =
+    typeof config.songwritingStyle === 'string' && config.songwritingStyle
+      ? config.songwritingStyle
+      : 'Storytelling';
 
   const reference = config.reference;
   let refDirection: { genre?: string[]; mood?: string[]; tempo?: string; groove?: string } | undefined = undefined;
@@ -412,18 +433,20 @@ export function buildLexicalContextVector(
     const rawRefGenre = reference.creativeDirection?.genre?.value || reference.analysis?.genre;
     const refGenreArr = Array.isArray(rawRefGenre)
       ? rawRefGenre.map(String)
-      : (rawRefGenre ? [String(rawRefGenre)] : undefined);
+      : rawRefGenre ? [String(rawRefGenre)] : undefined;
 
     const rawRefMood = reference.creativeDirection?.mood?.value || reference.analysis?.mood;
     const refMoodArr = Array.isArray(rawRefMood)
       ? rawRefMood.map(String)
-      : (rawRefMood ? [String(rawRefMood)] : undefined);
+      : rawRefMood ? [String(rawRefMood)] : undefined;
 
     const rawRefTempo = reference.creativeDirection?.tempo?.value || reference.analysis?.tempo;
     const refTempoStr = typeof rawRefTempo === 'string' ? rawRefTempo : undefined;
 
     const rawRefGroove = reference.creativeDirection?.rhythm?.value;
-    const refGrooveStr = Array.isArray(rawRefGroove) ? rawRefGroove.join(', ') : (rawRefGroove ? String(rawRefGroove) : undefined);
+    const refGrooveStr = Array.isArray(rawRefGroove)
+      ? rawRefGroove.join(', ')
+      : rawRefGroove ? String(rawRefGroove) : undefined;
 
     refDirection = {
       genre: refGenreArr,
@@ -463,4 +486,3 @@ export function buildLexicalContextVector(
     contextSupportedEvidence,
   };
 }
-

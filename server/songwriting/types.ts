@@ -243,7 +243,6 @@ export interface CriticReport {
     singabilityFlowScore: number; // 1 - 5
     hookStrengthScore: number; // 1 - 5
     sectionFunctionScore: number; // 1 - 5
-    // Phase 5.5B Specificity & Evidence Metrics
     specificityScore?: number; // 1 - 5
     narrativeUtilityScore?: number; // 1 - 5
     genericnessRiskScore?: number; // 1 - 5
@@ -261,12 +260,15 @@ export interface CandidateEvaluation {
   genreFit: number; // 1 - 5
   singability: number; // 1 - 5
   originality: number; // 1 - 5
-  compositeScore: number; // Mean of above 6 dimensions
+  specificityScore?: number;
+  narrativeUtilityScore?: number;
+  evidenceGroundingScore?: number;
+  compositeScore: number; // Mean of dimensions
   isBetterThanOriginal: boolean;
   rationale: string;
 }
 
-export interface TargetedRewriteExecutionRecord {
+export interface Tar9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8 {
   targetId: string;
   sectionIndex: number;
   sectionType: string;
@@ -277,11 +279,15 @@ export interface TargetedRewriteExecutionRecord {
   reason: string;
 }
 
+// Type Aliases for Backward Compatibility
+export type TarahJ91ZuNL8Y2px8iYciYeHN8sfSh5eXH8 = Tar9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8;
+export type TargetedRewriteRecord = Tar9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8;
+
 export interface SongwritingCriticRewriteResult {
   originalLyrics: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }>;
   finalLyrics: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }>;
   criticReport: CriticReport;
-  rewriteRecords: TargetedRewriteExecutionRecord[];
+  rewriteRecords: Tar9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8[];
   totalRewrittenLines: number;
   roundsExecuted: number;
   editorialReport?: LyricCraftEditorialReport;

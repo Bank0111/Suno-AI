@@ -17,7 +17,7 @@ import { buildLexicalContextVector } from './contextVector';
 import { rankLexicalCandidate, logLexicalSelection } from './ranker';
 
 /**
- * Derives AvoidClassification with multi-tiered avoidance logic
+ * Derives AvoidClassification with multi-tiered avoidance logic (Phase 5.7 Standard)
  */
 export function buildAvoidClassification(config: SongConfig): AvoidClassification {
   const hardBanned = [...HARD_BANNED_WORDS];
@@ -67,12 +67,22 @@ export function buildAvoidClassification(config: SongConfig): AvoidClassificatio
     }
   }
 
-  // Specific contextual avoidance notes
+  // Specific contextual avoidance notes (Phase 5.7 Gate)
   const isFolkOrCountry = genres.some((g) => g.toLowerCase().includes('country') || g.toLowerCase().includes('folk') || g.toLowerCase().includes('ลูกทุ่ง'));
   if (isFolkOrCountry) {
     contextualNotes.push('หลีกเลี่ยงการใช้คำคณิตศาสตร์/การเปรียบเทียบเชิงเทคโนโลยี เช่น "คูณสอง", "บวกหนึ่ง" ในเพลงรักลูกทุ่ง/คันทรี');
     contextualNotes.push('หลีกเลี่ยงการใช้สำนวนแปลกที่ขัดกับการพูดจริง เช่น "วิ่งแส่หาใคร" หรือ "ใจมันพองโตขึ้นมา" ให้ใช้ภาษาพูดที่เป็นธรรมชาติ');
+    contextualNotes.push('ห้ามยัดเยียดรายชื่อเครื่องมือช่างลงในท่อนฮุก (Mechanical Dump in Hook) เช่น "ประแจ", "น็อต", "สายพาน" ให้ท่อนฮุกเป็นพื้นที่ของแก่นอารมณ์และความเสียสละ');
   }
+
+  const isRnbOrPop = genres.some((g) => g.toLowerCase().includes('r&b') || g.toLowerCase().includes('soul') || g.toLowerCase().includes('pop') || g.toLowerCase().includes('indie'));
+  if (isRnbOrPop) {
+    contextualNotes.push('หลีกเลี่ยงการอธิบายอารมณ์ตรงๆ ซ้ำซ้อน (Emotional Over-Explanation) เช่น "ภาพนี้ทำให้ฉันรู้สึกเศร้า" ให้เปิด Negative Space ผ่านภาพรูปธรรม');
+  }
+
+  // Academic and Prose notes for all contemporary genres
+  contextualNotes.push('ห้ามใช้ศัพท์รายงานวิชาการหรือบทความวิจัย เช่น "บริบท", "มิติ", "ขับเคลื่อน", "ปัจจัย", "กำแพงชนชั้น"');
+  contextualNotes.push('ห้ามเขียนแจกแจงลำดับเหตุการณ์แบบร้อยแก้ว เช่น "จากนั้นฉันก็...", "แล้วจึง...", "ขั้นตอนต่อไป"');
 
   return {
     hardBanned,
@@ -195,7 +205,7 @@ export function matchRuleBasedVocabulary(
     }
   }
 
-  // 4. Build Structured Phase 5.5A Categories
+  // 4. Build Structured Phase 5.5A / 5.7 Categories
   const verseImageryCandidates = preferredCandidates
     .filter((c) => (c.sceneGrounding && c.sceneGrounding >= 0.75) || (c.source === 'scene-grounded'))
     .map((c) => c.term);
@@ -210,6 +220,7 @@ export function matchRuleBasedVocabulary(
     new Set([...sectionEmotionCandidates, ...coreList])
   ).slice(0, 8);
 
+  // Hook Core Terms: Focus strictly on emotional truths and thematic anchors
   const hookCoreCandidates = preferredCandidates
     .filter((c) => (c.exactMatch || (c.sectionFit && c.sectionFit >= 0.9)) && (c.score || 0) >= 50)
     .map((c) => c.term);

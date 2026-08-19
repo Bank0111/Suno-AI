@@ -60,7 +60,7 @@ export interface LyricCraftExecutionResult {
 }
 
 /**
- * Section-specific craft weighting and purpose guidelines.
+ * Section-specific craft weighting and purpose guidelines (Genre-Aware).
  */
 interface SectionCraftExpectation {
   primaryGoal: string;
@@ -70,15 +70,18 @@ interface SectionCraftExpectation {
   narrativeWeight: number;
 }
 
-function getSectionExpectation(sectionType: string): SectionCraftExpectation {
+function getSectionExpectation(sectionType: string, genre: string = ''): SectionCraftExpectation {
   const norm = sectionType.toLowerCase();
+  const gNorm = genre.toLowerCase();
+  const isEDMOrDance = gNorm.includes('edm') || gNorm.includes('dance') || gNorm.includes('house');
+
   if (norm.includes('verse')) {
     return {
       primaryGoal: 'Storytelling, concrete sensory anchoring, and progression',
       expectedTension: 'Moderate / Grounded scene setup',
-      specificityWeight: 1.3,
+      specificityWeight: isEDMOrDance ? 1.0 : 1.3,
       memorabilityWeight: 0.9,
-      narrativeWeight: 1.4,
+      narrativeWeight: isEDMOrDance ? 0.9 : 1.4,
     };
   }
   if (norm.includes('pre-chorus') || norm.includes('prechorus') || norm.includes('lift')) {
@@ -94,18 +97,18 @@ function getSectionExpectation(sectionType: string): SectionCraftExpectation {
     return {
       primaryGoal: 'Core emotional truth, universal resonance, and peak memorability',
       expectedTension: 'Peak / Direct catharsis',
-      specificityWeight: 1.0,
-      memorabilityWeight: 1.5,
-      narrativeWeight: 1.0,
+      specificityWeight: 0.9,
+      memorabilityWeight: 1.6,
+      narrativeWeight: 0.9,
     };
   }
   if (norm.includes('bridge')) {
     return {
       primaryGoal: 'Perspective shift, critical realization, and fresh emotional contrast',
       expectedTension: 'Intense / Reflective contrast',
-      specificityWeight: 1.2,
+      specificityWeight: 1.1,
       memorabilityWeight: 1.2,
-      narrativeWeight: 1.3,
+      narrativeWeight: 1.2,
     };
   }
   if (norm.includes('outro')) {
@@ -127,9 +130,16 @@ function getSectionExpectation(sectionType: string): SectionCraftExpectation {
 }
 
 /**
+ * ดึงคำท้ายวรรคภาษาไทยเพื่อตรวจสอบคำลงท้ายซ้ำ
+ */
+function extractEndWord(line: string): string {
+  const clean = line.replace(/[\s\.,\!\?\(\)\[\]"]/g, '').trim();
+  if (!clean) return '';
+  return clean.slice(-3); // เปรียบเทียบ 3 ตัวอักษรท้ายของวรรค
+}
+
+/**
  * Universal Line-Level Craft Evaluator
- * Evaluates semantic precision, character voice, scene fit, narrative utility,
- * emotional specificity, imagery quality, and memorability across any language.
  */
 function evaluateUniversalLineCraft(
   line: string,
@@ -139,7 +149,7 @@ function evaluateUniversalLineCraft(
 ): { scores: UniversalCraftScores; issues: CraftIssue[]; recommendedStrategy: CraftStrategyType; reason: string } {
   const trimmed = line.trim();
   const issues: CraftIssue[] = [];
-  const expectation = getSectionExpectation(sectionType);
+  const expectation = getSectionExpectation(sectionType, context.genresStr);
 
   // Baseline scores (5.0 scale)
   let semanticPrecision = 4.8;
@@ -153,10 +163,29 @@ function evaluateUniversalLineCraft(
   let recommendedStrategy: CraftStrategyType = 'preserve_original';
   let reason = 'Line demonstrates strong craft, naturalness, and narrative grounding.';
 
-  const story = context.story || '';
   const isThai = languageProfile.languageCode === 'th';
-  
-  // 1. Scene & Contextual Grounding via Evidence Tier
+  const isChorusOrBridge = sectionType.toLowerCase().includes('chorus') || sectionType.toLowerCase().includes('bridge');
+
+  // 1. ดักจับการยัดเยียดชื่ออุปกรณ์ช่างในท่อน Chorus / Bridge
+  if (isChorusOrBridge) {
+    const vocationalBannedRegex = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร)/gi;
+    if (vocationalBannedRegex.test(trimmed)) {
+      contextualFit -= 2.5;
+      emotionalSpecificity -= 2.0;
+      issues.push({
+        type: 'unsupported-genre-decoration',
+        severity: 'critical',
+        diagnosis: `ท่อน ${sectionType} มีการยัดเยียดชื่ออุปกรณ์เฉพาะทาง ซึ่งควรเป็นพื้นที่ของแก่นอารมณ์และสัจธรรมชีวิต`,
+        evidence: trimmed,
+        suggestedAction: 'เปลี่ยนชื่ออุปกรณ์เป็นภาพความรู้สึกหรือสัจธรรมชีวิตที่ลึกซึ้ง',
+        strategy: 'reduce_decoration',
+      });
+      recommendedStrategy = 'reduce_decoration';
+      reason = 'Chorus/Bridge must focus on Core Truth, not vocational tool names.';
+    }
+  }
+
+  // 2. Scene & Contextual Grounding via Evidence Tier
   if (isThai) {
     const songConfigForVector = {
       story: context.story,
@@ -191,8 +220,10 @@ function evaluateUniversalLineCraft(
         suggestedAction: 'Replace decorative object with concrete story action or emotional anchor.',
         strategy: 'reduce_decoration',
       });
-      recommendedStrategy = 'reduce_decoration';
-      reason = 'Contains decorative trope not grounded in user story facts.';
+      if (recommendedStrategy === 'preserve_original') {
+        recommendedStrategy = 'reduce_decoration';
+        reason = 'Contains decorative trope not grounded in user story facts.';
+      }
     }
 
     if (genericness.genericnessRisk >= 0.6) {
@@ -201,7 +232,7 @@ function evaluateUniversalLineCraft(
       issues.push({
         type: 'generic-emotional-filler',
         severity: 'warning',
-        diagnosis: `Line is overly generic/flat ("Good but not great" detection): ${genericness.reason}`,
+        diagnosis: `Line is overly generic/flat: ${genericness.reason}`,
         evidence: trimmed,
         suggestedAction: 'Elevate with personal story specificity.',
         strategy: 'replace_generic_emotion',
@@ -212,8 +243,7 @@ function evaluateUniversalLineCraft(
       }
     }
   } else {
-    // English & Generic Universal Heuristics
-    // "Good but not great" generic line detection
+    // English Generic Phrase Detection
     const lower = trimmed.toLowerCase();
     const genericEnglishPhrases = [
       'i miss you so much',
@@ -233,7 +263,7 @@ function evaluateUniversalLineCraft(
         issues.push({
           type: 'generic-emotional-filler',
           severity: 'warning',
-          diagnosis: `Line uses standard generic filler phrase ("${gep}") which could appear in any pop song.`,
+          diagnosis: `Line uses standard generic filler phrase ("${gep}")`,
           evidence: gep,
           suggestedAction: 'Replace with specific situational action or distinct sensory observation.',
           strategy: 'replace_generic_emotion',
@@ -243,34 +273,6 @@ function evaluateUniversalLineCraft(
         break;
       }
     }
-  }
-
-  // 2. Section-specific alignment check
-  if (sectionType.toLowerCase().includes('verse') && emotionalSpecificity < 3.2 && imageryQuality < 3.2) {
-    narrativeUtility -= 0.8;
-    issues.push({
-      type: 'low-narrative-progression',
-      severity: 'info',
-      diagnosis: 'Verse line lacks concrete story movement or sensory anchor.',
-      evidence: trimmed,
-      suggestedAction: 'Introduce concrete movement or sensory detail from the song world.',
-      strategy: 'increase_specificity',
-    });
-    if (recommendedStrategy === 'preserve_original') {
-      recommendedStrategy = 'increase_specificity';
-      reason = 'Verse requires tangible story progression.';
-    }
-  }
-
-  if (sectionType.toLowerCase().includes('chorus') && memorability < 3.5) {
-    issues.push({
-      type: 'weak-chorus-memorability',
-      severity: 'info',
-      diagnosis: 'Chorus line lacks emotional punch or resonant phrasing.',
-      evidence: trimmed,
-      suggestedAction: 'Strengthen emotional truth and phrase symmetry.',
-      strategy: 'improve_memorability',
-    });
   }
 
   // Calculate Weighted Universal Craft Quality
@@ -303,7 +305,6 @@ function evaluateUniversalLineCraft(
 
 /**
  * Execute the Language-Agnostic Lyric Craft Editorial Pass
- * Operates directly between Targeted Rewrite and Phrasing / Final QA.
  */
 export async function executeLyricCraftEditorialPass(
   draft: { sections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }> },
@@ -314,7 +315,7 @@ export async function executeLyricCraftEditorialPass(
   const targetLanguage = context.targetContentLanguage || 'ไทย';
   const languageProfile = getLanguageProfile(targetLanguage);
 
-  console.log(`[Lyric Craft Editor] Initiating editorial pass for language: "${targetLanguage}" using profile: "${languageProfile.languageName}" (Supported: ${languageProfile.isSupported})`);
+  console.log(`[Lyric Craft Editor] Initiating editorial pass for language: "${targetLanguage}" using profile: "${languageProfile.languageName}"`);
 
   const protectedSet = new Set((options.protectedHookLines || []).map((h) => h.trim().toLowerCase()));
   if (context.creativeAnalysis?.imageryAnchors) {
@@ -357,6 +358,15 @@ export async function executeLyricCraftEditorialPass(
     const evaluatedLines: LineCraftAssessment[] = [];
     const updatedLyrics: string[] = [];
 
+    // นับคำลงท้ายซ้ำใน Section เดียวกัน
+    const endWordFrequency = new Map<string, number>();
+    (sec.lyrics || []).forEach((line) => {
+      const endWord = extractEndWord(line);
+      if (endWord && endWord.length >= 2) {
+        endWordFrequency.set(endWord, (endWordFrequency.get(endWord) || 0) + 1);
+      }
+    });
+
     for (let lIdx = 0; lIdx < (sec.lyrics || []).length; lIdx++) {
       const lineText = sec.lyrics[lIdx];
       totalLines++;
@@ -377,6 +387,20 @@ export async function executeLyricCraftEditorialPass(
 
       const combinedIssues = [...universalResult.issues, ...languageResult.issues];
 
+      // 3. ตรวจจับคำลงท้ายซ้ำในระดับ Section
+      const endWord = extractEndWord(lineText);
+      const isRepeatedEnd = endWord && (endWordFrequency.get(endWord) || 0) > 1 && !isProtected;
+      if (isRepeatedEnd) {
+        combinedIssues.push({
+          type: 'repetitive-end-rhyme',
+          severity: 'critical',
+          diagnosis: `วรรคนี้ลงท้ายด้วยเสียง "${endWord}" ซ้ำกับวรรคอื่นในท่อนเดียวกัน`,
+          evidence: lineText,
+          suggestedAction: 'เปลี่ยนคำลงท้ายเป็นคำสัมผัสสระอื่นเพื่อความหลากหลายของสัมผัส',
+          strategy: 'increase_specificity',
+        });
+      }
+
       // Tally Scores
       Object.keys(sumUniversal).forEach((k) => {
         (sumUniversal as any)[k] += (universalResult.scores as any)[k];
@@ -385,7 +409,7 @@ export async function executeLyricCraftEditorialPass(
         (sumLanguage as any)[k] += (languageResult.scores as any)[k];
       });
 
-      // 3. Determine Line Editorial Status
+      // 4. Determine Line Editorial Status
       let status: EditorLineDecision = 'PASS';
       if (isProtected) {
         status = 'PROTECTED_KEEP';
@@ -416,7 +440,7 @@ export async function executeLyricCraftEditorialPass(
 
       if (status === 'REVIEW' || status === 'REWRITE') {
         assessment.rewriteRecommendation = {
-          reason: universalResult.reason,
+          reason: isRepeatedEnd ? 'แก้คำลงท้ายซ้ำในท่อนเดียวกัน' : universalResult.reason,
           strategy: universalResult.recommendedStrategy,
           suggestedDirection: combinedIssues[0]?.suggestedAction || 'Refine line for optimal emotional precision and naturalness',
         };

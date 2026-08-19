@@ -1,0 +1,155 @@
+{
+  "generatedAt": "2026-08-18T15:39:50.242Z",
+  "validationVersion": "v1-structural-conservative",
+  "languages": {
+    "th": {
+      "sourceWords": 29519,
+      "uniqueWords": 29519,
+      "duplicatesRemoved": 0,
+      "pass": 29518,
+      "review": 1,
+      "reject": 0,
+      "accepted": 29519,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\th\\vocabulary.validated.json"
+    },
+    "en": {
+      "sourceWords": 480427,
+      "uniqueWords": 480427,
+      "duplicatesRemoved": 0,
+      "pass": 480426,
+      "review": 1,
+      "reject": 0,
+      "accepted": 480427,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\en\\vocabulary.validated.json"
+    },
+    "zh": {
+      "sourceWords": 163341,
+      "uniqueWords": 163341,
+      "duplicatesRemoved": 0,
+      "pass": 163339,
+      "review": 2,
+      "reject": 0,
+      "accepted": 163341,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\zh\\vocabulary.validated.json"
+    },
+    "ja": {
+      "sourceWords": 62041,
+      "uniqueWords": 62041,
+      "duplicatesRemoved": 0,
+      "pass": 62020,
+      "review": 21,
+      "reject": 0,
+      "accepted": 62041,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ja\\vocabulary.validated.json"
+    },
+    "ko": {
+      "sourceWords": 860,
+      "uniqueWords": 860,
+      "duplicatesRemoved": 0,
+      "pass": 856,
+      "review": 4,
+      "reject": 0,
+      "accepted": 860,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ko\\vocabulary.validated.json"
+    },
+    "de": {
+      "sourceWords": 60660,
+      "uniqueWords": 60660,
+      "duplicatesRemoved": 0,
+      "pass": 60660,
+      "review": 0,
+      "reject": 0,
+      "accepted": 60660,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\de\\vocabulary.validated.json"
+    },
+    "es": {
+      "sourceWords": 480783,
+      "uniqueWords": 480783,
+      "duplicatesRemoved": 0,
+      "pass": 480780,
+      "review": 3,
+      "reject": 0,
+      "accepted": 480783,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\es\\vocabulary.validated.json"
+    },
+    "fr": {
+      "sourceWords": 213493,
+      "uniqueWords": 213493,
+      "duplicatesRemoved": 0,
+      "pass": 213492,
+      "review": 1,
+      "reject": 0,
+      "accepted": 213493,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\fr\\vocabulary.validated.json"
+    },
+    "pt": {
+      "sourceWords": 231740,
+      "uniqueWords": 231740,
+      "duplicatesRemoved": 0,
+      "pass": 231740,
+      "review": 0,
+      "reject": 0,
+      "accepted": 231740,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\pt\\vocabulary.validated.json"
+    },
+    "id": {
+      "sourceWords": 433,
+      "uniqueWords": 433,
+      "duplicatesRemoved": 0,
+      "pass": 433,
+      "review": 0,
+      "reject": 0,
+      "accepted": 433,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\id\\vocabulary.validated.json"
+    },
+    "vi": {
+      "sourceWords": 1229,
+      "uniqueWords": 1229,
+      "duplicatesRemoved": 0,
+      "pass": 1218,
+      "review": 11,
+      "reject": 0,
+      "accepted": 1229,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\vi\\vocabulary.validated.json"
+    },
+    "hi": {
+      "sourceWords": 3854,
+      "uniqueWords": 3854,
+      "duplicatesRemoved": 0,
+      "pass": 3854,
+      "review": 0,
+      "reject": 0,
+      "accepted": 3854,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\hi\\vocabulary.validated.json"
+    },
+    "ar": {
+      "sourceWords": 216,
+      "uniqueWords": 216,
+      "duplicatesRemoved": 0,
+      "pass": 216,
+      "review": 0,
+      "reject": 0,
+      "accepted": 216,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ar\\vocabulary.validated.json"
+    },
+    "lo": {
+      "sourceWords": 14007,
+      "uniqueWords": 14007,
+      "duplicatesRemoved": 0,
+      "pass": 14007,
+      "review": 0,
+      "reject": 0,
+      "accepted": 14007,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\lo\\vocabulary.validated.json"
+    }
+  },
+  "totals": {
+    "sourceWords": 1742603,
+    "uniqueWords": 1742603,
+    "duplicatesRemoved": 0,
+    "pass": 1742559,
+    "review": 44,
+    "reject": 0,
+    "accepted": 1742603
+  }
+}

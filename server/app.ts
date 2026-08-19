@@ -27,6 +27,7 @@ import {
   validateRoleProfiles,
   executeRoleResolutionTests,
 } from "./training/benchmark/roleValidation";
+import { validateTrainingDatasets } from "./training/validator";
 import {
   buildCreativeContext,
   getPovLabel,
@@ -107,6 +108,16 @@ export function createApiRouter(): express.Router {
   // Health check
   router.get("/health", (_req, res) => {
     res.json({ status: "ok" });
+  });
+
+  // Benchmark & Validation: Dataset Integrity Check
+  router.get("/benchmark/datasets", (_req, res) => {
+    try {
+      const report = validateTrainingDatasets();
+      res.json({ ok: true, report });
+    } catch (err: any) {
+      res.status(500).json({ ok: false, error: err.message || "Failed to validate datasets" });
+    }
   });
 
   // Role Engine: List all available songwriter roles
@@ -640,7 +651,6 @@ ${context.referenceGuidanceBlock}
       let finalModelMeta: any = null;
       let mediaAnalysisSucceeded = false;
 
-      // ดึงข้อมูลศิลปินระดับบนสุดเพื่อให้ใช้ได้ทั้งโหมด YouTube และ Text Fallback
       const officialArtistInfo = confirmedArtist ? await fetchArtistGenderFromMusicBrainz(confirmedArtist) : null;
 
       if (sourceType === "youtube" && canonicalUrl) {
@@ -670,6 +680,7 @@ ${songText && songText.trim() !== confirmedTitle ? `- ข้อมูลเพ�
 
 ตัวอย่างผลลัพธ์มาตรฐานที่ต้องยึดถือ (Gold Standard):
 "Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
+
 # 🚨 DUAL-LANGUAGE MANDATE (กฎเหล็กการแยกภาษา)
 ระบบของคุณทำหน้าที่ 2 ส่วนพร้อมกัน คุณต้องแยกภาษาอย่างเด็ดขาด ห้ามปะปนกัน:
 
@@ -746,6 +757,7 @@ ${officialArtistInfo ? `- ข้อมูลทางการจาก MusicBra
 
 ตัวอย่างผลลัพธ์มาตรฐาน (Gold Standard):
 "Luk Thung, Molam, sad melancholic Thai country folk, expressive female vocals with traditional ornamentation and vibrato, steady mid-tempo 88 BPM groove, prominent acoustic-like kick drum, syncopated snare and hi-hat, expressively melancholic Phin lute, warm bass, atmospheric synthesizer pads, clean balanced studio quality sound stage, emotional depth"
+
 # 🚨 DUAL-LANGUAGE MANDATE (กฎเหล็กการแยกภาษา)
 ระบบของคุณทำหน้าที่ 2 ส่วนพร้อมกัน คุณต้องแยกภาษาอย่างเด็ดขาด ห้ามปะปนกัน:
 
@@ -1033,6 +1045,15 @@ ${context.vocabGuidanceBlock}${context.fewShotGuidanceBlock ? `\n\n${context.few
       const jsonText = response.text?.trim() || "";
       const parsed = JSON.parse(jsonText);
 
+      // PASS 1.5: Songwriting Critic + Targeted Rewrite (Quality Gate)
+      try {
+        const criticRewriteResult = await runSongwritingCriticAndRewrite(parsed, context, ai, { protectedHookLines });
+        parsed.sections = criticRewriteResult.finalLyrics;
+        console.log(`[SongCritic Integration] Completed generate-song Critic pass. Overall Status: ${criticRewriteResult.criticReport.overallStatus}, Score: ${criticRewriteResult.criticReport.overallScore}/5, Rewritten Lines: ${criticRewriteResult.totalRewrittenLines}`);
+      } catch (criticErr: any) {
+        console.warn(`[SongCritic Integration] Non-blocking warning in generate-song Critic pass: ${criticErr.message}`);
+      }
+
       // PASS 2: Check and Refine Lyric Phrasing & Singability (with Conditional Bypass)
       const { sections: phrasedSections, phrasingReport } = await refineSongLyricPhrasing(
         parsed,
@@ -1042,7 +1063,7 @@ ${context.vocabGuidanceBlock}${context.fewShotGuidanceBlock ? `\n\n${context.few
       );
       parsed.sections = phrasedSections;
 
-      // Quality Control Validation using Vocabulary Validator
+      // Quality Control Validation using Vocabulary Validator (Phase 5.7)
       const allLyricsText = parsed.sections
         ? parsed.sections.flatMap((s: any) => s.lyrics || []).join("\n")
         : "";
@@ -1055,6 +1076,9 @@ ${context.vocabGuidanceBlock}${context.fewShotGuidanceBlock ? `\n\n${context.few
         hardBannedFound: validationReport.hardBannedFound,
         overusedFound: validationReport.overusedFound,
         contextClashFound: validationReport.contextClashFound,
+        academicJargonFound: validationReport.academicJargonFound,
+        vocationalDumpFound: validationReport.vocationalDumpFound,
+        proseReportingFound: validationReport.proseReportingFound,
         feedback: validationReport.feedback,
         phrasingScore: phrasingReport.score,
       });
@@ -1407,6 +1431,8 @@ Lyrics ปัจจุบัน: ${(targetSec.lyrics || []).join(" | ")}
 
       const ai = getGeminiClient(req);
 
+      const systemInstruction = `คุณคือ YouTube Content Strategist และ Music Producer ผู้เชี่ยวชาญการตั้งชื่อคลิปและเขียนคำบรรยายเพลง`;
+
       const prompt = `จากข้อมูลเพลงที่แต่งเสร็จแล้วต่อไปนี้:
 ชื่อเพลง: ${title}
 Style Prompt: ${stylePrompt}
@@ -1421,6 +1447,7 @@ ${lyricsText}
       const { response, modelMeta } = await callGeminiWithFallback(ai, {
         contents: prompt,
         config: {
+          systemInstruction,
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
@@ -1457,7 +1484,7 @@ ${lyricsText}
     }
   });
 
-  // 7. Cover Art Generation endpoint (Guaranteed JSON API endpoint)
+  // 7. Cover Art Generation endpoint
   router.post("/gemini/generate-cover-art", async (req, res) => {
     try {
       const { prompt, aspectRatio, referenceImage, songTitle, stylePrompt } = req.body;
@@ -1465,7 +1492,6 @@ ${lyricsText}
 
       const imagePrompt = prompt || `Album cover art for song titled "${songTitle || 'Original Track'}", music style: ${stylePrompt || 'modern acoustic pop'}, artistic, aesthetic, high resolution`;
 
-      // Try image generation via Gemini Imagen
       try {
         const imagenResponse = await ai.models.generateImages({
           model: "imagen-3.0-generate-002",
@@ -1492,7 +1518,6 @@ ${lyricsText}
         console.warn("Imagen generation fallback attempt:", imgErr.message);
       }
 
-      // If Imagen model is not permitted with key or falls back
       res.json({
         ok: true,
         imageUrl: "",
@@ -1511,18 +1536,15 @@ ${lyricsText}
 export function createApp(): express.Express {
   const app = express();
 
-  // Support JSON & large payloads (e.g. Reference images up to 15MB)
   app.use(express.json({ limit: "15mb" }));
   app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
   const apiRouter = createApiRouter();
 
-  // Mount API router on both /api and Netlify function paths and root
   app.use("/api", apiRouter);
   app.use("/.netlify/functions/api", apiRouter);
   app.use("/", apiRouter);
 
-  // Guarantee JSON 404 for API endpoints
   app.use("/api/*", (_req, res) => {
     res.status(404).json({ ok: false, error: "API endpoint not found" });
   });
@@ -1530,7 +1552,6 @@ export function createApp(): express.Express {
     res.status(404).json({ ok: false, error: "API endpoint not found" });
   });
 
-  // Guarantee JSON error format
   app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error("[API Error]", err);
     res.status(err.status || 500).json({

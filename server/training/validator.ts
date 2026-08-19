@@ -15,7 +15,7 @@ const VALID_SOURCE_TYPES: SourceType[] = [
 
 /**
  * DATASET INTEGRITY VALIDATOR
- * Runs structural and semantic verification across all knowledge and training datasets.
+ * Runs structural, relational, and semantic verification across all knowledge and training datasets.
  */
 export function validateTrainingDatasets(customBundle?: TrainingDatasetBundle): DatasetValidationReport {
   const bundle = customBundle || datasetLoader.getBundle();
@@ -61,6 +61,9 @@ export function validateTrainingDatasets(customBundle?: TrainingDatasetBundle): 
     }
     if (!item.syllableCount || item.syllableCount <= 0) {
       errors.push(`[Invalid SyllableCount] Record ${item.id} syllableCount must be > 0.`);
+    }
+    if (!item.rhymeEnding?.vowelGroup || !item.rhymeEnding?.toneCategory) {
+      warnings.push(`[Incomplete RhymeEnding] Record ${item.id} is missing vowelGroup or toneCategory.`);
     }
     if (!item.semanticDomains || item.semanticDomains.length === 0) {
       warnings.push(`[Missing Semantic Domains] Record ${item.id} has no semantic domains specified.`);
@@ -140,14 +143,34 @@ export function validateTrainingDatasets(customBundle?: TrainingDatasetBundle): 
   }
 
   // 7. Validate Genre Profiles
+  const seenGenreKeys = new Set<string>();
   for (const g of bundle.genreProfiles) {
+    if (seenGenreKeys.has(g.genreKey)) {
+      errors.push(`[Duplicate GenreKey] Duplicate genreKey: "${g.genreKey}"`);
+    } else {
+      seenGenreKeys.add(g.genreKey);
+    }
     tallySourceType(g.sourceType, g.genreKey);
+
+    if (!g.narrativePacing || g.narrativePacing.trim().length === 0) {
+      errors.push(`[Missing Pacing] Genre profile ${g.genreKey} missing narrativePacing.`);
+    }
+    if (!g.bannedTropes || g.bannedTropes.length === 0) {
+      warnings.push(`[Empty Banned Tropes] Genre profile ${g.genreKey} has no banned tropes listed.`);
+    }
   }
 
   // 8. Validate Golden Test Fixtures
   for (const fixture of bundle.goldenTestFixtures) {
     checkId(fixture.id, 'GoldenTestFixtures');
     tallySourceType(fixture.sourceType, fixture.id);
+
+    if (!fixture.config?.story || fixture.config.story.trim().length === 0) {
+      errors.push(`[Empty Story] Fixture ${fixture.id} missing story config.`);
+    }
+    if (!fixture.expectedLexicalBehavior?.requiredVoicePersona) {
+      errors.push(`[Missing Persona Expectation] Fixture ${fixture.id} missing requiredVoicePersona.`);
+    }
   }
 
   const breakdown: Record<string, number> = {

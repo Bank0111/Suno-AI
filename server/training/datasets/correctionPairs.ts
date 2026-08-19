@@ -2,8 +2,8 @@ import { LyricCorrectionPair } from '../types';
 
 /**
  * CORRECTION PAIRS DATASET (SYNTHETIC REASONING & REFINEMENT PAIRS)
- * Real-world pairs illustrating how to transform awkward, robotic, or cliché phrasing
- * into natural, singable Thai lyrics while strictly preserving original meaning, POV, and mood.
+ * Real-world pairs illustrating how to transform awkward, robotic, academic, or cliché phrasing
+ * into natural, singable lyrics while strictly preserving original meaning, POV, and mood.
  */
 export const CORRECTION_PAIRS: LyricCorrectionPair[] = [
   // Pair 1: Math Metaphor -> Concrete Physical Action
@@ -91,7 +91,7 @@ export const CORRECTION_PAIRS: LyricCorrectionPair[] = [
     sourceType: 'synthetic-expert',
   },
 
-  // Pair 6: English Pop - Trite Cliche -> Concrete Tactile Metaphor
+  // Pair 6: English Pop - Trite Cliché -> Concrete Tactile Metaphor
   {
     id: 'pair-eng-001',
     context: {
@@ -107,7 +107,8 @@ export const CORRECTION_PAIRS: LyricCorrectionPair[] = [
     improvementTechnique: 'Replaced hollow declarations with dynamic visual action (rearview mirror) and sensory memory (radio).',
     sourceType: 'synthetic-expert',
   },
-  // Pair 7: Rural / Agrarian Terminology Accuracy (คันแทนา -> คันไถนา / คันนา)
+
+  // Pair 7: Rural / Agrarian Terminology Accuracy
   {
     id: 'pair-folk-003',
     context: {
@@ -118,9 +119,94 @@ export const CORRECTION_PAIRS: LyricCorrectionPair[] = [
       section: 'Verse',
     },
     originalFlawed: 'ยืนพิงคันแทนาตอนแดดร่ม มองดูทุ่งนาที่ว่างเปล่า',
-    diagnosis: 'incorrect term: "คันแทนา" เป็นคำที่สับสนหรือผิดเพี้ยนในการใช้งานภาษาไทยมาตรฐาน/วรรณศิลป์พื้นบ้าน (ควรใช้ "คันไถนา" หากหมายถึงเครื่องมือไถ หรือ "คันนา" หากหมายถึงทางเดินดินกั้นน้ำในนา)',
+    diagnosis: 'incorrect term: "คันแทนา" เป็นคำที่สับสนหรือผิดเพี้ยนในการใช้งานภาษาไทยมาตรฐาน (ควรใช้ "คันไถนา" หรือ "คันนา")',
     correctedNatural: 'ยืนพิงคันไถนาตอนแดดร่ม มองดูทุ่งนาที่ว่างเปล่า',
-    improvementTechnique: 'correct term: แทนที่ด้วย "คันไถนา" (หรือ "คันนา") ซึ่งเป็นวัตถุและเครื่องมือที่มีอยู่จริงตามวิถีชาวนาไทย',
+    improvementTechnique: 'แทนที่ด้วยคำที่ถูกต้องตามวิถีชาวนาไทย',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 8: Vocational Dump in Chorus -> Core Emotional Truth (Phase 5.5B)
+  {
+    id: 'pair-vocational-001',
+    context: {
+      genre: 'Country / Folk',
+      persona: 'หนุ่มโรงงานสู้ชีวิต',
+      personaKey: 'working-class-dreamer',
+      mood: 'Resilient / Hopeful',
+      section: 'Chorus',
+    },
+    originalFlawed: 'จับประแจขันน็อตเบอร์สิบสองให้แน่นหนา คราบน้ำมันเปื้อนชุดเซฟตี้แต่ใจยังรักเธอ',
+    diagnosis: 'ยัดเยียดชื่อเครื่องมือช่างลงในท่อนฮุก (Mechanical Dump) แทนที่จะสรุปแก่นความจริงของชีวิตและความรัก',
+    correctedNatural: 'แลกด้วยหยาดเหงื่อกับสองมือที่เปื้อนดิน แค่อยากให้เธอได้กินอิ่มนอนอุ่นก็พอ',
+    improvementTechnique: 'เปลี่ยนรายการสิ่งของ เป็นความเสียสละเชิงรูปธรรม (เหงื่อ, สองมือเปื้อนดิน) เพื่อส่งมอบแก่นสัจธรรมของท่อนฮุก',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 9: Academic Jargon -> Natural Spoken Human Voice (Phase 5.7)
+  {
+    id: 'pair-academic-001',
+    context: {
+      genre: 'Indie / Pop',
+      persona: 'คนรุ่นใหม่ สะท้อนความสัมพันธ์',
+      personaKey: 'urban-realist',
+      mood: 'Reflective / Bitter',
+      section: 'Verse',
+    },
+    originalFlawed: 'ในบริบทสังคมที่ขับเคลื่อนด้วยเงินตรา มิติของความรักเราจึงพังทลาย',
+    diagnosis: 'ใช้คำวิชาการและภาษาบทความวิจัย ("บริบท", "ขับเคลื่อน", "มิติ") ขัดกับภาษาเพลง',
+    correctedNatural: 'ในเมืองใหญ่ที่มีแต่การแข่งขัน เราสองคนต่างเหนื่อยจนลืมกอดกันเหมือนเคย',
+    improvementTechnique: 'แปลงศัพท์นามธรรมเชิงทฤษฎี ให้กลายเป็นพฤติกรรมจริงในชีวิตประจำวันของคู่รัก',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 10: Narrative Prose Reporting -> Cinematic Action (Phase 5.7)
+  {
+    id: 'pair-prose-001',
+    context: {
+      genre: 'Pop',
+      persona: 'คนรอคอยความรัก',
+      personaKey: 'modern-romantic',
+      mood: 'Longing',
+      section: 'Verse',
+    },
+    originalFlawed: 'จากนั้นฉันก็เดินไปที่ป้ายรถเมล์ แล้วจึงหยิบโทรศัพท์ขึ้นมาดูว่าเธอตอบหรือยัง',
+    diagnosis: 'แจกแจงลำดับเหตุการณ์แบบบันทึกประจำวัน ("จากนั้นก็...", "แล้วจึง...") ขาดจังหวะกวีและภาพจำ',
+    correctedNatural: 'ยืนตากลมหนาวอยู่ตรงป้ายรถเมล์ จ้องหน้าจอดับๆ ติดๆ รอข้อความจากเธอ',
+    improvementTechnique: 'ตัดคำเชื่อมลำดับทิ้ง แล้ววางภาพบรรยากาศ (ลมหนาว, หน้าจอดับๆ ติดๆ) เพื่อสร้างอารมณ์ร่วมทันที',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 11: Emotional Over-Explanation -> Negative Space / Show Don't Tell (Phase 5.7)
+  {
+    id: 'pair-overexplain-001',
+    context: {
+      genre: 'R&B / Soul',
+      persona: 'คนอกหักในห้องเงียบ',
+      personaKey: 'urban-intimate-soul',
+      mood: 'Heartbroken',
+      section: 'Verse',
+    },
+    originalFlawed: 'มองดูแก้วกาแฟเย็นชืดบนโต๊ะ ภาพนี้ทำให้ฉันรู้สึกเศร้าและเหงาใจเหลือเกิน',
+    diagnosis: 'อธิบายความรู้สึกซ้ำซ้อนตรงๆ ("ทำให้ฉันรู้สึกเศร้าและเหงาใจ") ไม่เปิดพื้นที่ให้คนฟังตกผลึกอารมณ์เอง',
+    correctedNatural: 'แก้วกาแฟเย็นชืดวางทิ้งไว้ตรงข้ามเก้าอี้ว่าง ปล่อยให้ควันบุหรี่ลอยจางไปกับความเงียบ',
+    improvementTechnique: 'ตัดคำบอกอารมณ์ทิ้งทั้งหมด แล้วปล่อยให้ภาพ "เก้าอี้ว่าง" และ "ควันบุหรี่" ทำหน้าที่ส่งความเหงาแทน',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 12: Repetitive End-Rhymes -> Varied Prosodic Cadence (Phase 5.7)
+  {
+    id: 'pair-rhyme-repeat-001',
+    context: {
+      genre: 'Pop',
+      persona: 'คนแอบรัก',
+      personaKey: 'playful-pop-singer',
+      mood: 'Playful',
+      section: 'Chorus',
+    },
+    originalFlawed: 'อยากชวนเธอไปนั่งคุยเล่น ไม่อยากให้เวลาผ่านไปเล่นๆ เรื่องความรักฉันไม่เคยคิดเล่น',
+    diagnosis: 'ลงท้ายด้วยคำซ้ำและเสียงสระเดิม 3 ครั้งติดกันในท่อนเดียว ("เล่น", "เล่นๆ", "เล่น") ทำให้เพลงน่าเบื่อและขาดการส่งสัมผัส',
+    correctedNatural: 'อยากชวนเธอมานั่งคุยข้างกัน ไม่อยากปล่อยให้เวลาผ่านไปวันๆ เพราะใจดวงนี้จริงจังกว่าใคร',
+    improvementTechnique: 'เปลี่ยนคำลงท้ายให้หลากหลาย ("ข้างกัน", "ไปวันๆ", "กว่าใคร") พร้อมสร้างสัมผัสสระที่ไพเราะและส่งพลัง',
     sourceType: 'synthetic-expert',
   },
 ];

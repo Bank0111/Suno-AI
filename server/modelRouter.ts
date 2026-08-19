@@ -42,7 +42,10 @@ export const MODEL_PRIORITY: ModelTierConfig[] = [
 
 export function isQuotaOrAvailabilityError(err: any): { isQuota: boolean; isUnavailable: boolean } {
   const msg = (err?.message || String(err)).toUpperCase();
+  const status = err?.status || err?.statusCode;
+
   const isQuota =
+    status === 429 ||
     msg.includes("429") ||
     msg.includes("RESOURCE_EXHAUSTED") ||
     msg.includes("RATE_LIMIT") ||
@@ -51,6 +54,8 @@ export function isQuotaOrAvailabilityError(err: any): { isQuota: boolean; isUnav
     msg.includes("EXCEEDED");
 
   const isUnavailable =
+    status === 503 ||
+    status === 500 ||
     msg.includes("503") ||
     msg.includes("UNAVAILABLE") ||
     msg.includes("HIGH DEMAND") ||
@@ -63,11 +68,16 @@ export function isQuotaOrAvailabilityError(err: any): { isQuota: boolean; isUnav
 
 export function isInvalidApiKeyError(err: any): boolean {
   const msg = (err?.message || String(err)).toUpperCase();
+  const status = err?.status || err?.statusCode;
+
   return (
+    status === 401 ||
+    status === 403 ||
     msg.includes("API_KEY_INVALID") ||
     msg.includes("INVALID API KEY") ||
     msg.includes("API KEY NOT VALID") ||
-    msg.includes("API_KEY_SERVICE_BLOCKED")
+    msg.includes("API_KEY_SERVICE_BLOCKED") ||
+    msg.includes("PERMISSION_DENIED")
   );
 }
 
@@ -79,6 +89,7 @@ export async function callGeminiWithFallback(
   }
 ): Promise<{ response: any; modelMeta: ModelMeta }> {
   let lastError: any = null;
+  let lastFailureReason: "quota" | "unavailable" | null = null;
 
   for (let i = 0; i < MODEL_PRIORITY.length; i++) {
     const tierConfig = MODEL_PRIORITY[i];
@@ -109,7 +120,7 @@ export async function callGeminiWithFallback(
         modelTier: tierConfig.tier,
         labelTh: tierConfig.labelTh,
         fallbackUsed,
-        fallbackReason: fallbackUsed ? "quota" : null,
+        fallbackReason: fallbackUsed ? (lastFailureReason || "quota") : null,
         userMessage,
       };
 
@@ -126,10 +137,13 @@ export async function callGeminiWithFallback(
 
       const { isQuota, isUnavailable } = isQuotaOrAvailabilityError(err);
       if (isQuota) {
+        lastFailureReason = "quota";
         console.info(`[ModelRouter] Model ${tierConfig.modelId} hit quota limit. Falling back to next tier.`);
       } else if (isUnavailable) {
+        lastFailureReason = "unavailable";
         console.info(`[ModelRouter] Model ${tierConfig.modelId} temporarily unavailable. Falling back to next tier.`);
       } else {
+        lastFailureReason = "unavailable";
         console.info(`[ModelRouter] Model ${tierConfig.modelId} encountered error (${rawMsg}). Falling back to next tier.`);
       }
 

@@ -1,0 +1,75 @@
+{
+  "language": "id",
+  "domains": [
+    {
+      "domain": "orang_hidup_masyarakat",
+      "keywords": [
+        "kehidupan",
+        "orang"
+      ],
+      "objects": [
+        "kehidupan",
+        "orang"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "alam_lingkungan",
+      "keywords": [
+        "air",
+        "air seni",
+        "cairan",
+        "berair",
+        "mengairi",
+        "alamas"
+      ],
+      "objects": [
+        "air",
+        "air seni",
+        "cairan",
+        "berair",
+        "mengairi",
+        "alamas"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "kerja_bisnis",
+      "keywords": [],
+      "objects": [],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    },
+    {
+      "domain": "cinta_emosi",
+      "keywords": [
+        "cinta"
+      ],
+      "objects": [
+        "cinta"
+      ],
+      "actions": [],
+      "emotions": [
+        "cinta"
+      ],
+      "modifiers": []
+    },
+    {
+      "domain": "teknologi_sains",
+      "keywords": [
+        "komputer"
+      ],
+      "objects": [
+        "komputer"
+      ],
+      "actions": [],
+      "emotions": [],
+      "modifiers": []
+    }
+  ]
+}

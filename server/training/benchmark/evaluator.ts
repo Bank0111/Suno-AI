@@ -63,7 +63,7 @@ export function evaluateBlindedLyrics(
     failureDetails.push(`[${sampleLabel}] Awkward collocation/filler: "${foundAwkward.join(', ')}"`);
   }
 
-  // (e) Generic Emotional Filler & Cliché Overload (Phase 5.5B)
+  // (e) Generic Emotional Filler & Cliché Overload
   const genericFillers = [
     'น้ำตารินไหลอาบแก้ม',
     'รักเธอสุดหัวใจ',
@@ -83,10 +83,9 @@ export function evaluateBlindedLyrics(
     failureDetails.push(`[${sampleLabel}] Generic emotional filler detected: "${foundGenericFillers.join(', ')}"`);
   }
 
-  // (f) Unsupported Genre Decoration (Phase 5.5B Fact Safety)
+  // (f) Unsupported Genre Decoration
   const genreDecorations = ['พญานาค', 'เตาฟืน', 'ควายเฒ่า'];
   const foundUnsupportedDecorations = genreDecorations.filter((w) => {
-    // If not in fixture's story or expected themes, flag as unsupported
     const inFixture = (fixture.config.story || '').includes(w) || fixture.expectedLexicalBehavior.mustIncludeSemanticThemes.includes(w);
     return !inFixture && fullText.includes(w);
   });
@@ -95,10 +94,25 @@ export function evaluateBlindedLyrics(
     failureDetails.push(`[${sampleLabel}] Unsupported genre decoration without story ground: "${foundUnsupportedDecorations.join(', ')}"`);
   }
 
-  // (g) Forced Rhyme & Phrasing Bloat
+  // (g) Narrative Prose Reporting (Phase 5.7)
+  const proseReportingPhrases = ['จากนั้นก็เดิน', 'แล้วจึงหยิบ', 'ขั้นตอนต่อไป', 'ลำดับแรก'];
+  const foundProse = proseReportingPhrases.filter((p) => fullText.includes(p));
+  if (foundProse.length > 0) {
+    detectedFailures.push('narrative-prose-reporting');
+    failureDetails.push(`[${sampleLabel}] Narrative prose reporting detected: "${foundProse.join(', ')}"`);
+  }
+
+  // (h) Emotional Over-Explanation (Phase 5.7)
+  const overExplanationPhrases = ['ทำให้ฉันรู้สึกเศร้า', 'บอกตรงๆ ว่าเหงาใจ', 'อธิบายความเจ็บ'];
+  const foundOverExplanation = overExplanationPhrases.filter((p) => fullText.includes(p));
+  if (foundOverExplanation.length > 0) {
+    detectedFailures.push('emotional-over-explanation');
+    failureDetails.push(`[${sampleLabel}] Emotional over-explanation detected: "${foundOverExplanation.join(', ')}"`);
+  }
+
+  // (i) Forced Rhyme & Phrasing Bloat
   let rhythmStumbles = 0;
   lyrics.forEach((line) => {
-    // Estimating word count / length for line cadence
     const words = line.trim().split(/\s+/);
     if (line.length > 75 || words.length > 18) {
       rhythmStumbles++;
@@ -109,7 +123,7 @@ export function evaluateBlindedLyrics(
     detectedFailures.push('forced-rhyme');
   }
 
-  // (h) Repeated Ideas / Section Redundancy
+  // (j) Repeated Ideas / Section Redundancy
   const uniqueLines = new Set(lyrics.map((l) => l.trim().toLowerCase()));
   if (lyrics.length > 3 && uniqueLines.size < lyrics.length - 1) {
     detectedFailures.push('repeated-idea');
@@ -151,12 +165,12 @@ export function evaluateBlindedLyrics(
   // 3. Quantitative Metric Calculations (1–10)
   // ==========================================
 
-  // (1) Cliché & Genericness Rate: 10 = zero cliches/generic filler; subtract per flag
+  // (1) Cliché & Genericness Rate
   const totalGenericFlags = foundGenericFillers.length + foundRobotic.length + foundAwkward.length;
   const rawClicheScore = 10.0 - totalGenericFlags * 2.0;
   const clicheRate = Number(Math.max(1.0, Math.min(10.0, rawClicheScore)).toFixed(1));
 
-  // (2) Persona Consistency (L2 Naturalness): 10 = perfect natural register
+  // (2) Persona Consistency
   let rawPersona = 9.4;
   if (detectedFailures.includes('persona-break')) rawPersona -= 3.0;
   if (detectedFailures.includes('language-contamination')) rawPersona -= 4.0;
@@ -164,7 +178,7 @@ export function evaluateBlindedLyrics(
   if (foundAwkward.length > 0) rawPersona -= 1.5;
   const personaConsistency = Number(Math.max(1.0, Math.min(10.0, rawPersona)).toFixed(1));
 
-  // (3) Naturalness (L1 + L2 + L3): flow, phrasing, absence of robotic speech
+  // (3) Naturalness
   let rawNaturalness = 9.5;
   if (detectedFailures.includes('robotic-metaphor')) rawNaturalness -= 3.0;
   if (detectedFailures.includes('awkward-collocation')) rawNaturalness -= 2.0;
@@ -173,35 +187,36 @@ export function evaluateBlindedLyrics(
   if (detectedFailures.includes('generic-emotional-filler')) rawNaturalness -= 1.0;
   const naturalness = Number(Math.max(1.0, Math.min(10.0, rawNaturalness)).toFixed(1));
 
-  // (4) Story Progression & Narrative Utility: development of narrative across lines
+  // (4) Story Progression & Narrative Utility
   let rawStory = 9.0;
   if (detectedFailures.includes('repeated-idea')) rawStory -= 2.0;
   if (detectedFailures.includes('semantic-drift')) rawStory -= 2.0;
   if (detectedFailures.includes('generic-emotional-filler')) rawStory -= 1.5;
+  if (detectedFailures.includes('narrative-prose-reporting')) rawStory -= 2.0;
   const storyProgression = Number(Math.max(1.0, Math.min(10.0, rawStory)).toFixed(1));
 
-  // (5) Lexical Fit & Evidence Grounding: alignment with required genre and story facts
+  // (5) Lexical Fit & Evidence Grounding
   let rawLexical = (themeCoverageRatio * 7.0) + 2.5 - (detectedFailures.includes('persona-break') ? 1.5 : 0);
   if (detectedFailures.includes('unsupported-genre-decoration')) rawLexical -= 2.0;
   const lexicalFit = Number(Math.max(1.0, Math.min(10.0, rawLexical)).toFixed(1));
 
-  // (6) Singability & Flow: cadence, meter, absence of rhythm stumbles
+  // (6) Singability & Flow
   let rawSingability = 9.3;
   if (detectedFailures.includes('forced-rhyme')) rawSingability -= 2.0;
   if (rhythmStumbles > 0) rawSingability -= rhythmStumbles * 1.0;
   const singabilityFlow = Number(Math.max(1.0, Math.min(10.0, rawSingability)).toFixed(1));
 
-  // (7) Specificity Score (Phase 5.5B): Concrete imagery vs generic abstract
+  // (7) Specificity Score
   const rawSpecificity = Number((Math.min(10.0, (themeCoverageRatio * 6.0) + 3.5 - (foundGenericFillers.length * 1.5))).toFixed(1));
   const specificityScore = Math.max(1.0, rawSpecificity);
 
-  // (8) Narrative Utility Score (Phase 5.5B): Does imagery have functional purpose in story
+  // (8) Narrative Utility Score
   const narrativeUtilityScore = Number(Math.max(1.0, Math.min(10.0, storyProgression * 0.6 + lexicalFit * 0.4)).toFixed(1));
 
-  // (9) Genericness Risk (Phase 5.5B, 10 = safest / lowest risk, 1 = high risk generic)
+  // (9) Genericness Risk
   const genericnessRisk = Number(Math.max(1.0, Math.min(10.0, 10.0 - foundGenericFillers.length * 2.5)).toFixed(1));
 
-  // (10) Evidence Grounding (Phase 5.5B): Tier 1 + Tier 2 adherence vs Tier 3 decorations
+  // (10) Evidence Grounding
   let rawEvidence = 9.5;
   if (detectedFailures.includes('unsupported-genre-decoration')) rawEvidence -= 3.0;
   if (detectedFailures.includes('semantic-drift')) rawEvidence -= 2.5;
@@ -211,7 +226,7 @@ export function evaluateBlindedLyrics(
   const naturalnessL2 = personaConsistency;
   const naturalnessL3 = Number(Math.max(1.0, Math.min(10.0, naturalness * 0.7 + genericnessRisk * 0.3)).toFixed(1));
 
-  // (12) Phase 5.6 Universal Craft Dimensions
+  // (12) Universal Craft Dimensions
   const semanticPrecision = Number(Math.max(1.0, Math.min(10.0, naturalness * 0.5 + lexicalFit * 0.5)).toFixed(1));
   const imageryQuality = specificityScore;
   const emotionalSpecificity = Number(Math.max(1.0, Math.min(10.0, 10.0 - (10.0 - genericnessRisk) * 0.8)).toFixed(1));
@@ -224,7 +239,7 @@ export function evaluateBlindedLyrics(
     ).toFixed(1)
   );
 
-  // (13) Overall Composite = Weighted average emphasizing evidence-grounding, naturalness & lyric craft
+  // (13) Overall Composite
   const overallComposite = Number(
     ((naturalness * 1.5 + personaConsistency + storyProgression + lexicalFit + clicheRate + singabilityFlow + specificityScore + narrativeUtilityScore + evidenceGroundingScore + craftQuality) / 10.5).toFixed(2)
   );
@@ -265,7 +280,7 @@ export function evaluateBlindedLyrics(
 }
 
 /**
- * Helper to match contextual semantic concepts (e.g. synonyms or related imagery)
+ * Helper to match contextual semantic concepts
  */
 function hasSemanticConcept(fullText: string, lowerText: string, theme: string): boolean {
   if (theme === 'ความแอบชอบ') {

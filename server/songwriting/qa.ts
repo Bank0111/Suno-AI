@@ -16,7 +16,7 @@ export interface FinalQAReport {
 /**
  * FINAL QA LAYER
  * Verifies final processed song against language purity, POV, banned words,
- * section structural integrity, and ensures no metadata/directions leak into lyrics.
+ * repetitive end-rhymes, vocational leaks in hook, and metadata leakage.
  */
 export function executeFinalQA(
   sections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }>,
@@ -33,7 +33,7 @@ export function executeFinalQA(
   const fullText = allLyrics.join(' ');
 
   // 1. Language Purity Check
-  if (context.targetContentLanguage === 'อังกฤษ' || context.targetContentLanguage.toLowerCase().includes('english')) {
+  if (context.targetContentLanguage === 'อังกฤษ' || (context.targetContentLanguage && context.targetContentLanguage.toLowerCase().includes('english'))) {
     const thaiMatches = fullText.match(/[\u0E00-\u0E7F]+/g);
     if (thaiMatches && thaiMatches.length > 0) {
       issuesFound.push(`[Language Integrity] Found Thai script in English lyrics: "${thaiMatches.join(', ')}"`);
@@ -68,12 +68,47 @@ export function executeFinalQA(
     issuesFound.push('[Structure Integrity] No Chorus/Hook section detected in structure.');
   }
 
-  // 4. Robotic Metaphor Heuristic Sanity Check
-  const bannedRobotics = ['คูณสอง', 'บวกหนึ่ง', 'อัลกอริทึม', 'ดาวน์โหลด', '100%'];
-  bannedRobotics.forEach((term) => {
+  // 4. Robotic Metaphor & Academic Jargon Check
+  const bannedRoboticsAndJargon = [
+    'คูณสอง', 'บวกหนึ่ง', 'อัลกอริทึม', 'ดาวน์โหลด', '100%',
+    'บริบท', 'มิติใหม่', 'กำแพงชนชั้น', 'ขับเคลื่อน', 'โครงสร้างทางสังคม',
+  ];
+  bannedRoboticsAndJargon.forEach((term) => {
     if (fullText.includes(term)) {
-      issuesFound.push(`[Robotic Metaphor] Found forbidden math/robotic term: "${term}"`);
+      issuesFound.push(`[Prohibited Jargon/Robotic] Found forbidden term: "${term}"`);
     }
+  });
+
+  // 5. Check Mechanical / Vocational Tool Intrusion in Chorus & Bridge
+  const vocationalRegex = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร)/;
+  sections.forEach((sec) => {
+    const secType = sec.type.toLowerCase();
+    if (secType.includes('chorus') || secType.includes('hook') || secType.includes('bridge')) {
+      (sec.lyrics || []).forEach((line, lIdx) => {
+        const match = line.match(vocationalRegex);
+        if (match) {
+          issuesFound.push(`[Vocational Leak in Hook] Found vocational tool "${match[0]}" in ${sec.type} Line ${lIdx + 1}: "${line}"`);
+        }
+      });
+    }
+  });
+
+  // 6. Repetitive End-Rhyme Check (ตรวจคำลงท้ายซ้ำใน Section เดียวกัน)
+  sections.forEach((sec) => {
+    const endWords = (sec.lyrics || [])
+      .map((l) => l.replace(/[\s\.,\!\?\(\)\[\]"]/g, '').trim().slice(-3))
+      .filter((w) => w.length >= 2);
+
+    const counts: { [key: string]: number } = {};
+    endWords.forEach((w) => {
+      counts[w] = (counts[w] || 0) + 1;
+    });
+
+    Object.entries(counts).forEach(([word, count]) => {
+      if (count > 2) {
+        issuesFound.push(`[Repetitive Rhyme] Section ${sec.type} has ${count} lines ending with identical sound: "...${word}"`);
+      }
+    });
   });
 
   // Calculate QA Score

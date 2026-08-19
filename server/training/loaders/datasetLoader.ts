@@ -103,14 +103,23 @@ class DatasetLoader {
   }
 
   /**
-   * Avoidance rules matching a specific genre
+   * Avoidance rules matching a specific genre and section
    */
-  public getAvoidanceRules(genre?: LyricGenreKey): AvoidanceRuleEntry[] {
+  public getAvoidanceRules(genre?: LyricGenreKey, section?: SectionType): AvoidanceRuleEntry[] {
     return this.bundle.avoidanceRules.filter((rule) => {
       if (rule.tier === 'HARD_BLOCK') return true;
-      if (!genre) return true;
-      if (!rule.contextConditions.genres || rule.contextConditions.genres.length === 0) return true;
-      return rule.contextConditions.genres.includes(genre);
+
+      // Filter by genre context if specified
+      if (genre && rule.contextConditions.genres && rule.contextConditions.genres.length > 0) {
+        if (!rule.contextConditions.genres.includes(genre)) return false;
+      }
+
+      // Filter by section context if specified
+      if (section && rule.contextConditions.sections && rule.contextConditions.sections.length > 0) {
+        if (!rule.contextConditions.sections.includes(section)) return false;
+      }
+
+      return true;
     });
   }
 
@@ -119,6 +128,13 @@ class DatasetLoader {
    */
   public getGoldenTestFixtures(): GoldenTestFixture[] {
     return this.bundle.goldenTestFixtures;
+  }
+
+  /**
+   * Get single Golden Test Fixture by ID
+   */
+  public getGoldenTestFixtureById(fixtureId: string): GoldenTestFixture | undefined {
+    return this.bundle.goldenTestFixtures.find((f) => f.id === fixtureId);
   }
 }
 

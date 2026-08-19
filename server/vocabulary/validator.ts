@@ -1,7 +1,8 @@
 import { AvoidClassification, VocabularyValidationReport } from './types';
 
 /**
- * Validates generated lyrics against multi-tiered vocabulary avoid constraints.
+ * Validates generated lyrics against multi-tiered vocabulary avoid constraints
+ * and Phase 5.7 Critical Quality Gates.
  */
 export function validateSongVocabulary(
   lyricsText: string,
@@ -14,6 +15,9 @@ export function validateSongVocabulary(
       hardBannedFound: [],
       overusedFound: [],
       contextClashFound: [],
+      academicJargonFound: [],
+      vocationalDumpFound: [],
+      proseReportingFound: [],
       feedback: ['ไม่มีเนื้อเพลงสำหรับตรวจสอบ'],
     };
   }
@@ -22,6 +26,9 @@ export function validateSongVocabulary(
   const hardBannedFound: string[] = [];
   const overusedFound: string[] = [];
   const contextClashFound: string[] = [];
+  const academicJargonFound: string[] = [];
+  const vocationalDumpFound: string[] = [];
+  const proseReportingFound: string[] = [];
   const feedback: string[] = [];
 
   // 1. Check Hard-Banned Words (Strict Failure)
@@ -45,6 +52,38 @@ export function validateSongVocabulary(
     }
   }
 
+  // 4. Check Academic Jargon & Research Tone (Phase 5.7 Gate)
+  const academicJargonList = [
+    'บริบท',
+    'มิติใหม่',
+    'กำแพงชนชั้น',
+    'ขับเคลื่อน',
+    'โครงสร้างทางสังคม',
+    'ปัจจัย',
+  ];
+  for (const jargon of academicJargonList) {
+    if (cleanLyrics.includes(jargon)) {
+      academicJargonFound.push(jargon);
+    }
+  }
+
+  // 5. Check Narrative Prose Reporting (Phase 5.7 Gate)
+  const proseReportingList = ['จากนั้นก็', 'แล้วจึง', 'ขั้นตอนต่อไป'];
+  for (const prose of proseReportingList) {
+    if (cleanLyrics.includes(prose)) {
+      proseReportingFound.push(prose);
+    }
+  }
+
+  // 6. Check Vocational Tool Dumping in Chorus/Hook/Bridge (Phase 5.7 Gate)
+  const vocationalTools = ['ประแจ', 'น็อต', 'ชุดเซฟตี้', 'หัวเทียน', 'สายพาน', 'คราบน้ำมัน', 'สว่าน'];
+  const chorusOrHookSections = extractSectionsByTags(lyricsText, ['chorus', 'hook', 'bridge']);
+  for (const tool of vocationalTools) {
+    if (chorusOrHookSections.toLowerCase().includes(tool)) {
+      vocationalDumpFound.push(tool);
+    }
+  }
+
   // Calculate Quality Score (Base 100)
   let score = 100;
 
@@ -53,9 +92,19 @@ export function validateSongVocabulary(
     feedback.push(`พบคำต้องห้ามเด็ดขาด (Hard Banned): ${hardBannedFound.join(', ')}`);
   }
 
-  if (overusedFound.length > 0) {
-    score -= overusedFound.length * 5; // Moderate penalty for cliché phrases
-    feedback.push(`พบคำสำนวนซ้ำซาก (Overused Clichés): ${overusedFound.join(', ')}`);
+  if (academicJargonFound.length > 0) {
+    score -= academicJargonFound.length * 25;
+    feedback.push(`พบศัพท์วิชาการ/รายงานข่าว (Academic Jargon): ${academicJargonFound.join(', ')}`);
+  }
+
+  if (vocationalDumpFound.length > 0) {
+    score -= vocationalDumpFound.length * 20;
+    feedback.push(`พบการยัดเยียดชื่ออุปกรณ์ช่างในท่อนฮุก/บริดจ์ (Vocational Dump in Hook): ${vocationalDumpFound.join(', ')}`);
+  }
+
+  if (proseReportingFound.length > 0) {
+    score -= proseReportingFound.length * 15;
+    feedback.push(`พบสำนวนแจกแจงลำดับแบบร้อยแก้ว (Narrative Prose Reporting): ${proseReportingFound.join(', ')}`);
   }
 
   if (contextClashFound.length > 0) {
@@ -63,8 +112,13 @@ export function validateSongVocabulary(
     feedback.push(`พบคำที่ขัดกับ Genre/Mood (Context Clash): ${contextClashFound.join(', ')}`);
   }
 
+  if (overusedFound.length > 0) {
+    score -= overusedFound.length * 5;
+    feedback.push(`พบคำสำนวนซ้ำซาก (Overused Clichés): ${overusedFound.join(', ')}`);
+  }
+
   score = Math.max(0, Math.min(100, score));
-  const isValid = hardBannedFound.length === 0; // Hard banned fail instantly
+  const isValid = hardBannedFound.length === 0 && academicJargonFound.length === 0;
 
   if (isValid && feedback.length === 0) {
     feedback.push('เนื้อเพลงผ่านการตรวจสอบคลังคำศัพท์และข้อจำกัดภาษาอย่างสมบูรณ์');
@@ -76,6 +130,33 @@ export function validateSongVocabulary(
     hardBannedFound,
     overusedFound,
     contextClashFound,
+    academicJargonFound,
+    vocationalDumpFound,
+    proseReportingFound,
     feedback,
   };
+}
+
+/**
+ * Extracts text within specific section header tags (e.g., [Chorus], [Hook], [Bridge])
+ */
+function extractSectionsByTags(lyrics: string, tags: string[]): string {
+  const lines = lyrics.split('\n');
+  const matchedLines: string[] = [];
+  let isCapturing = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      const header = trimmed.slice(1, -1).toLowerCase();
+      isCapturing = tags.some((t) => header.includes(t));
+      continue;
+    }
+
+    if (isCapturing) {
+      matchedLines.push(trimmed);
+    }
+  }
+
+  return matchedLines.join('\n');
 }

@@ -1,7 +1,7 @@
 import { PersonaProfile } from '../types';
 
 /**
- * PERSONA PROFILES DATASET
+ * PERSONA PROFILES DATASET (PHASE 5.7 CHARACTER ARCHETYPES)
  * Explicit behavioral and linguistic profiles defining speech patterns,
  * vocabulary allowances, and register constraints per character archetype.
  */
@@ -19,9 +19,13 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['หนา', 'เด้อ', 'เนี่ย', 'ล่ะ', 'จัง'],
     },
     vocabularyAllowance: {
-      preferredWords: ['มอไซค์', 'ข้างบ้าน', 'แกล้ง', 'บีบแตร', 'จริงใจ', 'เขิน', 'ซื่อๆ', 'ชวนคุย'],
+      preferredWords: ['มอไซค์', 'ข้างบ้าน', 'แกล้ง', 'บีบแตร', 'จริงใจ', 'เขิน', 'ซื่อๆ', 'ชวนคุย', 'ตักน้ำ'],
       forbiddenRegisters: ['formal', 'literary', 'poetic'],
-      forbiddenMetaphors: ['คณิตศาสตร์/ระบบคอมพิวเตอร์', 'คำราชาศัพท์', 'บทกวีชั้นสูง'],
+      forbiddenMetaphors: [
+        'คณิตศาสตร์/ระบบคอมพิวเตอร์ (คูณสอง, 100%)',
+        'คำราชาศัพท์/บทกวีชั้นสูง (ดวงฤทัย, ดาวดึงส์)',
+        'การยัดเยียดชื่ออุปกรณ์ช่างในท่อนฮุก (ประแจ, น็อต, คราบน้ำมัน)',
+      ],
     },
     sourceType: 'synthetic-expert',
   },
@@ -38,9 +42,13 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['นะ', 'มั้ย', 'สิ', 'หน่อย'],
     },
     vocabularyAllowance: {
-      preferredWords: ['แชท', 'กาแฟ', 'แอบมอง', 'รอยยิ้ม', 'ข้อความ', 'ขี้อาย', 'ร้านเดิม', 'หูฟัง'],
+      preferredWords: ['แชท', 'กาแฟ', 'แอบมอง', 'รอยยิ้ม', 'ข้อความ', 'ขี้อาย', 'ร้านเดิม', 'หูฟัง', 'โต๊ะเดิม'],
       forbiddenRegisters: ['formal', 'dialect'],
-      forbiddenMetaphors: ['คำหยาบคาย', 'สำนวนลูกทุ่งโบราณ'],
+      forbiddenMetaphors: [
+        'คำหยาบคาย',
+        'สำนวนลูกทุ่งโบราณ',
+        'การอธิบายอารมณ์ตรงๆ ซ้ำซ้อน (ทำให้ฉันรู้สึกเศร้า)',
+      ],
     },
     sourceType: 'synthetic-expert',
   },
@@ -57,9 +65,14 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['วะ', 'ดิ', 'ไง', 'นะเว้ย'],
     },
     vocabularyAllowance: {
-      preferredWords: ['รถติด', 'รถไฟฟ้า', 'ดึกดื่น', 'เงินเดือน', 'ก้าวต่อ', 'เหนื่อย', 'สู้', 'ห้องเช่า'],
+      preferredWords: ['รถติด', 'รถไฟฟ้า', 'ดึกดื่น', 'เงินเดือน', 'ก้าวต่อ', 'เหนื่อย', 'สู้', 'ห้องเช่า', 'สองมือ'],
       forbiddenRegisters: ['formal', 'literary'],
-      forbiddenMetaphors: ['คำกวีโบราณ', 'คำหวานเลี่ยนเกินจริง'],
+      forbiddenMetaphors: [
+        'คำกวีโบราณ',
+        'คำหวานเลี่ยนเกินจริง',
+        'ศัพท์วิชาการเชิงทฤษฎี (บริบท, โครงสร้างทางสังคม)',
+        'การแจกแจงลำดับแบบร้อยแก้ว (จากนั้นก็... แล้วจึง...)',
+      ],
     },
     sourceType: 'synthetic-expert',
   },
@@ -76,9 +89,13 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['เหอะ', 'แล้วกัน', 'จบ', 'พอ'],
     },
     vocabularyAllowance: {
-      preferredWords: ['จบกันที', 'ปล่อยมือ', 'ความจริง', 'เหนื่อยใจ', 'โชคดีนะ', 'ไม่เป็นไร', 'ตัดใจ'],
+      preferredWords: ['จบกันที', 'ปล่อยมือ', 'ความจริง', 'เหนื่อยใจ', 'โชคดีนะ', 'ไม่เป็นไร', 'ตัดใจ', 'เก้าอี้ว่าง'],
       forbiddenRegisters: ['formal', 'poetic'],
-      forbiddenMetaphors: ['คำสัญญาตลอดกาล', 'น้ำตารินไหลอาบสองแก้ม'],
+      forbiddenMetaphors: [
+        'คำสัญญาตลอดกาล (ชั่วฟ้าดินสลาย)',
+        'วลีฟูมฟายซ้ำซาก (น้ำตารินไหลอาบสองแก้ม, ขาดเธอไม่ได้)',
+        'การอธิบายความเจ็บซ้ำซ้อนโดยไม่เปิด Negative Space',
+      ],
     },
     sourceType: 'synthetic-expert',
   },
@@ -95,9 +112,13 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['มั้ง', 'เนอะ', 'เลย', 'เงียบๆ'],
     },
     vocabularyAllowance: {
-      preferredWords: ['แดดร่มลมตก', 'ต้นไม้', 'กระถาง', 'รูปถ่าย', 'ฟิล์ม', 'เพลงโปรด', 'วันวาน', 'ความทรงจำ'],
+      preferredWords: ['แดดร่มลมตก', 'ต้นไม้', 'กระถาง', 'รูปถ่าย', 'ฟิล์ม', 'เพลงโปรด', 'วันวาน', 'ความทรงจำ', 'สายลม'],
       forbiddenRegisters: ['formal'],
-      forbiddenMetaphors: ['สแควร์รูท/เปอร์เซ็นต์', 'คำหยาบรุนแรง'],
+      forbiddenMetaphors: [
+        'สแควร์รูท/เปอร์เซ็นต์/คณิตศาสตร์',
+        'ศัพท์วิชาการหรือบทความวิจัย (บริบท, มิติ, ขับเคลื่อน, กำแพงชนชั้น, ปัจจัย)',
+        'การสัมผัสสระแบบไร้สาระ (กินข้าวกับเต่าใต้เงา)',
+      ],
     },
     sourceType: 'synthetic-expert',
   },
@@ -114,9 +135,13 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       particles: ['เว้ย', 'ดิ', 'ไง', 'วะ'],
     },
     vocabularyAllowance: {
-      preferredWords: ['ไมค์', 'เวที', 'ไรม์', 'ถนน', 'สองมือ', 'หยาดเหงื่อ', 'พิสูจน์', 'ไม่ยอมแพ้'],
+      preferredWords: ['ไมค์', 'เวที', 'ไรม์', 'ถนน', 'สองมือ', 'หยาดเหงื่อ', 'พิสูจน์', 'ไม่ยอมแพ้', 'ตัวกู'],
       forbiddenRegisters: ['formal', 'literary', 'poetic'],
-      forbiddenMetaphors: ['สุริยัน/จันทรา', 'นภา/สวรรค์', 'คำราชาศัพท์'],
+      forbiddenMetaphors: [
+        'สุริยัน/จันทรา/นภา/สวรรค์',
+        'คำราชาศัพท์และภาษากึ่งราชการ (ข้าพเจ้า, ประจักษ์)',
+        'การเล่าเรียงลำดับแบบบันทึกประจำวัน (Prose Reporting)',
+      ],
     },
     sourceType: 'synthetic-expert',
   },

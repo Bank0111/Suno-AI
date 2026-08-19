@@ -1,12 +1,14 @@
 import { ThaiLyricKnowledgeEntry } from '../types';
 
 /**
- * THAI LYRIC KNOWLEDGE BASE (SYNTHETIC EXPERT GENERATED)
+ * THAI LYRIC KNOWLEDGE BASE (SYNTHETIC EXPERT GENERATED - PHASE 5.7)
  * Comprehensive units of song-friendly phrases, natural speech collocations,
- * concrete imagery, and rhythmic stress patterns for Thai songwriting.
+ * concrete imagery, perspective shifts, and rhythmic stress patterns for Thai songwriting.
  */
 export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
+  // =========================================================================
   // 1. Everyday Actions & Concrete Movement (การกระทำในชีวิตประจำวัน / ท่าทางรูปธรรม)
+  // =========================================================================
   {
     id: 'tlk-act-001',
     phrase: 'ขี่มอไซค์ผ่านหน้าบ้าน',
@@ -63,7 +65,9 @@ export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 2. Weather, Atmosphere & Senses (บรรยากาศ กลิ่นอาย และผัสสะ)
+  // =========================================================================
   {
     id: 'tlk-atm-001',
     phrase: 'กลิ่นดินตอนฝนพรำ',
@@ -109,7 +113,9 @@ export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 3. Heart & Subtle Emotions (อารมณ์ความรู้สึกตรงไปตรงมา)
+  // =========================================================================
   {
     id: 'tlk-emo-001',
     phrase: 'ใจมันเต้นไม่เป็นจังหวะ',
@@ -155,7 +161,9 @@ export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 4. Playful & Conversational Dialogue (ภาษาพูดและบทสนทนาขี้เล่น)
+  // =========================================================================
   {
     id: 'tlk-ply-001',
     phrase: 'ถ้าไม่ติดว่าขี้อาย',
@@ -190,7 +198,9 @@ export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 5. Urban & Hip-Hop Cadence Units (จังหวะและคำพูดสไตล์เมือง / ฮิปฮอป)
+  // =========================================================================
   {
     id: 'tlk-urb-001',
     phrase: 'ลุยงานจนดึกทุกคืน',
@@ -211,6 +221,43 @@ export const THAI_LYRIC_KNOWLEDGE_BASE: ThaiLyricKnowledgeEntry[] = [
     semanticDomains: ['พิสูจน์ตัวเอง', 'แรงบันดาลใจ', 'ฮิปฮอป'],
     rhymeEnding: { vowelGroup: 'อัด', toneCategory: 'ตรี' },
     collocationPairs: ['ต้องก้าวไปข้างหน้า', 'กัดฟันสู้ต่อ', 'ไม่มีอะไรได้มาง่ายๆ'],
+    sourceType: 'synthetic-expert',
+  },
+
+  // =========================================================================
+  // 6. Bridge Perspective Shifts & Outro Lingering Images (Phase 5.7)
+  // =========================================================================
+  {
+    id: 'tlk-brg-001',
+    phrase: 'เพิ่งรู้ว่าที่ผ่านมา',
+    syllableCount: 6,
+    rhythmicStress: '0-1-0-0-1-0',
+    naturalRegister: 'conversational',
+    semanticDomains: ['จุดเปลี่ยนมุมมอง', 'บริดจ์', 'ความเข้าใจ'],
+    rhymeEnding: { vowelGroup: 'อา', toneCategory: 'เอก' },
+    collocationPairs: ['ไม่ได้แค่แซวเล่น', 'ใจมันรักจริง', 'ไม่ใช่แค่เรื่องตลก'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'tlk-brg-002',
+    phrase: 'ไม่ได้ต้องการเริ่มใหม่',
+    syllableCount: 7,
+    rhythmicStress: '0-0-0-1-1-1-0',
+    naturalRegister: 'conversational',
+    semanticDomains: ['การตระหนักรู้', 'ยอมรับความจริง', 'ความเปราะบาง'],
+    rhymeEnding: { vowelGroup: 'ไอ', toneCategory: 'เอก' },
+    collocationPairs: ['แค่อยากบอกความจริง', 'เข้าใจทุกเหตุผล', 'ขอบคุณช่วงเวลาดีๆ'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'tlk-out-001',
+    phrase: 'ปล่อยให้ความเงียบจางไป',
+    syllableCount: 7,
+    rhythmicStress: '0-0-0-1-0-1-0',
+    naturalRegister: 'conversational',
+    semanticDomains: ['ท่อนจบ', 'ภาพจำตกผลึก', 'ความคิดถึง'],
+    rhymeEnding: { vowelGroup: 'ไอ', toneCategory: 'สามัญ' },
+    collocationPairs: ['ปิดไฟดวงสุดท้าย', 'เสียงเพลงค่อยๆ เบาลง', 'รอยยิ้มยังคงอยู่'],
     sourceType: 'synthetic-expert',
   },
 ];

@@ -348,7 +348,7 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
       });
     });
 
-    // Process Version B (Enhanced Few-Shot)
+    // Process Version B (Enhanced)
     corpus.versionB.forEach((item) => {
       const evalResult = evaluateBlindedLyrics(item.lyrics, fixture, `Fixture:${fixture.id}-VerB-Run${item.runId}`);
       evalResult.evidence.detectedFailures.forEach((flag) => {
@@ -393,13 +393,13 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
     const valsA = runsA.map((r) => getter(r.metrics));
     const valsB = runsB.map((r) => getter(r.metrics));
 
-    const meanA = Number((valsA.reduce((sum, v) => sum + v, 0) / valsA.length).toFixed(2));
-    const minA = Number(Math.min(...valsA).toFixed(2));
-    const maxA = Number(Math.max(...valsA).toFixed(2));
+    const meanA = Number((valsA.reduce((sum, v) => sum + v, 0) / (valsA.length || 1)).toFixed(2));
+    const minA = valsA.length > 0 ? Number(Math.min(...valsA).toFixed(2)) : 0;
+    const maxA = valsA.length > 0 ? Number(Math.max(...valsA).toFixed(2)) : 0;
 
-    const meanB = Number((valsB.reduce((sum, v) => sum + v, 0) / valsB.length).toFixed(2));
-    const minB = Number(Math.min(...valsB).toFixed(2));
-    const maxB = Number(Math.max(...valsB).toFixed(2));
+    const meanB = Number((valsB.reduce((sum, v) => sum + v, 0) / (valsB.length || 1)).toFixed(2));
+    const minB = valsB.length > 0 ? Number(Math.min(...valsB).toFixed(2)) : 0;
+    const maxB = valsB.length > 0 ? Number(Math.max(...valsB).toFixed(2)) : 0;
 
     const deltaMean = Number((meanB - meanA).toFixed(2));
 
@@ -428,7 +428,7 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
     const avgMetrics = (runs: BenchmarkRunRecord[]) => {
       const avgOf = (k: keyof BenchmarkMetrics) =>
         Number((runs.reduce((acc, r) => acc + (r.metrics?.[k] ?? 0), 0) / (runs.length || 1)).toFixed(2));
-      const failureCount = Number((runs.reduce((acc, r) => acc + r.criticalFailureCount, 0) / runs.length).toFixed(2));
+      const failureCount = Number((runs.reduce((acc, r) => acc + r.criticalFailureCount, 0) / (runs.length || 1)).toFixed(2));
 
       return {
         naturalness: avgOf('naturalness'),
@@ -494,7 +494,7 @@ export function executeBenchmarkSuite(): BenchmarkSummaryReport {
     totalFailuresEnhanced < totalFailuresBaseline
   ) {
     verdict = 'PROMOTE';
-    justification = `Version B (Context-Aware Few-Shot Engine) shows consistent empirical improvement across all 4 test fixtures (Mean Composite Delta: +${metricStatistics.overallComposite.deltaMean} pts, Cliché Rate Delta: +${metricStatistics.clicheRate.deltaMean} pts, Persona Consistency Delta: +${metricStatistics.personaConsistency.deltaMean} pts). Critical failure flags were reduced from ${totalFailuresBaseline} in Baseline to ${totalFailuresEnhanced} in Enhanced with zero cross-contamination or observed metric regressions.`;
+    justification = `Version B shows consistent empirical improvement across all 4 test fixtures (Mean Composite Delta: +${metricStatistics.overallComposite.deltaMean} pts, Cliché Rate Delta: +${metricStatistics.clicheRate.deltaMean} pts, Persona Consistency Delta: +${metricStatistics.personaConsistency.deltaMean} pts). Critical failure flags were reduced from ${totalFailuresBaseline} in Baseline to ${totalFailuresEnhanced} in Enhanced with zero cross-contamination or observed metric regressions.`;
   } else if (hasRegressions || totalFailuresEnhanced >= totalFailuresBaseline) {
     verdict = 'REJECT';
     justification = 'Regressions or increased failure rate detected in Version B.';
@@ -597,6 +597,7 @@ export function formatFullBenchmarkReport(report: BenchmarkSummaryReport): strin
   lines.push(`| Failure Flag | Baseline Occurrences (Ver A) | Enhanced Occurrences (Ver B) | Net Difference |`);
   lines.push(`| :--- | :---: | :---: | :---: |`);
 
+  // แสดงผลแฟล็กครบทั้ง 15 ตัว
   const allFlags: CriticalFailureFlag[] = [
     'robotic-metaphor',
     'awkward-collocation',
@@ -608,6 +609,11 @@ export function formatFullBenchmarkReport(report: BenchmarkSummaryReport): strin
     'genre-mismatch',
     'repeated-idea',
     'section-redundancy',
+    'generic-emotional-filler',
+    'unsupported-genre-decoration',
+    'awkward-word-order',
+    'narrative-prose-reporting',
+    'emotional-over-explanation',
   ];
 
   allFlags.forEach((flag) => {

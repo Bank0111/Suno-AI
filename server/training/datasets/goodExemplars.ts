@@ -2,11 +2,13 @@ import { GoodLyricExemplar } from '../types';
 
 /**
  * GOOD LYRICS DATASET (ORIGINAL SYNTHETIC EXEMPLARS)
- * High-craft lyric sections demonstrating natural Thai phrasing, consistent character voice,
- * concrete imagery, and rhythmic singability across benchmark genres.
+ * High-craft lyric sections demonstrating natural phrasing, consistent character voice,
+ * concrete imagery, perspective shifts in bridge, and rhythmic singability across benchmark genres.
  */
 export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
+  // =========================================================================
   // 1. Thai Country / Folk (หนุ่มบ้านนอก ซื่อ จริงใจ ขี้เล่น)
+  // =========================================================================
   {
     id: 'good-folk-001',
     genre: 'Country / Folk',
@@ -47,8 +49,30 @@ export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
     },
     sourceType: 'synthetic-expert',
   },
+  {
+    id: 'good-folk-003',
+    genre: 'Country / Folk',
+    personaVoice: 'หนุ่มบ้านนอก เปิดเผยความรู้สึกจริงจัง',
+    personaKey: 'rustic-sincere-male',
+    sectionType: 'Bridge',
+    lines: [
+      'จากที่เคยคิดว่าแซวเล่นไปวันๆ',
+      'พอเห็นเธอมีคนมาคุยด้วยใจมันก็เริ่มหวั่นไหว',
+      'เพิ่งรู้ว่าที่ทำไปทั้งหมดไม่ใช่แค่เรื่องตลก',
+      'แต่อ้ายตกหลุมรักเจ้าจนหมดหัวใจไปตั้งนานแล้ว',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.8,
+      imageryType: 'emotional',
+      characterConsistency: 'Perspective Shift ชัดเจน: เปลี่ยนจากท่าทีขี้เล่นมาสู่ความรู้สึกเปราะบางและจริงจังอย่างลงตัว',
+      singabilityPacing: 'ไดนามิกดนตรีชะลอลง ให้พื้นที่กับเสียงร้องเน้นอารมณ์',
+    },
+    sourceType: 'synthetic-expert',
+  },
 
+  // =========================================================================
   // 2. Thai R&B / Soul (คนเมืองเหงา ลึกซึ้ง นุ่มนวล)
+  // =========================================================================
   {
     id: 'good-rnb-001',
     genre: 'R&B / Soul',
@@ -85,12 +109,34 @@ export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
       naturalnessScore: 9.2,
       imageryType: 'emotional',
       characterConsistency: 'น้ำเสียงตัดพ้ออย่างสุภาพ นุ่มนวล และสละสลวย ไม่โวยวาย',
-      singabilityPacing: 'สัมผัสสระ (จำ - ค่ำ, คืน - ตื่น, เธอ - เผลอ/เรื่อย) ไหลลื่น',
+      singabilityPacing: 'สัมผัสสระ (จำ - ค่ำ, คืน - ตื่น, เธอ - เรื่อย) ไหลลื่น',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-rnb-003',
+    genre: 'R&B / Soul',
+    personaVoice: 'คนเมืองตกผลึกความจริงของความสัมพันธ์',
+    personaKey: 'urban-intimate-soul',
+    sectionType: 'Bridge',
+    lines: [
+      'ไม่ได้ต้องการให้เธอกลับมาเพื่อเริ่มต้นใหม่',
+      'แค่อยากบอกความจริงว่าฉันเข้าใจทุกเหตุผล',
+      'ที่ตรงนี้จะยังคงเงียบงันและอบอุ่น',
+      'แม้รู้ดีว่าพรุ่งนี้จะไม่มีเธอกลับมาอีกแล้ว',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.6,
+      imageryType: 'emotional',
+      characterConsistency: 'Epiphany / Realization: ก้าวข้ามจากการตัดพ้อไปสู่การยอมรับความจริงอย่างเป็นผู้ใหญ่ ไม่ฟูมฟาย',
+      singabilityPacing: 'คอร์ดส่งขึ้นบันไดเสียงสูงเพื่อสร้างจุดพีกทางอารมณ์',
     },
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 3. Thai Hip-Hop / Rap (Street Cadence, Real Talk)
+  // =========================================================================
   {
     id: 'good-hiphop-001',
     genre: 'Hip-Hop / Rap',
@@ -130,8 +176,30 @@ export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
     },
     sourceType: 'synthetic-expert',
   },
+  {
+    id: 'good-hiphop-003',
+    genre: 'Hip-Hop / Rap',
+    personaVoice: 'เด็กหนุ่มสู้ชีวิต เล่าความคืบหน้าของเรื่องราว',
+    personaKey: 'street-hustler-mc',
+    sectionType: 'Verse',
+    lines: [
+      'ส้นรองเท้าผ้าใบขาดวิ่นจากการเดินข้ามสะพานลอย',
+      'เงินในบัญชีเหลือร้อยเดียวแต่ไรม์กูมีค่าเป็นล้าน',
+      'เพื่อนร่วมรุ่นทยอยยอมแพ้แล้วแยกย้ายกลับบ้าน',
+      'แต่กูยังยืนเขียนบาร์ต่อไปจนกว่าแสงไฟจะส่องลงมา',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.7,
+      imageryType: 'concrete',
+      characterConsistency: 'Verse 2 Progression: ยกระดับเดิมพัน (เพื่อนถอดใจ, เงินเหลือร้อยเดียว) ขับเคลื่อนเรื่องราวไปข้างหน้า ไม่เล่าเรื่องพัดลมซ้ำจาก Verse 1',
+      singabilityPacing: 'สัมผัสปลายวรรค (ลอย - ร้อย - ถอย/บ้าน - มา) ลงบน Snare แน่นอน',
+    },
+    sourceType: 'synthetic-expert',
+  },
 
+  // =========================================================================
   // 4. Thai Indie / Pop (เรื่องราวเฉพาะตัว บรรยากาศละมุน)
+  // =========================================================================
   {
     id: 'good-indie-001',
     genre: 'Indie / Pop',
@@ -168,12 +236,33 @@ export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
       naturalnessScore: 9.6,
       imageryType: 'concrete',
       characterConsistency: 'ภาพ "แบ่งหูฟังคนละข้าง" สะท้อนความโรแมนติกแบบเรียบง่าย ไม่ใช้คำหวานฟุ่มเฟือย',
-      singabilityPacing: 'ร้องง่าย ไหลตามวรรคพูดปกติของคนวัยรุ่น/คนรุ่นใหม่',
+      singabilityPacing: 'ร้องง่าย ไหลตามวรรคพูดปกติของคนรุ่นใหม่',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-indie-003',
+    genre: 'Indie / Pop',
+    personaVoice: 'คนช่างสังเกต ทิ้งภาพจำสุดท้ายอย่างตราตรึง',
+    personaKey: 'indie-storyteller',
+    sectionType: 'Outro',
+    lines: [
+      'แดดยามเย็นค่อยๆ ลับขอบหน้าต่างไป',
+      'เพลงเดิมยังเล่นวนซ้ำในหูฟังข้างเดิม',
+      'กับรอยยิ้มจางๆ ที่ยังไม่ยอมหายไปไหน',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.9,
+      imageryType: 'sensory',
+      characterConsistency: 'Closure & Afterglow: ทิ้งภาพจำเชิงผัสสะและพื้นที่ว่างทางอารมณ์ (Negative Space) ได้อย่างละมุนละไม',
+      singabilityPacing: 'ท่วงทำนองค่อยๆ เฟดลงตามบรรยากาศเพลง',
     },
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 5. English Pop (Contemporary, Reflective, Conversational)
+  // =========================================================================
   {
     id: 'good-eng-001',
     genre: 'English Pop',

@@ -7,7 +7,7 @@ export const ThaiLyricProfile: LanguageLyricProfile = {
   languageCode: 'th',
   languageName: 'Thai (ภาษาไทย)',
   isSupported: true,
-  notes: 'Integrated with Thai Lexical Database, Dialect Matchers, and Evidence-Grounded Ranker',
+  notes: 'Integrated with Thai Lexical Database, Dialect Matchers, and Evidence-Grounded Ranker (Phase 5.7 Gate Compliant)',
 
   registerModel: {
     allowedRegisters: ['spoken', 'conversational', 'neutral', 'dialect', 'poetic', 'literary'],
@@ -22,6 +22,7 @@ export const ThaiLyricProfile: LanguageLyricProfile = {
     'ไม่ใช้คำหรูหรา วรรณคดี หรือศัพท์ทางการในเพลงแนวชาวบ้าน/ฮิปฮอป/เพื่อชีวิต',
     'ระวังการเรียงคำกลับหัวกลับหางเพื่อจงใจเอาสัมผัส (Unnatural word order)',
     'ไม่นำคำอุปมาเชิงคณิตศาสตร์หรือคอมพิวเตอร์มาใส่ในเพลง (เช่น คูณสอง, บวกหนึ่ง, 100%, รีเซ็ต)',
+    'ห้ามใช้ศัพท์รายงานวิชาการหรือบทความวิจัย (เช่น บริบท, มิติ, ขับเคลื่อน, ปัจจัย, กำแพงชนชั้น)',
   ],
 
   collocationRules: [
@@ -42,6 +43,8 @@ export const ThaiLyricProfile: LanguageLyricProfile = {
   avoidanceRules: [
     'ห้ามยัดเยียดวัตถุชนบทตามสูตรสำเร็จ (ควาย, เตาฟืน, เถียงนา) หาก User Story ไม่ได้ระบุ',
     'ห้ามใช้คำหยาบหรือภาษาหุ่นยนต์',
+    'ห้ามแจกแจงลำดับเหตุการณ์แบบร้อยแก้ว (จากนั้นก็... แล้วจึง...)',
+    'ห้ามยัดเยียดรายชื่อเครื่องมือช่างในท่อน Chorus หรือ Bridge',
   ],
 
   rhymeProsodyGuidance: 'ต้องมีสัมผัสสระระหว่างวรรค (Cross-line Rhyme) อย่างน้อย 1 คู่ในทุกๆ 4 บรรทัด โดยคำนึงถึงความเป็นธรรมชาติของภาษาพูดเป็นอันดับแรก ห้ามฝืนสัมผัสจนความหมายพัง',
@@ -103,7 +106,58 @@ export const ThaiLyricProfile: LanguageLyricProfile = {
       }
     }
 
-    // 4. Check Persona Clash (e.g. Literary terms in folk/acoustic)
+    // 4. Academic Jargon Check (Phase 5.7 Gate)
+    const academicTerms = ['บริบท', 'มิติ', 'โครงสร้างทางสังคม', 'ขับเคลื่อน', 'ปัจจัย', 'กำแพงชนชั้น', 'พลวัต'];
+    for (const at of academicTerms) {
+      if (trimmed.includes(at)) {
+        naturalness -= 2.0;
+        issues.push({
+          type: 'academic-jargon',
+          severity: 'critical',
+          diagnosis: `พบศัพท์วิชาการ/รายงานวิจัย: "${at}" ซึ่งขัดกับธรรมชาติของเนื้อเพลง`,
+          evidence: at,
+          suggestedAction: 'เปลี่ยนเป็นภาษาพูดและภาพเชิงรูปธรรม',
+          strategy: 'improve_conversational_authenticity',
+        });
+      }
+    }
+
+    // 5. Narrative Prose Reporting Check (Phase 5.7 Gate)
+    const prosePatterns = ['จากนั้นก็', 'แล้วจึง', 'หลังจากนั้น', 'ขั้นตอนต่อมา'];
+    for (const pp of prosePatterns) {
+      if (trimmed.includes(pp)) {
+        naturalness -= 1.5;
+        issues.push({
+          type: 'narrative-prose-reporting',
+          severity: 'warning',
+          diagnosis: `พบการเล่าเรื่องแบบร้อยแก้วเรียงลำดับ: "${pp}"`,
+          evidence: pp,
+          suggestedAction: 'กระชับถ้อยคำให้เป็นจังหวะบทเพลง (Poetic Cadence)',
+          strategy: 'improve_conversational_authenticity',
+        });
+      }
+    }
+
+    // 6. Vocational Tool Dumping in Hook/Chorus (Phase 5.7 Gate)
+    const isHookSection = sectionType && /^(chorus|hook|bridge)$/i.test(sectionType);
+    if (isHookSection) {
+      const toolTerms = ['ประแจ', 'ค้อน', 'น็อต', 'ไขควง', 'อุปกรณ์เซฟตี้', 'เครื่องมือช่าง'];
+      for (const tool of toolTerms) {
+        if (trimmed.includes(tool)) {
+          naturalness -= 2.0;
+          issues.push({
+            type: 'vocational-dump-in-hook',
+            severity: 'critical',
+            diagnosis: `พบการยัดเยียดรายชื่อเครื่องมือช่างในท่อน ${sectionType}: "${tool}"`,
+            evidence: tool,
+            suggestedAction: 'สงวนท่อนฮุกไว้สำหรับแก่นอารมณ์และสัจธรรมความรู้สึกหลัก',
+            strategy: 'replace_generic_emotion',
+          });
+        }
+      }
+    }
+
+    // 7. Check Persona Clash (e.g. Literary terms in folk/acoustic)
     const isRusticOrCasual = (context.characterVoice || '').includes('rustic') ||
       (context.genres || []).some((g) => g.includes('ลูกทุ่ง') || g.includes('เพื่อชีวิต') || g.includes('คันทรี'));
     

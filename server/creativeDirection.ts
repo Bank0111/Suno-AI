@@ -27,6 +27,16 @@ function cleanArr(arr: any): string[] {
     .filter((item): item is string => typeof item === 'string' && item.length > 0);
 }
 
+function cleanBpm(v: any): number | undefined {
+  if (v === null || v === undefined) return undefined;
+  if (typeof v === 'number' && !isNaN(v) && v > 0) return v;
+  if (typeof v === 'string') {
+    const parsed = parseInt(v.replace(/\D/g, ''), 10);
+    if (!isNaN(parsed) && parsed >= 40 && parsed <= 240) return parsed;
+  }
+  return undefined;
+}
+
 export function formatSongwritingStyleValue(style?: SongwritingStyle, custom?: string): string {
   if (custom && custom.trim()) return custom.trim();
   if (typeof style === 'string' && style.trim()) return style.trim();
@@ -37,7 +47,7 @@ export function formatSongwritingStyleValue(style?: SongwritingStyle, custom?: s
 }
 
 /**
- * Builds a SongCreativeDirection from a ReferenceConfig and user SongInput.
+ * Builds a SongCreativeDirection from a ReferenceConfig and user SongInput (Phase 5.7).
  * Follows the strict priority: Explicit User Setting > Reference Direction > Auto from Story.
  */
 export function deriveCreativeDirection(input: SongInput): SongCreativeDirection {
@@ -98,8 +108,8 @@ export function deriveCreativeDirection(input: SongInput): SongCreativeDirection
   let bpm: CreativeDirectionField<number | string> | undefined;
   const userOverrideTempo = cleanStr(refOverrides.tempo);
   const refTempo = cleanStr(refAnalysis.tempo);
+  const userBpm = cleanBpm(input.bpm);
 
-  // Parse numeric BPM from reference tempo if present (e.g. "95 BPM", "120-130 BPM", "เร็ว (128 BPM)")
   let parsedRefBpm: number | undefined;
   if (refTempo) {
     const bpmRangeMatch = refTempo.match(/(\d{2,3})\s*[-–~]\s*(\d{2,3})/);
@@ -122,33 +132,29 @@ export function deriveCreativeDirection(input: SongInput): SongCreativeDirection
 
   if (userOverrideTempo) {
     tempo = { value: userOverrideTempo, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง (Ref Override)' };
-    if (explicit.bpm && input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
-    } else if (input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
+    if (userBpm) {
+      bpm = { value: userBpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
     }
   } else if (explicit.tempo || (input.tempo && input.tempo.includes('กำหนดเอง'))) {
     tempo = { value: input.tempo || 'ปานกลาง (80–100 BPM)', source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
-    if (explicit.bpm && input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
-    } else if (input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
+    if (userBpm) {
+      bpm = { value: userBpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
     }
   } else if (isRefApplied && refTempo) {
     tempo = { value: refTempo, source: 'reference', sourceLabel: `เพลงอ้างอิง (${refTitle})` };
-    if (explicit.bpm && input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
+    if (explicit.bpm && userBpm) {
+      bpm = { value: userBpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
     } else if (parsedRefBpm) {
       bpm = { value: parsedRefBpm, source: 'reference', sourceLabel: `เพลงอ้างอิง (${refTitle})` };
-    } else if (input.bpm) {
-      bpm = { value: input.bpm, source: 'auto', sourceLabel: 'AI แนะนำ' };
+    } else if (userBpm) {
+      bpm = { value: userBpm, source: 'auto', sourceLabel: 'AI แนะนำ' };
     }
   } else {
     tempo = { value: input.tempo || 'ปานกลาง (80–100 BPM)', source: 'auto', sourceLabel: 'AI วิเคราะห์จาก Story' };
-    if (explicit.bpm && input.bpm) {
-      bpm = { value: input.bpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
-    } else if (input.bpm) {
-      bpm = { value: input.bpm, source: 'auto', sourceLabel: 'AI แนะนำ' };
+    if (explicit.bpm && userBpm) {
+      bpm = { value: userBpm, source: 'user', sourceLabel: 'ผู้ใช้กำหนดเอง' };
+    } else if (userBpm) {
+      bpm = { value: userBpm, source: 'auto', sourceLabel: 'AI แนะนำ' };
     }
   }
 
@@ -259,25 +265,44 @@ export function deriveCreativeDirection(input: SongInput): SongCreativeDirection
   const rawRefStruct = cleanArr(refAnalysis.structure);
   const normalizedRefStruct = rawRefStruct.map((s) => s.replace(/^\d+[\.\-\)]\s*/, '').trim()).filter(Boolean);
 
-  // Helper for genre-based structure fallback
+  // Genre-Aware Structure Selector (Phase 5.7 Standards)
   const getGenreAwareStructure = (genresList: string[], moodsList: string[]): { sections: string[]; rationale: string } => {
     const combinedStr = [...genresList, ...moodsList].join(' ').toLowerCase();
-    if (combinedStr.includes('edm') || combinedStr.includes('dance') || combinedStr.includes('electronic')) {
+
+    if (combinedStr.includes('country') || combinedStr.includes('folk') || combinedStr.includes('ลูกทุ่ง') || combinedStr.includes('เพื่อชีวิต')) {
       return {
-        sections: ['Intro', 'Verse', 'Pre-Chorus', 'Drop / Chorus', 'Breakdown', 'Pre-Chorus', 'Drop / Chorus', 'Outro'],
-        rationale: 'โครงสร้างแบบ EDM / Dance ที่มีท่อน Drop และ Breakdown เพื่อสร้างพลังงาน',
+        sections: ['Intro', 'Verse 1', 'Verse 2', 'Chorus', 'Verse 3', 'Chorus', 'Bridge', 'Chorus', 'Outro'],
+        rationale: 'โครงสร้างแบบ Country / Folk / ลูกทุ่ง ที่เน้นการเล่าเรื่องผ่าน Verse ต่อเนื่อง สลับกับ Chorus และ Bridge เปิดมุมมอง',
+      };
+    }
+    if (combinedStr.includes('r&b') || combinedStr.includes('soul') || combinedStr.includes('neo-soul') || combinedStr.includes('city pop')) {
+      return {
+        sections: ['Intro', 'Verse 1', 'Pre-Chorus', 'Chorus', 'Verse 2', 'Pre-Chorus', 'Chorus', 'Bridge', 'Chorus', 'Outro'],
+        rationale: 'โครงสร้างแบบ R&B / Soul / City Pop ที่มี Pre-Chorus ทอดอารมณ์ และ Bridge ตกผลึกความรู้สึก',
       };
     }
     if (combinedStr.includes('hip') || combinedStr.includes('rap') || combinedStr.includes('trap')) {
       return {
         sections: ['Intro', 'Verse 1', 'Hook', 'Verse 2', 'Hook', 'Rap Breakdown', 'Hook', 'Outro'],
-        rationale: 'โครงสร้างแบบ Hip-Hop / Rap เน้นท่อน Hook ที่ติดหูและ Verse สำหรับการเล่าเรื่อง',
+        rationale: 'โครงสร้างแบบ Hip-Hop / Rap เน้นท่อน Hook กระแทกใจ และ Verse 16-bar สำหรับการถ่ายทอดไรม์',
+      };
+    }
+    if (combinedStr.includes('rock') || combinedStr.includes('alternative') || combinedStr.includes('metal')) {
+      return {
+        sections: ['Intro', 'Verse 1', 'Pre-Chorus', 'Chorus', 'Verse 2', 'Pre-Chorus', 'Chorus', 'Guitar Solo / Bridge', 'Chorus', 'Outro'],
+        rationale: 'โครงสร้างแบบ Rock / Alternative ที่เน้นการสร้าง Tension และปล่อยพลังในท่อน Chorus และ Bridge',
+      };
+    }
+    if (combinedStr.includes('edm') || combinedStr.includes('dance') || combinedStr.includes('electronic')) {
+      return {
+        sections: ['Intro', 'Verse', 'Pre-Chorus', 'Drop / Chorus', 'Breakdown', 'Pre-Chorus', 'Drop / Chorus', 'Outro'],
+        rationale: 'โครงสร้างแบบ EDM / Dance ที่มีท่อน Drop และ Breakdown เพื่อควบคุมระดับพลังงาน',
       };
     }
     if (combinedStr.includes('ballad') || combinedStr.includes('acoustic') || combinedStr.includes('เศร้า') || combinedStr.includes('slow')) {
       return {
         sections: ['Intro', 'Verse 1', 'Chorus', 'Verse 2', 'Chorus', 'Bridge', 'Final Chorus', 'Outro'],
-        rationale: 'โครงสร้างแบบ Ballad เพื่อไต่ระดับอารมณ์และส่งพลังในท่อน Bridge ถึง Final Chorus',
+        rationale: 'โครงสร้างแบบ Ballad เพื่อไต่ระดับอารมณ์และส่งพลังสูงสุดในท่อน Bridge สู่ Final Chorus',
       };
     }
     return {

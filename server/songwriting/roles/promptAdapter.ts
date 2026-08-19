@@ -1,10 +1,5 @@
 import { SongwriterRole } from './schema';
 
-/**
- * Builds a clean, structured, non-bloated prompt block for Gemini instruction.
- * Follows strict prompt priority:
- * Role establishes MINDSET & CRAFT PRINCIPLES, never fabricating story facts.
- */
 export function buildRolePrompt(
   role: SongwriterRole,
   context?: {
@@ -18,57 +13,33 @@ export function buildRolePrompt(
   lines.push(`=== SONGWRITER ROLE & CRAFT MINDSET: ${role.name} ===`);
   lines.push(`[ROLE IDENTITY & EXPERTISE]`);
   lines.push(`- Role: ${role.identity.profession}`);
-  if (role.identity.expertise && role.identity.expertise.length > 0) {
-    lines.push(`- Expertise: ${role.identity.expertise.join('; ')}`);
-  }
+  if (role.identity.expertise?.length) lines.push(`- Expertise: ${role.identity.expertise.join('; ')}`);
 
   lines.push(`\n[PERSONA & CHARACTER VOICE]`);
   lines.push(`- Voice: ${role.persona.voice}`);
   lines.push(`- Attitude: ${role.persona.attitude}`);
-  if (role.persona.storytellingStyle && role.persona.storytellingStyle.length > 0) {
-    lines.push(`- Storytelling Principles: ${role.persona.storytellingStyle.join('; ')}`);
-  }
+  if (role.persona.storytellingStyle?.length) lines.push(`- Storytelling Principles: ${role.persona.storytellingStyle.join('; ')}`);
 
   lines.push(`\n[SONGCRAFT & HOOK DISCIPLINE]`);
-  if (role.songcraft.hookStyle && role.songcraft.hookStyle.length > 0) {
-    lines.push(`- Hook Discipline: ${role.songcraft.hookStyle.join('; ')}`);
-  }
-  if (role.songcraft.rhymeApproach && role.songcraft.rhymeApproach.length > 0) {
-    lines.push(`- Rhyme & Meter Approach: ${role.songcraft.rhymeApproach.join('; ')}`);
-  }
-  if (role.songcraft.phrasing && role.songcraft.phrasing.length > 0) {
-    lines.push(`- Phrasing & Cadence: ${role.songcraft.phrasing.join('; ')}`);
-  }
-  if (context?.sectionType && role.songcraft.sectionPriorities) {
-    const matchedSec = role.songcraft.sectionPriorities.find((p) =>
-      p.toLowerCase().includes(context.sectionType!.toLowerCase())
-    );
-    if (matchedSec) {
-      lines.push(`- Section Priority for [${context.sectionType}]: ${matchedSec}`);
-    }
-  }
+  if (role.songcraft.hookStyle?.length) lines.push(`- Hook Discipline: ${role.songcraft.hookStyle.join('; ')}`);
+  if (role.songcraft.rhymeApproach?.length) lines.push(`- Rhyme & Meter Approach: ${role.songcraft.rhymeApproach.join('; ')}`);
+  if (role.songcraft.phrasing?.length) lines.push(`- Phrasing & Cadence: ${role.songcraft.phrasing.join('; ')}`);
 
-  lines.push(`\n[VOCABULARY & REGISTER RULES]`);
-  if (role.vocabulary.registerRules && role.vocabulary.registerRules.length > 0) {
-    lines.push(`- Register Rules: ${role.vocabulary.registerRules.join('; ')}`);
-  }
-  if (role.vocabulary.avoid && role.vocabulary.avoid.length > 0) {
-    lines.push(`- Pitfalls to Avoid: ${role.vocabulary.avoid.join('; ')}`);
-  }
+  // เพิ่มกฎควบคุมการเว้นจังหวะลมหายใจตรงนี้
+  lines.push(`\n[BREATH-POCKET & PHRASING SPACING]`);
+  lines.push(`- Use ellipsis (...) or micro-pauses at natural phrasing intervals to guide vocal breath control and prevent rushed delivery.`);
+  lines.push(`- Keep lines concise (6-10 syllables) so singers or AI generation tools have natural breathing space between lines.`);
 
-  lines.push(`\n[AUTHENTICITY & CONFLICT RESOLUTION PRINCIPLE]`);
-  if (role.authenticity.principles && role.authenticity.principles.length > 0) {
-    lines.push(`- Authenticity Mandate: ${role.authenticity.principles.join('; ')}`);
-  }
-  lines.push(`- STORY FIDELITY OVER STEREOTYPES: The User Story and factual evidence ALWAYS override generic genre tropes. Do NOT inject rural/street/luxury clichés if the user story does not specify them.`);
+  lines.push(`\n[IMAGERY & VOCABULARY DISCIPLINE]`);
+  if (role.imagery.preferred?.length) lines.push(`- Preferred Imagery: ${role.imagery.preferred.join('; ')}`);
+  if (role.vocabulary.preferred?.length) lines.push(`- Preferred Vocabulary: ${role.vocabulary.preferred.join('; ')}`);
+  if (role.vocabulary.avoid?.length) lines.push(`- Pitfalls to Avoid: ${role.vocabulary.avoid.join('; ')}`);
 
-  lines.push(`\n[ROLE CONSTRAINTS]`);
-  if (role.constraints.mustDo && role.constraints.mustDo.length > 0) {
-    lines.push(`- Must Do: ${role.constraints.mustDo.join('; ')}`);
-  }
-  if (role.constraints.mustAvoid && role.constraints.mustAvoid.length > 0) {
-    lines.push(`- Must Avoid: ${role.constraints.mustAvoid.join('; ')}`);
-  }
+  lines.push(`\n[AUTHENTICITY & PHASE 5.7 QUALITY GATES]`);
+  lines.push(`- STORY FIDELITY OVER STEREOTYPES: User Story and facts ALWAYS override generic tropes.`);
+  lines.push(`- [NO ACADEMIC JARGON]: ห้ามใช้ศัพท์รายงานวิชาการหรือวิจัย (บริบท, มิติ, กำแพงชนชั้น, ปัจจัย)`);
+  lines.push(`- [NO PROSE REPORTING]: ห้ามแจกแจงลำดับแบบร้อยแก้ว (จากนั้นก็... แล้วจึง...)`);
+  lines.push(`- [NO VOCATIONAL DUMP IN HOOK]: ห้ามยัดเยียดรายชื่อเครื่องมือช่างใน Chorus หรือ Bridge`);
 
   return lines.join('\n');
 }

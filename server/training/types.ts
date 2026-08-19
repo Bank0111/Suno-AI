@@ -49,7 +49,17 @@ export type FailureFlawType =
   | 'filler-line'
   | 'semantic-drift'
   | 'register-mismatch'
-  | 'generic-emotion';
+  | 'generic-emotion'
+  // Phase 5.7 Granular Alignment Flags
+  | 'unsupported-genre-decoration'
+  | 'narrative-prose-reporting'
+  | 'emotional-over-explanation'
+  | 'repeated-idea'
+  | 'generic-emotional-filler'
+  | 'language-contamination'
+  | 'genre-mismatch'
+  | 'awkward-word-order'
+  | 'section-redundancy';
 
 /**
  * A. Thai Lyric Knowledge Base Model

@@ -8,7 +8,7 @@ import {
 } from './types';
 
 /**
- * Thematic Semantic Domains for Thai Songwriting
+ * Thematic Semantic Domains for Thai Songwriting (Phase 5.7 Standard)
  */
 interface ThematicDomainCluster {
   domain: string;
@@ -20,16 +20,14 @@ const THEMATIC_DOMAINS: ThematicDomainCluster[] = [
   {
     domain: 'rural_farming_nature',
     keywords: [
-      'ทุ่งนา', 'บ้านนอก', 'ชนบท', 'ฟาง', 'กลิ่นฟาง', 'ฟางข้าว', 'ควันไฟ', 'คันไถนา',
+      'ทุ่งนา', 'บ้านนอก', 'ชนบท', 'ฟาง', 'กลิ่นฟาง', 'ฟางข้าว', 'ควันไฟ', 'คันนา', 'คันไถนา',
       'นกเอี้ยง', 'เถียงนา', 'เกี่ยวข้าว', 'รวงข้าว', 'ควาย', 'วัว', 'กลิ่นดิน', 'กระท่อม',
-      'กองฟาง', 'โคลน', 'หลังสู้ฟ้า', 'เหงื่อ', 'อีสาน', 'บ้านนา', 'ลูกทุ่ง', 'เพื่อชีวิต',
-      'ต้นตาล', 'นกเขา', 'เตาฟืน'
+      'กองฟาง', 'โคลน', 'เหงื่อ', 'อีสาน', 'บ้านนา', 'ลูกทุ่ง', 'เพื่อชีวิต', 'ต้นตาล', 'เตาฟืน'
     ],
     relatedTerms: [
-      'สายลมยามเย็น', 'กลิ่นฝน', 'กอดเสาเถียง', 'คิดฮอด', 'ตะวัน', 'ดงพงพี', 'รอนแรม',
-      'สุกในดง', 'ผิวคล้ำ', 'ดอกไม้', 'ไออุ่น', 'จันทร์เจ้าเอย', 'ท้องฟ้า', 'กำลังใจ',
+      'สายลมยามเย็น', 'กลิ่นฝน', 'คิดฮอด', 'ตะวัน', 'ดอกไม้', 'ไออุ่น', 'ท้องฟ้า', 'กำลังใจ',
       'เหนื่อยล้า', 'รอคอย', 'มองดู', 'เฝ้ามอง', 'สัญญา', 'รักแท้', 'โอบกอด', 'เคียงข้าง',
-      'กาลครั้งหนึ่ง', 'ภาพจำ'
+      'ภาพจำ', 'สองมือ', 'หยาดเหงื่อ', 'ขี่มอไซค์'
     ]
   },
   {
@@ -37,12 +35,12 @@ const THEMATIC_DOMAINS: ThematicDomainCluster[] = [
     keywords: [
       'คอนโด', 'ตึกสูง', 'ถนน', 'ไฟท้าย', 'รถติด', 'ป้ายรถเมล์', 'รถไฟฟ้า', 'บีทีเอส',
       'สถานี', 'ทางข้าม', 'ไฟแดง', 'คาเฟ่', 'เมืองหลวง', 'กรุงเทพ', 'คนเมือง', 'สตรีท',
-      'ฮิปฮอป', 'ห้องเดิม', 'ดึกสงัด', 'เที่ยงคืน', 'แสงสี', 'เมืองใหญ่'
+      'ฮิปฮอป', 'ห้องเช่า', 'ดึกสงัด', 'เที่ยงคืน', 'แสงสี', 'เมืองใหญ่', 'สะพานลอย'
     ],
     relatedTerms: [
-      'แสงไฟเมืองหลวง', 'รถติด', 'กาแฟแก้วโปรด', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา',
-      'เหงา', 'เงียบเหงา', 'ความเงียบงัน', 'จังหวะหัวใจ', 'โทรหา', 'น่าขัน', 'ลองดู',
-      'ความรู้สึก', 'ห้องสี่เหลี่ยม'
+      'แสงไฟเมืองหลวง', 'รถติด', 'แก้วกาแฟ', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา',
+      'เหงา', 'เงียบเหงา', 'ความเงียบงัน', 'จังหวะหัวใจ', 'โทรหา', 'ความรู้สึก', 'หน้าต่าง',
+      'แสงไฟนีออน', 'เก้าอี้ว่าง', 'หูฟัง'
     ]
   },
   {
@@ -50,36 +48,35 @@ const THEMATIC_DOMAINS: ThematicDomainCluster[] = [
     keywords: [
       'คิดถึง', 'คิดฮอด', 'คนไกล', 'จากลา', 'จากไป', 'รอคอย', 'ความทรงจำ', 'วันวาน',
       'ภาพจำ', 'สัญญา', 'ความรัก', 'ผูกพัน', 'ห่วงใย', 'อดีต', 'ที่เดิม', 'ร่ำลา',
-      'ลาก่อน', 'คนรัก', 'แฟน', 'แอบมอง', 'สบตา'
+      'คนรัก', 'แอบมอง', 'สบตา', 'รูปถ่าย', 'ข้อความ'
     ],
     relatedTerms: [
       'กาลครั้งหนึ่ง', 'ภาพจำ', 'ย้อนเวลา', 'ห้วงคำนึง', 'ร่องรอย', 'เจือจาง', 'ความเงียบงัน',
-      'จันทร์ดวงน้อย', 'แสงนวล', 'เฝ้ามอง', 'ตามหา', 'เวลา', 'รอนาน', 'โอบกอด', 'เคียงข้าง',
-      'แววตา', 'ไออุ่น', 'สัญญา', 'คุณค่าทางใจ', 'รักแท้', 'ให้ใจ', 'หัวใจ', 'ความรัก'
+      'เฝ้ามอง', 'ตามหา', 'เวลา', 'โอบกอด', 'เคียงข้าง', 'แววตา', 'ไออุ่น', 'สัญญา',
+      'รักแท้', 'ให้ใจ', 'หัวใจ', 'ความรัก', 'สมุดบันทึก'
     ]
   },
   {
     domain: 'heartbreak_sorrow_loss',
     keywords: [
       'อกหัก', 'เสียใจ', 'น้ำตา', 'ผิดหวัง', 'ทิ้ง', 'เลิก', 'เจ็บ', 'หลอก',
-      'ใจร้าย', 'พราก', 'สิ้นสุด', 'จบ', 'ร้องไห้', 'บาดแผล'
+      'ใจร้าย', 'พราก', 'สิ้นสุด', 'จบ', 'ร้องไห้', 'บาดแผล', 'ความเงียบ'
     ],
     relatedTerms: [
       'สุดท้าย', 'เสียใจ', 'เสียน้ำตา', 'เหงา', 'ใจร้าย', 'ครั้งสุดท้าย', 'เศร้าใจ',
-      'เงียบเหงา', 'เงียบงัน', 'ไม่ไหว', 'พรากเจ้าไกล', 'ไม่มีเธอ', 'ลาลับไกล', 'เหี่ยวเฉา',
-      'นั่งเศร้า', 'ร่องรอย', 'เจือจาง', 'ความเงียบงัน', 'แตกสลาย', 'ท้องฟ้าสีหม่น'
+      'เงียบเหงา', 'เงียบงัน', 'ไม่มีเธอ', 'ร่องรอย', 'เจือจาง', 'แตกสลาย', 'ท้องฟ้าสีหม่น',
+      'ปล่อยมือ', 'ความจริง', 'ตัดใจ', 'เก้าอี้ว่าง'
     ]
   },
   {
     domain: 'hope_motivation_faith',
     keywords: [
       'หวัง', 'สู้', 'กำลังใจ', 'อดทน', 'ก้าวไป', 'ศรัทธา', 'เริ่มต้นใหม่', 'ความฝัน',
-      'พรุ่งนี้', 'แสงสว่าง', 'ฟ้าใหม่', 'แรงใจ'
+      'พรุ่งนี้', 'แสงสว่าง', 'ฟ้าใหม่', 'แรงใจ', 'สองมือ'
     ],
     relatedTerms: [
-      'กำลังใจ', 'ก้าวข้าม', 'อรุณรุ่ง', 'ปีกแห่งความฝัน', 'ส่องแสงเต็มฟ้า', 'ดั่งหวัง',
-      'เชื่อ', 'ทุ่มเท', 'รักแท้', 'เชื่อใจ', 'ยิ้ม', 'อธิษฐาน', 'เทวดา', 'สมดัง',
-      'ปรารถนา', 'จงเข้ามา', 'ตั้งจิต', 'ภาวนา', 'ฝากชีวิต'
+      'กำลังใจ', 'ก้าวข้าม', 'เชื่อ', 'ทุ่มเท', 'รักแท้', 'เชื่อใจ', 'ยิ้ม', 'สองมือ',
+      'หยาดเหงื่อ', 'ไม่ยอมแพ้', 'พิสูจน์'
     ]
   }
 ];
@@ -93,17 +90,15 @@ export function evaluateLanguageFit(term: string, item: VocabularyItem | undefin
 
   if (vector.isTargetThai) {
     if (isThaiAlphabet) return 1.0;
-    // Allow minimal universal English words if hip-hop or modern slang
     if (isEnglishAlphabet) {
       if (vector.characterVoice.isUrbanOrModern) return 0.4;
-      return 0.1; // heavily penalized for rustic / folk Thai
+      return 0.1;
     }
     return 0.8;
   } else {
-    // Target is English or other
     if (vector.targetLanguage.toLowerCase() === 'english') {
       if (isEnglishAlphabet) return 1.0;
-      return 0.0; // Strictly zero for Thai words in English target
+      return 0.0;
     }
     return 0.5;
   }
@@ -198,7 +193,7 @@ export function inferTermRegister(term: string): LexicalRegister {
   const poeticIndicators = ['ดั่ง', 'พิศมัย', 'ภิรมย์', 'นฤมิต', 'สุวรรณ', 'สวรรค์', 'สรวง', 'ประจักษ์', 'ตรึงตรา', 'นภา', 'ทิวา', 'ราตรี', 'ธิดา', 'พารา', 'กมล'];
   const spokenIndicators = ['ป่ะ', 'ดิ', 'ไง', 'เหรอ', 'มั้ย', 'นะเนี่ย', 'เข้าตา', 'จริงใจ', 'จัง', 'เลย', 'แอบชอบ', 'แฟน'];
   const dialectIndicators = ['คิดฮอด', 'เพิ่น', 'บ่', 'อ้าย', 'ข่อย', 'พ้อ', 'ความฮัก', 'ขี้จุ๊', 'อู้', 'แหลง', 'แค่ๆ', 'หื้อ'];
-  const formalIndicators = ['ข้าพเจ้า', 'ประการ', 'อนุเคราะห์', 'ศักราช', 'พระองค์'];
+  const formalIndicators = ['ข้าพเจ้า', 'ประการ', 'อนุเคราะห์', 'ศักราช', 'พระองค์', 'บริบท', 'ขับเคลื่อน', 'มิติ'];
 
   if (poeticIndicators.some((p) => term.includes(p))) return 'poetic';
   if (dialectIndicators.some((d) => term.includes(d))) return 'dialect';
@@ -233,7 +228,7 @@ export function evaluateLayeredSemanticFit(
     return { semanticFit: 1.0, exactMatch: true, matchLayer: 'exact', reason: 'ตรงกับ Story Token' };
   }
 
-  // Layer B: Phrase / Collocation Match (candidate is substring or shares noun phrase)
+  // Layer B: Phrase / Collocation Match
   const isCollocation = vector.storyContext?.storyTokens?.some(
     (t) => t.length >= 3 && (t.includes(termLower) || termLower.includes(t))
   );
@@ -319,19 +314,19 @@ export function evaluateSceneGrounding(
 ): number {
   const termLower = term.toLowerCase();
 
-  // 1. Direct match with scene objects / places (weight: 0.40)
+  // 1. Direct match with scene objects / places
   const sceneObjectMatch = vector.sceneObjects?.some((obj) => {
     const oLower = obj.toLowerCase();
     return oLower.includes(termLower) || termLower.includes(oLower);
   });
 
-  // 2. Direct match with sensory cues / time cues (weight: 0.35)
+  // 2. Direct match with sensory cues / time cues
   const sensoryMatch = vector.sensorySignals?.some((cue) => {
     const cLower = cue.toLowerCase();
     return cLower.includes(termLower) || termLower.includes(cLower);
   });
 
-  // 3. Direct match with visual motifs (weight: 0.25)
+  // 3. Direct match with visual motifs
   const visualMatch = vector.visualSignals?.some((motif) => {
     const mLower = motif.toLowerCase();
     return mLower.includes(termLower) || termLower.includes(mLower);
@@ -342,8 +337,7 @@ export function evaluateSceneGrounding(
   if (sensoryMatch) return 0.90;
   if (visualMatch) return 0.85;
 
-  // Check thematic domain alignment with song's scene world
-  const isRuralStory = (vector.sceneObjects?.some((o) => ['ทุ่งนา', 'ฟาง', 'ควันไฟ', 'คันไถนา', 'เถียงนา', 'บ้านนอก'].some((k) => o.includes(k))) ?? false) ||
+  const isRuralStory = (vector.sceneObjects?.some((o) => ['ทุ่งนา', 'ฟาง', 'ควันไฟ', 'คันนา', 'คันไถนา', 'เถียงนา', 'บ้านนอก'].some((k) => o.includes(k))) ?? false) ||
     vector.storyContext.storyText.includes('ทุ่งนา') ||
     vector.storyContext.storyText.includes('ฟาง') ||
     vector.storyContext.storyText.includes('บ้านนอก');
@@ -354,20 +348,18 @@ export function evaluateSceneGrounding(
     vector.storyContext.storyText.includes('เมืองหลวง');
 
   if (isRuralStory) {
-    const ruralWords = ['สายลมยามเย็น', 'กลิ่นฝน', 'กอดเสาเถียง', 'คิดฮอด', 'ตะวัน', 'ดงพงพี', 'รอนแรม', 'สุกในดง', 'ผิวคล้ำ', 'ดอกไม้', 'ไออุ่น', 'จันทร์เจ้าเอย', 'ท้องฟ้า', 'กำลังใจ'];
+    const ruralWords = ['สายลมยามเย็น', 'กลิ่นฝน', 'คิดฮอด', 'ตะวัน', 'ดอกไม้', 'ไออุ่น', 'ท้องฟ้า', 'กำลังใจ'];
     if (ruralWords.includes(term)) return 0.85;
   }
 
   if (isUrbanStory) {
-    const urbanWords = ['แสงไฟเมืองหลวง', 'รถติด', 'กาแฟแก้วโปรด', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา', 'เหงา', 'จังหวะหัวใจ'];
+    const urbanWords = ['แสงไฟเมืองหลวง', 'รถติด', 'แก้วกาแฟ', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา', 'เหงา', 'จังหวะหัวใจ'];
     if (urbanWords.includes(term)) return 0.85;
   }
 
-  // Abstract / General emotional words get baseline scene grounding
   const abstractTerms = ['หัวใจ', 'ความรัก', 'สัญญา', 'เวลา', 'เชื่อ', 'ให้ใจ', 'ความรู้สึก', 'มองดู'];
   if (abstractTerms.includes(term)) return 0.45;
 
-  // Unrelated or discordant physical objects get low scene grounding
   return 0.15;
 }
 
@@ -385,8 +377,8 @@ export function evaluateAffinityBoost(
   const isUrbanGenre = genres.some((g) => g.includes('city pop') || g.includes('hip-hop') || g.includes('rap') || g.includes('r&b') || g.includes('indie'));
   const isAcousticBallad = genres.some((g) => g.includes('acoustic') || g.includes('ballad') || g.includes('lo-fi'));
 
-  const ruralTerms = ['สายลมยามเย็น', 'กลิ่นฝน', 'กอดเสาเถียง', 'คิดฮอด', 'ตะวัน', 'ดงพงพี', 'รอนแรม', 'สุกในดง', 'ผิวคล้ำ', 'ดอกไม้', 'ไออุ่น', 'จันทร์เจ้าเอย'];
-  const urbanTerms = ['แสงไฟเมืองหลวง', 'รถติด', 'กาแฟแก้วโปรด', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา', 'จังหวะหัวใจ', 'โทรหา'];
+  const ruralTerms = ['สายลมยามเย็น', 'กลิ่นฝน', 'คิดฮอด', 'ตะวัน', 'ดอกไม้', 'ไออุ่น', 'จันทร์เจ้าเอย'];
+  const urbanTerms = ['แสงไฟเมืองหลวง', 'รถติด', 'แก้วกาแฟ', 'ห้วงคำนึง', 'ภาพจำ', 'ย้อนเวลา', 'แววตา', 'จังหวะหัวใจ', 'โทรหา'];
   const acousticTerms = ['โอบกอด', 'เคียงข้าง', 'ภาพจำ', 'กาลครั้งหนึ่ง', 'ร่องรอย', 'เจือจาง', 'ความเงียบงัน', 'ไออุ่น', 'แววตา', 'สายลมยามเย็น'];
 
   if (isFolkOrCountry && ruralTerms.includes(term)) return 0.95;
@@ -397,7 +389,7 @@ export function evaluateAffinityBoost(
 }
 
 /**
- * Section Fit:
+ * Section Fit (Phase 5.7 Section-Aware Constraint Gate):
  * Evaluates term suitability for specific section types (Verse vs Chorus vs Pre-Chorus vs Bridge vs Outro).
  */
 export function evaluateSectionFit(
@@ -407,14 +399,19 @@ export function evaluateSectionFit(
   sectionType?: string
 ): number {
   const targetSection = sectionType || vector.sectionType;
-  if (!targetSection) return 0.80; // neutral global fit
+  if (!targetSection) return 0.80;
 
   const sectionNormalized = targetSection.toLowerCase();
+  const termLower = term.toLowerCase();
 
-  const isImageryWord = ['สายลมยามเย็น', 'กลิ่นฝน', 'กอดเสาเถียง', 'ตะวัน', 'ดงพงพี', 'สุกในดง', 'ผิวคล้ำ', 'ดอกไม้', 'แสงไฟเมืองหลวง', 'รถติด', 'กาแฟแก้วโปรด', 'มองดู', 'เฝ้ามอง'].includes(term);
-  const isChorusCoreWord = ['หัวใจ', 'ความรัก', 'คิดถึง', 'คิดฮอด', 'สัญญา', 'รักแท้', 'โอบกอด', 'เคียงข้าง', 'ไม่ไหว', 'กำลังใจ', 'เชื่อ', 'ให้ใจ'].includes(term);
+  // Vocational Tools / Mechanical Equipment (Banned from Hook/Chorus/Bridge)
+  const vocationalTools = ['ประแจ', 'น็อต', 'ชุดเซฟตี้', 'หัวเทียน', 'สายพาน', 'คราบน้ำมัน', 'สว่าน'];
+  const isTool = vocationalTools.some((t) => termLower.includes(t));
+
+  const isImageryWord = ['สายลมยามเย็น', 'กลิ่นฝน', 'ตะวัน', 'ดอกไม้', 'แสงไฟเมืองหลวง', 'รถติด', 'แก้วกาแฟ', 'มองดู', 'เฝ้ามอง', 'หน้าต่าง', 'โต๊ะไม้'].includes(term);
+  const isChorusCoreWord = ['หัวใจ', 'ความรัก', 'คิดถึง', 'คิดฮอด', 'สัญญา', 'รักแท้', 'โอบกอด', 'เคียงข้าง', 'ไม่ไหว', 'กำลังใจ', 'เชื่อ', 'ให้ใจ', 'สองมือ', 'ความจริง'].includes(term);
   const isTransitionWord = ['หวั่นไหว', 'เริ่ม', 'ก้าวข้าม', 'ตามหา', 'เสียใจ', 'เวลา', 'รอนาน', 'จังหวะหัวใจ'].includes(term);
-  const isBridgeReflectionWord = ['ภาพจำ', 'กาลครั้งหนึ่ง', 'ย้อนเวลา', 'ห้วงคำนึง', 'ร่องรอย', 'เจือจาง', 'ความเงียบงัน', 'สุดท้าย', 'ครั้งสุดท้าย'].includes(term);
+  const isBridgeReflectionWord = ['ภาพจำ', 'กาลครั้งหนึ่ง', 'ย้อนเวลา', 'ห้วงคำนึง', 'ร่องรอย', 'เจือจาง', 'ความเงียบงัน', 'สุดท้าย', 'ครั้งสุดท้าย', 'เข้าใจ', 'ยอมรับ'].includes(term);
 
   if (sectionNormalized.includes('verse')) {
     if (isImageryWord) return 0.95;
@@ -429,13 +426,15 @@ export function evaluateSectionFit(
   }
 
   if (sectionNormalized.includes('chorus') || sectionNormalized.includes('hook')) {
-    if (isChorusCoreWord) return 0.95;
-    if (isImageryWord) return 0.70;
+    if (isTool) return 0.10; // Harsh penalty for vocational tools in Hook/Chorus
+    if (isChorusCoreWord) return 0.98;
+    if (isImageryWord) return 0.65;
     return 0.80;
   }
 
   if (sectionNormalized.includes('bridge')) {
-    if (isBridgeReflectionWord) return 0.95;
+    if (isTool) return 0.15;
+    if (isBridgeReflectionWord) return 0.98;
     return 0.80;
   }
 
@@ -448,7 +447,7 @@ export function evaluateSectionFit(
 }
 
 /**
- * Checks cliché risk and specific awkward phrasing
+ * Checks cliché risk and specific awkward phrasing (Phase 5.7 Standard)
  */
 export function evaluateClicheAndContextualAvoidance(
   term: string,
@@ -456,9 +455,47 @@ export function evaluateClicheAndContextualAvoidance(
 ): { clicheRisk: number; avoidTier: AvoidTier; avoidReason?: string } {
   const lower = term.toLowerCase();
 
-  // Known forced / awkward math / robotic metaphors in songs
-  const awkwardMathPhrases = ['คูณสอง', 'บวกหนึ่ง', 'หารสอง', 'เปอร์เซ็นต์', 'สแควร์รูท'];
-  const awkwardForcedSlang = ['วิ่งแส่', 'แส่หา', 'ตกหลุมความน่ารัก', 'ใจมันพองโตขึ้นมา'];
+  // 1. Math / Robotic Metaphors
+  const awkwardMathPhrases = ['คูณสอง', 'บวกหนึ่ง', 'หารสอง', 'เปอร์เซ็นต์', 'สแควร์รูท', '100%', 'ตัวคูณ'];
+  if (awkwardMathPhrases.some((a) => lower.includes(a))) {
+    return {
+      clicheRisk: 0.95,
+      avoidTier: 'CONTEXTUAL_AVOID',
+      avoidReason: 'คำศัพท์คณิตศาสตร์/หุ่นยนต์ที่ทำลายความเป็นธรรมชาติ (Robotic Math Metaphor)',
+    };
+  }
+
+  // 2. Academic Jargon & Research Tone (Phase 5.7 Gate)
+  const academicJargon = ['บริบท', 'มิติใหม่', 'กำแพงชนชั้น', 'ขับเคลื่อน', 'โครงสร้างทางสังคม', 'ปัจจัย', 'มิติ'];
+  if (academicJargon.some((j) => lower.includes(j))) {
+    return {
+      clicheRisk: 0.95,
+      avoidTier: 'CONTEXTUAL_AVOID',
+      avoidReason: 'ศัพท์รายงานวิชาการ/บทความวิจัยที่ขัดกับภาษาเพลง (Academic Jargon)',
+    };
+  }
+
+  // 3. Narrative Prose Reporting (Phase 5.7 Gate)
+  const proseReportingPhrases = ['จากนั้นก็', 'แล้วจึง', 'ขั้นตอนต่อไป'];
+  if (proseReportingPhrases.some((p) => lower.includes(p))) {
+    return {
+      clicheRisk: 0.90,
+      avoidTier: 'CONTEXTUAL_AVOID',
+      avoidReason: 'สำนวนแจกแจงลำดับเหตุการณ์แบบร้อยแก้ว (Narrative Prose Reporting)',
+    };
+  }
+
+  // 4. Forced / Awkward Slang
+  const awkwardForcedSlang = ['วิ่งแส่', 'แส่หา', 'ตกหลุมความน่ารัก', 'ใจมันพองโตขึ้นมา', 'มูฟออน', 'อันฟอล'];
+  if (awkwardForcedSlang.some((a) => lower.includes(a))) {
+    return {
+      clicheRisk: 0.85,
+      avoidTier: 'CONTEXTUAL_AVOID',
+      avoidReason: 'รูปประโยคหรือสแลงแปลกที่ขัดกับการร้องลื่นไหล (Awkward phrasing)',
+    };
+  }
+
+  // 5. Extreme Clichés
   const extremeCliches = [
     'รักเธอสุดหัวใจ',
     'น้ำตาริน',
@@ -468,27 +505,14 @@ export function evaluateClicheAndContextualAvoidance(
     'ฟ้าหลังฝน',
     'รักนิรันดร์',
     'โลกทั้งใบของฉัน',
+    'น้ำตารินไหลอาบสองแก้ม',
+    'ชั่วฟ้าดินสลาย',
+    'ดวงใจดวงน้อย',
   ];
-
-  if (awkwardMathPhrases.some((a) => lower.includes(a))) {
-    return {
-      clicheRisk: 0.9,
-      avoidTier: 'CONTEXTUAL_AVOID',
-      avoidReason: 'สำนวนแปลกและไม่เป็นธรรมชาติในเพลงรักทั่วไป (Awkward math/robotic metaphor)',
-    };
-  }
-
-  if (awkwardForcedSlang.some((a) => lower.includes(a))) {
-    return {
-      clicheRisk: 0.85,
-      avoidTier: 'CONTEXTUAL_AVOID',
-      avoidReason: 'รูปประโยคหรือสำนวนแปลกที่อาจขัดกับการร้องลื่นไหล (Awkward phrasing)',
-    };
-  }
 
   if (extremeCliches.some((c) => lower.includes(c))) {
     return {
-      clicheRisk: 0.8,
+      clicheRisk: 0.85,
       avoidTier: 'LOW_PREFERENCE',
       avoidReason: 'วลีสำเร็จรูปซ้ำซาก (Overused cliché)',
     };
@@ -502,9 +526,6 @@ export function evaluateClicheAndContextualAvoidance(
 
 /**
  * Phase 5.5B: Determine Evidence Tier for Lexical Candidate
- * TIER_1_USER_GROUNDED: Sourced directly from User Story, User Prompt, User-defined facts
- * TIER_2_CONTEXT_SUPPORTED: Reasonably inferred from Blueprint, Song World, setting, mood, narrative signals
- * TIER_3_GENRE_DECORATION: Suggested solely from genre stereotypes without story evidence
  */
 export function determineEvidenceTier(
   term: string,
@@ -512,7 +533,6 @@ export function determineEvidenceTier(
 ): EvidenceTier {
   const termLower = term.toLowerCase();
 
-  // Tier 1 Check: User Story Text & Direct User Grounded Evidence
   const matchesUserEvidence = (vector.userGroundedEvidence || []).some((e) => {
     const eLower = e.toLowerCase();
     return eLower.includes(termLower) || termLower.includes(eLower);
@@ -523,7 +543,6 @@ export function determineEvidenceTier(
     return 'TIER_1_USER_GROUNDED';
   }
 
-  // Tier 2 Check: Context Supported (Blueprint, Song World, Sensory Signals, Visual Signals, Narrative Signals)
   const matchesContextEvidence = (vector.contextSupportedEvidence || []).some((e) => {
     const eLower = e.toLowerCase();
     return eLower.includes(termLower) || termLower.includes(eLower);
@@ -549,14 +568,11 @@ export function determineEvidenceTier(
     return 'TIER_2_CONTEXT_SUPPORTED';
   }
 
-  // Default: Tier 3 Genre Decoration
   return 'TIER_3_GENRE_DECORATION';
 }
 
 /**
  * Phase 5.5B: Narrative Utility Evaluation
- * Evaluates whether candidate word/phrase has active storytelling utility:
- * (Establish Scene, Characterize Speaker, Advance Story, Reveal Memory, Change Emotion, Support Hook, Reinforce Theme, Create Symbolic Meaning)
  */
 export function evaluateNarrativeUtility(
   term: string,
@@ -568,7 +584,6 @@ export function evaluateNarrativeUtility(
   const termLower = term.toLowerCase();
   const targetSection = (sectionType || vector.sectionType || '').toLowerCase();
 
-  // Tier 1 User Grounded has highest innate narrative utility
   if (evidenceTier === 'TIER_1_USER_GROUNDED') {
     return {
       narrativeUtility: 0.95,
@@ -576,7 +591,6 @@ export function evaluateNarrativeUtility(
     };
   }
 
-  // Tier 2 Context Supported has strong narrative utility when section-aligned
   if (evidenceTier === 'TIER_2_CONTEXT_SUPPORTED') {
     if (targetSection.includes('verse') || targetSection.includes('intro')) {
       return {
@@ -596,11 +610,9 @@ export function evaluateNarrativeUtility(
     };
   }
 
-  // Tier 3 Genre Decoration: evaluate if it serves character voice or is pure decorative dump
   const isCharacterVoiceMatch = vector.characterVoice.personaType &&
     (vector.characterVoice.isRusticOrAuthentic || vector.characterVoice.isUrbanOrModern);
 
-  // Ungrounded concrete physical objects (e.g., buffalo, firewood, shack when not in story)
   const ungroundedPhysicalObjects = ['ควาย', 'วัว', 'นกเอี้ยง', 'เตาฟืน', 'กระท่อม', 'คอนโด', 'รถไฟฟ้า', 'ป้ายรถเมล์'];
   if (ungroundedPhysicalObjects.some((obj) => termLower.includes(obj))) {
     return {
@@ -624,7 +636,6 @@ export function evaluateNarrativeUtility(
 
 /**
  * Phase 5.5B: Genericness vs Specificity Evaluation
- * Detects interchangeable generic emotional lines vs song-specific anchored details.
  */
 export function evaluateGenericnessAndSpecificity(
   term: string,
@@ -633,7 +644,6 @@ export function evaluateGenericnessAndSpecificity(
 ): { specificityScore: number; genericnessRisk: number; reason: string } {
   const termLower = term.toLowerCase();
 
-  // Known interchangeable generic song phrases
   const genericInterchangeablePhrases = [
     'รักเธอสุดหัวใจ',
     'คิดถึงเธอสุดหัวใจ',
@@ -684,9 +694,7 @@ export function evaluateGenericnessAndSpecificity(
 }
 
 /**
- * Core Ranking Function: Scores and sorts Lexical Candidates with Phase 5.5B Evidence-Grounded Ranking
- * Priority Order for Thai Songwriting:
- * Naturalness (L3 > L2 > L1) > Semantic Correctness > Character Voice > Scene Evidence Grounding (Tier 1 > Tier 2 > Tier 3) > Narrative Utility > Section Fit > Singability > Rhyme Convenience
+ * Core Ranking Function: Scores and sorts Lexical Candidates with Phase 5.7 Multi-Gate Calibration
  */
 export function rankLexicalCandidate(
   item: VocabularyItem,
@@ -695,10 +703,10 @@ export function rankLexicalCandidate(
 ): LexicalCandidate {
   const term = item.word;
 
-  // 1. Language Fit (Naturalness base)
+  // 1. Language Fit
   const languageFit = evaluateLanguageFit(term, item, vector);
 
-  // 2. Register & Persona Fit (Character Voice base)
+  // 2. Register & Persona Fit
   const { registerFit, personaFit, formalityRisk, reason: personaReason } = evaluateRegisterAndPersonaFit(
     term,
     item.register,
@@ -720,15 +728,14 @@ export function rankLexicalCandidate(
     } else if (isSouth && vector.region === 'southern') {
       regionFit = 1.0;
     } else {
-      // Dialect word in non-dialect context -> heavily penalize
       regionFit = 0.1;
     }
   }
 
-  // 3. Evidence Tier Determination (Phase 5.5B Fact Safety)
+  // 3. Evidence Tier Determination
   const evidenceTier = determineEvidenceTier(term, vector);
 
-  // 4. Narrative Utility Evaluation (Useful Specificity > Decorative Specificity)
+  // 4. Narrative Utility Evaluation
   const { narrativeUtility, reason: utilityReason } = evaluateNarrativeUtility(
     term,
     item,
@@ -755,14 +762,13 @@ export function rankLexicalCandidate(
     const matched = vector.genres.some((g) =>
       itemGenres.some((ig) => ig.includes(g.toLowerCase()) || g.toLowerCase().includes(ig))
     );
-    // Fact safety: If tier 3 genre decoration, do not give unchecked positive genre boost
     if (matched) {
       genreFit = evidenceTier === 'TIER_3_GENRE_DECORATION' ? 0.60 : 0.90;
     } else {
       genreFit = 0.40;
     }
   } else {
-    genreFit = 0.60; // neutral if not genre-constrained
+    genreFit = 0.60;
   }
 
   // 7. Layered Semantic Matching
@@ -775,7 +781,7 @@ export function rankLexicalCandidate(
   // 8. Scene Grounding Score
   const sceneGrounding = evaluateSceneGrounding(term, item, vector);
 
-  // 9. Section Fit
+  // 9. Section Fit (Phase 5.7 Gate)
   const sectionFit = evaluateSectionFit(term, item, vector, sectionType);
 
   // 10. Affinity Boost
@@ -787,7 +793,7 @@ export function rankLexicalCandidate(
   // 12. Singability & Natural Flow
   const singability = item.weight ? item.weight / 10 : 0.8;
 
-  // Composite Score Formula (Evidence-Grounded, Persona & Naturalness First)
+  // Composite Score Formula
   let compositeScore =
     languageFit * 15 +
     personaFit * 18 +
@@ -803,20 +809,19 @@ export function rankLexicalCandidate(
     clicheRisk * 20 -
     genericnessRisk * 15;
 
-  // Evidence Tier Adjustments (Fact Safety):
+  // Evidence Tier Adjustments:
   if (evidenceTier === 'TIER_1_USER_GROUNDED') {
     compositeScore += 15;
   } else if (evidenceTier === 'TIER_2_CONTEXT_SUPPORTED') {
     compositeScore += 10;
   } else if (evidenceTier === 'TIER_3_GENRE_DECORATION') {
-    // Ungrounded physical tropes get penalized
     if (narrativeUtility <= 0.25) {
       compositeScore -= 15;
     }
   }
 
   if (regionFit <= 0.2) {
-    compositeScore -= 30; // heavy penalty for mismatched dialect words
+    compositeScore -= 30;
   }
 
   if (avoidTier === 'CONTEXTUAL_AVOID') {
@@ -830,7 +835,6 @@ export function rankLexicalCandidate(
 
   const register = item.register || inferTermRegister(term);
 
-  // Debug trace log
   logLexicalSceneGrounding(term, {
     exactMatch,
     semanticMatch: semanticFit,

@@ -65,7 +65,6 @@ export function resolveTargetContentLanguage(
 ): { targetContentLanguage: string; languageInstruction: string; isTargetThai: boolean } {
   let lang = "";
 
-  // 1. Explicit User Selection
   if (input?.language) {
     if (input.language === "Custom" && input.customLanguage?.trim()) {
       lang = input.customLanguage.trim();
@@ -74,17 +73,14 @@ export function resolveTargetContentLanguage(
     }
   }
 
-  // 2. Custom Language fallback if input.language wasn't set or was Custom without trimmed customLanguage
   if (!lang && input?.customLanguage?.trim()) {
     lang = input.customLanguage.trim();
   }
 
-  // 3. Song Current Language fallback
   if (!lang && currentSongLanguage?.trim()) {
     lang = currentSongLanguage.trim();
   }
 
-  // 4. System Default (only when absolutely nothing was specified)
   if (!lang) {
     lang = "ไทย";
   }
@@ -342,6 +338,13 @@ export function buildPovExecutionDirective(input: StyleExecutionInput): string {
     parts.push(`- Vocal Direction: เน้นจังหวะคำร้องที่หนักแน่น มีพลัง โดยเฉพาะท่อน Hook Peak ที่ส่งพลังเสียงได้อย่างเต็มที่`);
   }
 
+  // 6. Phase 5.7 Anti-Cliché & Structural Gates Directive
+  parts.push(`\n[6. PHASE 5.7 ANTI-CLICHÉ & STRUCTURAL GATES]`);
+  parts.push(`- ห้ามใช้ศัพท์วิชาการหรือรายงานข่าว (Academic Jargon): เช่น "บริบท", "มิติ", "ขับเคลื่อน", "ปัจจัย", "กำแพงชนชั้น"`);
+  parts.push(`- ห้ามเขียนแจกแจงลำดับเหตุการณ์แบบร้อยแก้ว (Narrative Prose Reporting): เช่น "จากนั้นก็...", "แล้วจึง..."`);
+  parts.push(`- ห้ามยัดเยียดชื่ออุปกรณ์ช่างหรือเครื่องมือในท่อนฮุก/บริดจ์ (No Vocational Dump in Hook/Bridge): เช่น "ประแจ", "น็อต" ให้ท่อนฮุกเป็นพื้นที่ของแก่นอารมณ์และสัจธรรม`);
+  parts.push(`- ห้ามใช้เมทาฟอรสคณิตศาสตร์หรือระบบคอมพิวเตอร์ (Math/Robotic Metaphors): เช่น "คูณสอง", "บวกหนึ่ง", "100%"`);
+
   return parts.join('\n');
 }
 
@@ -412,41 +415,34 @@ export async function buildCreativeContext(
 ): Promise<BuiltCreativeContext> {
   const story = (input.story || "").trim();
 
-  // 1. Resolve Song Creative Direction (Priority: User Explicit > Reference > Auto from Story)
-  // If Reference is applied and already has stored creativeDirection, use it (No Re-Analysis)
   const creativeDirection: SongCreativeDirection =
     (input.reference?.applied && input.reference.creativeDirection)
       ? input.reference.creativeDirection
       : deriveCreativeDirection(input);
 
-  // Genre string & array
   const rawGenreVal = creativeDirection.genre?.value;
   const allGenres = Array.isArray(rawGenreVal)
     ? rawGenreVal
     : (typeof rawGenreVal === 'string' && rawGenreVal ? [rawGenreVal] : ['Pop']);
   const genresStr = allGenres.join(", ");
 
-  // Mood string & array
   const rawMoodVal = creativeDirection.mood?.value;
   const allMoods = Array.isArray(rawMoodVal)
     ? rawMoodVal
     : (typeof rawMoodVal === 'string' && rawMoodVal ? [rawMoodVal] : ['เศร้า']);
   const moodsStr = allMoods.join(", ");
 
-  // Songwriting Style
   const rawStyleVal = creativeDirection.songwritingStyle?.value;
   const songwritingStyleStr = typeof rawStyleVal === 'string' && rawStyleVal
     ? rawStyleVal
     : formatSongwritingStyle(input.songwritingStyle, input.customSongwritingStyle);
 
-  // Language resolution with strict priority: Explicit User > Custom > Song Current > Default
   const { targetContentLanguage, languageInstruction, isTargetThai } = resolveTargetContentLanguage(
     input,
     options.currentSong?.language
   );
   const langStr = targetContentLanguage;
 
-  // Word Tone, Language Style, Rhyme Style, POV
   const wordToneStr = input.wordTone || "เป็นธรรมชาติ เข้าใจง่าย";
   const languageStyleStr = (typeof creativeDirection.languageStyle?.value === 'string' && creativeDirection.languageStyle.value)
     ? creativeDirection.languageStyle.value
@@ -456,14 +452,12 @@ export async function buildCreativeContext(
     ? creativeDirection.rhymeStyle.value
     : (input.rhymeStyle || "ให้ AI เลือกให้เหมาะสม");
 
-  // Tempo & BPM
   const tempoStr = (typeof creativeDirection.tempo?.value === 'string' && creativeDirection.tempo.value)
     ? creativeDirection.tempo.value
     : (input.tempo || "ปานกลาง (80–100 BPM)");
-  const rawBpm = creativeDirection.bpm?.value ?? input.bpm;
+  const rawBpm = (creativeDirection.bpm?.value ?? input.bpm) ?? undefined;
   const bpmStr = rawBpm ? `${rawBpm} BPM` : "";
 
-  // Rhythm & Vocal
   const rawRhythmVal = creativeDirection.rhythm?.value;
   const rhythmStr = Array.isArray(rawRhythmVal)
     ? rawRhythmVal.join(", ")
@@ -474,7 +468,6 @@ export async function buildCreativeContext(
         ? `กำหนดเอง (${input.vocalCustomDescription})`
         : (input.vocalType || "หญิง"));
 
-  // Structure
   let structureStr = "";
   let structureArray: string[] = [];
   if (options.endpoint === 'generate-song') {
@@ -494,13 +487,11 @@ export async function buildCreativeContext(
     structureStr = structureArray.join(" -> ");
   }
 
-  // Instrumentation & Production from Creative Direction
   const rawInstr = creativeDirection.instrumentation?.value;
   const instrStr = Array.isArray(rawInstr) ? rawInstr.join(', ') : (typeof rawInstr === 'string' ? rawInstr : 'เครื่องดนตรีหลักตามแนวเพลง');
   const rawProd = creativeDirection.productionCharacter?.value;
   const prodStr = typeof rawProd === 'string' && rawProd ? rawProd : 'Modern Production';
 
-  // Build Contextual Style Execution Directive
   const styleExecutionDirective = buildPovExecutionDirective({
     pov: input.pointOfView,
     genres: allGenres,
@@ -515,7 +506,6 @@ export async function buildCreativeContext(
     story,
   });
 
-  // Build Lyric Phrasing & Singability Directive
   const lyricPhrasingDirective = buildLyricPhrasingDirective({
     genres: allGenres,
     songwritingStyle: songwritingStyleStr,
@@ -533,12 +523,10 @@ export async function buildCreativeContext(
     creativeDirection,
   });
 
-  // Active Reference
   const isReferenceActive = !!(input.reference && input.reference.applied === true && (input.reference.analysis || input.reference.source || input.reference.creativeDirection));
   logReferenceDetails(options.endpoint, input.reference);
   const referenceGuidance = formatReferenceGuidance(input.reference, creativeDirection);
 
-  // Vocabulary Context
   let vocabContext: SmartVocabularyResult | null = null;
   let vocabGuidance = "ใช้คำศัพท์ทางดนตรีและภาษาที่เป็นธรรมชาติ เหมาะสมกับเรื่องราว";
   let isVocabActive = false;
@@ -554,7 +542,6 @@ export async function buildCreativeContext(
     console.error(`[VocabularyEngine] Warning in ${options.endpoint}:`, err.message);
   }
 
-  // Few-Shot Training Knowledge Retrieval
   const trainingContext: RetrievedTrainingContext = retrieveTrainingContext({
     language: targetContentLanguage,
     customLanguage: input.customLanguage,
@@ -571,7 +558,6 @@ export async function buildCreativeContext(
     ? trainingContext.promptGuidanceBlock
     : "";
 
-  // Debug Logging for Development
   console.log(`[CreativeContext] endpoint: ${options.endpoint}`);
   console.log(`[CreativeContext] language: ${langStr}`);
   console.log(`[CreativeContext] genre: ${genresStr} (${creativeDirection.genre?.sourceLabel || creativeDirection.genre?.source})`);
@@ -587,7 +573,6 @@ export async function buildCreativeContext(
   console.log(`[CreativeContext] reference: ${isReferenceActive ? 'active' : 'inactive'}`);
   console.log(`[CreativeContext] trainingKnowledge: ${trainingContext.hasData ? `active (${trainingContext.genreKey}, ${trainingContext.goodExemplars.length} good, ${trainingContext.correctionPairs.length} pairs)` : 'inactive'}`);
 
-  // Formatted Prompt Blocks (Strict Priority: User Explicit > Reference > Auto)
   const modeLabel = isReferenceActive
     ? "REFERENCE-DRIVEN CREATIVE DIRECTION (สร้างเพลงใหม่จาก Story โดยใช้ทิศทางดนตรีจาก Reference)"
     : "AUTO / STORY-DRIVEN CREATIVE DIRECTION (วิเคราะห์ Story และกำหนด Creative Direction ทั้งหมดให้เหมาะสม)";
@@ -623,7 +608,6 @@ ${styleExecutionDirective}`;
   const vocabGuidanceBlock = `=== VOCABULARY & LEXICAL CONTEXT GUIDANCE ===
 ${vocabGuidance}`;
 
-  // Deep Creative Analysis & Blueprint
   const creativeAnalysis = input.creativeAnalysis || null;
   const creativeAnalysisGuidance = creativeAnalysis
     ? formatDeepCreativeAnalysisGuidance(creativeAnalysis, targetContentLanguage)
@@ -632,7 +616,6 @@ ${vocabGuidance}`;
     ? `\n\n${creativeAnalysisGuidance}`
     : "";
 
-  // 13. Songwriter Role Resolution & Prompt Block (Role Engine v1.0)
   const resolvedRole = resolveSongwriterRole({
     language: targetContentLanguage,
     genre: allGenres,

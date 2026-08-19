@@ -146,7 +146,13 @@ export function retrieveTrainingContext(params: RetrievalParams): RetrievedTrain
   const scoredGood = goodPool.map((item) => {
     let score = 0;
     if (item.genre === genreKey) score += 10;
-    if (normalizedSection && item.sectionType === normalizedSection) score += 6;
+    if (normalizedSection) {
+      if (item.sectionType === normalizedSection) {
+        score += 6;
+      } else if ((normalizedSection === 'Chorus' && item.sectionType === 'Hook') || (normalizedSection === 'Hook' && item.sectionType === 'Chorus')) {
+        score += 5;
+      }
+    }
     if (params.personaKey && item.personaKey === params.personaKey) score += 4;
     return { item, score };
   });
@@ -174,11 +180,23 @@ export function retrieveTrainingContext(params: RetrievalParams): RetrievedTrain
   scoredPairs.sort((a, b) => b.score - a.score);
   const selectedPairs = scoredPairs.slice(0, 2).map((s) => s.item);
 
-  // 5. Relevant Avoidance Rules (Contextual)
+  // 5. Relevant Avoidance Rules (Contextual & Section-Aware)
   const selectedRules = rulePool.filter((rule) => {
     if (rule.tier === 'HARD_BLOCK') return false; // Handled in core safety
-    if (!rule.contextConditions.genres || rule.contextConditions.genres.length === 0) return true;
-    return rule.contextConditions.genres.includes(genreKey);
+
+    // Genre matching
+    if (rule.contextConditions.genres && rule.contextConditions.genres.length > 0) {
+      if (!rule.contextConditions.genres.includes(genreKey)) return false;
+    }
+
+    // Section matching (e.g. Mechanical tool dumping only banned in Chorus/Hook/Bridge)
+    if (rule.contextConditions.sections && rule.contextConditions.sections.length > 0) {
+      if (!normalizedSection || !rule.contextConditions.sections.includes(normalizedSection)) {
+        return false;
+      }
+    }
+
+    return true;
   }).slice(0, 4);
 
   // Profiles

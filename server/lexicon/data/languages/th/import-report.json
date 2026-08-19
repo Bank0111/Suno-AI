@@ -1,0 +1,19 @@
+{
+  "sourceFile": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\raw\\th\\raw-wiktextract-data.jsonl",
+  "language": "th",
+  "startedAt": "2026-08-18T15:09:49.711Z",
+  "finishedAt": "2026-08-18T15:10:00.794Z",
+  "linesRead": 2347378,
+  "jsonErrors": 0,
+  "entriesThai": 34342,
+  "uniqueWords": 29412,
+  "pass": 21433,
+  "review": 7979,
+  "reject": 0,
+  "rejectedRedirects": 4982,
+  "rejectedNoSense": 30,
+  "rejectedWrongScript": 28,
+  "rejectedInvalidWord": 57,
+  "rejectedFormOf": 7121,
+  "outputFile": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\th\\vocabulary.json"
+}

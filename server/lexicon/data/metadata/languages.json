@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "purpose": "Multilingual songwriting word-bank architecture",
+  "languages": [
+    {
+      "code": "th",
+      "name": "Thai"
+    },
+    {
+      "code": "en",
+      "name": "English"
+    },
+    {
+      "code": "zh",
+      "name": "Chinese"
+    },
+    {
+      "code": "ja",
+      "name": "Japanese"
+    },
+    {
+      "code": "ko",
+      "name": "Korean"
+    },
+    {
+      "code": "es",
+      "name": "Spanish"
+    },
+    {
+      "code": "fr",
+      "name": "French"
+    },
+    {
+      "code": "de",
+      "name": "German"
+    },
+    {
+      "code": "pt",
+      "name": "Portuguese"
+    },
+    {
+      "code": "id",
+      "name": "Indonesian"
+    },
+    {
+      "code": "vi",
+      "name": "Vietnamese"
+    },
+    {
+      "code": "hi",
+      "name": "Hindi"
+    },
+    {
+      "code": "ar",
+      "name": "Arabic"
+    }
+  ]
+}

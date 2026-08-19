@@ -74,7 +74,7 @@ export interface LexicalCandidate {
   affinityBoost?: number;   // 0.0 to 1.0
   exactMatch?: boolean;
   semanticMatch?: number;   // 0.0 to 1.0
-  // Phase 5.5B Evidence-Grounded & Narrative Utility Fields
+  // Phase 5.5B / 5.7 Evidence-Grounded & Narrative Utility Fields
   evidenceTier?: EvidenceTier;
   narrativeUtility?: number;  // 0.0 to 1.0 (Useful specificity vs decorative specificity)
   specificityScore?: number;  // 0.0 to 1.0
@@ -228,5 +228,8 @@ export interface VocabularyValidationReport {
   hardBannedFound: string[];
   overusedFound: string[];
   contextClashFound: string[];
+  academicJargonFound?: string[];
+  vocationalDumpFound?: string[];
+  proseReportingFound?: string[];
   feedback: string[];
 }

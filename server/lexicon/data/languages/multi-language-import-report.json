@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-08-18T15:24:34.137Z",
+  "input": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\raw\\th\\raw-wiktextract-data.jsonl",
+  "languageCount": 14,
+  "languages": {
+    "th": {
+      "words": 29519,
+      "duplicates": 4823,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\th\\vocabulary.json"
+    },
+    "en": {
+      "words": 480427,
+      "duplicates": 14476,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\en\\vocabulary.json"
+    },
+    "zh": {
+      "words": 163341,
+      "duplicates": 1192,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\zh\\vocabulary.json"
+    },
+    "ja": {
+      "words": 62041,
+      "duplicates": 1669,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ja\\vocabulary.json"
+    },
+    "ko": {
+      "words": 860,
+      "duplicates": 79,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ko\\vocabulary.json"
+    },
+    "de": {
+      "words": 60660,
+      "duplicates": 573,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\de\\vocabulary.json"
+    },
+    "es": {
+      "words": 480783,
+      "duplicates": 826,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\es\\vocabulary.json"
+    },
+    "fr": {
+      "words": 213493,
+      "duplicates": 773,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\fr\\vocabulary.json"
+    },
+    "pt": {
+      "words": 231740,
+      "duplicates": 778,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\pt\\vocabulary.json"
+    },
+    "id": {
+      "words": 433,
+      "duplicates": 28,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\id\\vocabulary.json"
+    },
+    "vi": {
+      "words": 1229,
+      "duplicates": 168,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\vi\\vocabulary.json"
+    },
+    "hi": {
+      "words": 3854,
+      "duplicates": 172,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\hi\\vocabulary.json"
+    },
+    "ar": {
+      "words": 216,
+      "duplicates": 44,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\ar\\vocabulary.json"
+    },
+    "lo": {
+      "words": 14007,
+      "duplicates": 2777,
+      "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\lo\\vocabulary.json"
+    }
+  },
+  "totals": {
+    "lines": 2347378,
+    "invalidJson": 0,
+    "matched": 1770981,
+    "ignored": 576397
+  },
+  "note": "Import only. No linguistic quality validation, domain classification, or rhyme analysis was applied."
+}

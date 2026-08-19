@@ -82,7 +82,6 @@ export async function getVocabularyContext(
   let result = matchRuleBasedVocabulary(songConfig, options);
 
   // 3. Optional/Lazy Gemini Smart Selection
-  // Only executed if explicitly requested or candidates are sparse, and target language is Thai and aiClient is provided
   const isCandidateSparse = result.core.length < 3 || result.metadata.candidateCount < 5;
   const shouldRunSmartSelector = options?.enableSmartSelector || isCandidateSparse;
 
@@ -91,7 +90,7 @@ export async function getVocabularyContext(
       const vector = result.contextVector || buildLexicalContextVector(songConfig);
       const prompt = `
 คุณคือ Master Songwriting Vocabulary Specialist (ผู้เชี่ยวชาญการคัดเลือกคำศัพท์เพลงตามบริบท)
-กรุณาวิเคราะห์เรื่องราว บุคลิกตัวละคร และแนวเพลง เพื่อเสนอชุดคำศัพท์ที่เป็น "ภาษาธรรมชาติ" ไม่เป็นคำสำเร็จรูป
+กรุณาวิเคราะห์เรื่องราว บุคลิกตัวละคร และแนวเพลง เพื่อเสนอชุดคำศัพท์ที่เป็น "ภาษาพูดธรรมชาติและภาพรูปธรรม" ไม่เป็นคำสำเร็จรูป
 
 [ข้อมูลบริบทเพลง]:
 - เรื่องราว: "${songConfig.story || ''}"
@@ -104,11 +103,17 @@ export async function getVocabularyContext(
 Core: ${result.core.join(', ')}
 Supporting: ${result.supporting.join(', ')}
 
+[ข้อกำหนดสำคัญ]:
+- ห้ามเสนอคำศัพท์วิชาการ/รายงานข่าว (เช่น บริบท, มิติ, กำแพงชนชั้น, ขับเคลื่อน, ปัจจัย)
+- ห้ามเสนอคำศัพท์คณิตศาสตร์/หุ่นยนต์ (เช่น คูณสอง, บวกหนึ่ง, 100%)
+- ห้ามเสนอชื่ออุปกรณ์ช่าง/เครื่องมือช่างสำหรับท่อนฮุก (เช่น ประแจ, น็อต, คราบน้ำมัน)
+- เน้นวัตถุผัสสะรอบตัว (Sensory & Scene Objects) และคำแสดงอารมณ์สัจธรรมชีวิต
+
 [โจทย์]:
 ตอบเป็น JSON สั้นๆ (5-8 คำต่อหมวด ห้ามใช้คำหยาบหรือวลีซ้ำซาก Cliché):
 {
-  "core": ["คำหลัก 4-6 คำที่เป็นธรรมชาติและเข้ากับตัวละคร"],
-  "supporting": ["คำบรรยายภาพ/สิ่งของที่เป็นรูปธรรม 4-6 คำ"],
+  "core": ["คำหลัก 4-6 คำที่เป็นธรรมชาติ สื่ออารมณ์และสัจธรรม"],
+  "supporting": ["คำบรรยายภาพ/สิ่งของ/ฉากที่เป็นรูปธรรม 4-6 คำ"],
   "optional": ["คำทางเลือกสำหรับลงจังหวะสัมผัส 3-5 คำ"]
 }
 `.trim();
@@ -133,9 +138,9 @@ Supporting: ${result.supporting.join(', ')}
           core: enhancedCore,
           supporting: enhancedSupporting,
           optional: enhancedOptional,
-          verseImagery: result.verseImagery || enhancedSupporting,
-          sectionEmotion: result.sectionEmotion || enhancedCore,
-          hookCoreTerms: result.hookCoreTerms || enhancedCore.slice(0, 4),
+          verseImagery: result.verseImagery?.length ? result.verseImagery : enhancedSupporting,
+          sectionEmotion: result.sectionEmotion?.length ? result.sectionEmotion : enhancedCore,
+          hookCoreTerms: result.hookCoreTerms?.length ? result.hookCoreTerms : enhancedCore.slice(0, 4),
           intentGroups: result.intentGroups,
           avoid: result.avoid,
           contextVector: result.contextVector,

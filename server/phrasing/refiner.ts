@@ -32,11 +32,11 @@ export async function refineSongLyricPhrasing(
   }));
 
   // === CONDITIONAL BYPASS TOKEN OPTIMIZATION ===
-  // ตรวจสอบคุณภาพเนื้อเพลงรอบแรก หากคะแนนสูงและไม่มีปัญหาเรื่องความยาววรรค ให้ข้ามการเรียก LLM ซ้ำเพื่อประหยัด Token
+  // ปิด bypass ชั่วคราว (false &&) เพื่อบังคับให้ Pass 2 เข้ามาตรวจทานสัมผัสและขัดเกลาคำซ้ำทุกครั้ง
   const initialReport = validateLyricPhrasing(cleanedSections, context);
   const hasCriticalLengthIssues = initialReport.issues.some((i: any) => i.type === 'too_long' || i.type === 'line_length_outlier');
   
-  if (initialReport.score >= 85 && !hasCriticalLengthIssues && options?.targetSectionIndex === undefined) {
+  if (false && initialReport.score >= 85 && !hasCriticalLengthIssues && options?.targetSectionIndex === undefined) {
     console.log(`[LyricPhrasingEngine] Conditional Bypass Activated! Score is ${initialReport.score}/100 with no critical length issues. Skipping LLM Pass 2 refinement to save tokens.`);
     return {
       sections: cleanedSections,
@@ -48,32 +48,37 @@ export async function refineSongLyricPhrasing(
   try {
     const isSingleSection = options?.targetSectionIndex !== undefined && options.targetSectionIndex >= 0;
     
-    const systemInstruction = `คุณคือ Intelligent AI Lyric Phrasing & Singability Specialist (ผู้เชี่ยวชาญด้านการจัดวรรคคำร้องและจังหวะการร้องจริงระดับครูเพลง)
+    const systemInstruction = `คุณคือ Intelligent AI Master Songwriter & Lyric Phrasing Specialist (ครูเพลงและผู้เชี่ยวชาญด้านฉันทลักษณ์และจังหวะคำร้องระดับชั้นครู)
 
-หน้าที่ของคุณคือ "PASS 2: ตรวจและจัด Phrasing & Line Breaks" ให้เนื้อเพลงร้องเข้าปากได้อย่างเป็นธรรมชาติและสมบูรณ์แบบสูงสุด
+หน้าที่ของคุณคือ "PASS 2: ตรวจทานสัมผัส จัด Phrasing และยกระดับภาษา (Poetic Elevation)" ให้เนื้อเพลงร้องเข้าปาก ไพเราะ และไม่มีจุดสะดุด
 
-กฎเหล็กสำคัญที่สุดของ PASS 2:
-1. ห้ามเปลี่ยน Story, Core Meaning, Hook Identity หรือ POV เด็ดขาด!
-2. [สำคัญที่สุด] ห้ามร้อยแก้วยาวๆ: ตรวจสอบและซอยบรรทัดที่ยาวเกินไป บังคับให้ทุกบรรทัดมีความยาว 6-10 พยางค์ เท่านั้น
-3. จัดจังหวะสัมผัส (Rhyme Flow): ปรับคำเชื่อมและคำลงท้ายให้คล้องจองกันข้ามบรรทัด เพื่อให้ร้องลื่นไหลตาม Tempo
-4. Chorus: ต้องจัดวรรคให้เน้น Hook ชัดเจน คำกระชับ ทรงพลัง อ่านและร้องตามได้ทันที
-5. ห้ามใส่ตัวเลขนับพยางค์ (Syllable Count) หรือ Metadata ลงใน 'lyrics'
-6. รักษาชื่อ type, performanceDirection, และ musicDirection ไว้ตามเดิม`;
+กฎเหล็กสำคัญของ PASS 2:
+1. ห้ามเปลี่ยน Story, Core Meaning, หรือ POV หลักเด็ดขาด
+2. [ตรวจคำท้ายซ้ำ - ห้ามเด็ดขาด]: ตรวจดูคำลงท้ายวรรคในท่อนเดียวกัน ห้ามลงท้ายด้วย "คำเดิมซ้ำกัน" เกิน 1 ครั้ง (เช่น ห้าม เล่น-เล่น-เล่น หรือ เดิม-เดิม) หากพบ ให้เปลี่ยนเป็นคำอื่นในมาตราตัวสะกดและสระเดียวกันทันที
+3. [ผังบังคับสัมผัส (Rhyme Scheme)]:
+   - คำท้ายวรรค 2 ต้องส่งสัมผัสสระและมาตราตัวสะกดเดียวกัน ไปยังคำท้ายวรรค 3 (หรือคำที่ 3 ของวรรค 4) เสมอ
+   - สัมผัสใน (Internal Rhyme): เติมแต่งเสียงสระหรือพยัญชนะคู่ชิดกลางวรรค (เช่น ขาดสาย-กราย, เรรวน-ชวน, เปียกฝน-ลมหนาว) ให้เกิดกรูฟคำที่ร้องเอื้อนได้ลื่นไหล
+4. [ยกระดับคลังคำ (Vocabulary Upgrade)]:
+   - หลีกเลี่ยงภาษาทางการ/วิชาการ (เช่น "คนชั้นแรงงาน") ให้เปลี่ยนเป็นภาษาพูดซื่อๆ ที่จริงใจ ("คนสู้งาน", "คนหาเช้ากินค่ำ")
+   - ใช้ภาพเปรียบเทียบรูปธรรมที่บาดลึก (Visceral Metaphor) เช่น รอยแผล, น้ำตาบนตัก, สายลมหนาว
+5. [คุมความยาววรรค]: ตัดทอนคำฟุ่มเฟือย ให้ทุกวรรคมีความยาวประมาณ 6-8 พยางค์ (ไม่เกิน 9 พยางค์) ร้องสบาย ไม่แน่นห้องดนตรี
+6. ห้ามใส่ตัวเลขนับพยางค์ (Syllable Count) หรือ Metadata ลงใน 'lyrics'
+7. รักษาชื่อ type, performanceDirection, และ musicDirection ไว้ตามเดิม`;
 
     const sectionsJsonForPrompt = JSON.stringify(cleanedSections, null, 2);
 
-    const prompt = `โปรดตรวจและจัด Phrasing (Pass 2) สำหรับเนื้อเพลงนี้:
+    const prompt = `โปรดตรวจทานสัมผัส จัด Phrasing และยกระดับภาษา (Pass 2) สำหรับเนื้อเพลงนี้:
 
 ${context.userCreativeSettingsBlock}
 
 ${context.lyricPhrasingBlock || context.styleExecutionBlock}
 
-=== PASS 1 LYRICS (เนื้อเพลงตั้งต้นที่ต้องนำมาจัด Phrasing & Line Breaks) ===
+=== PASS 1 LYRICS (เนื้อเพลงตั้งต้นที่ต้องนำมาจัด Phrasing, ตรวจสัมผัส และแก้คำซ้ำ) ===
 ${sectionsJsonForPrompt}
 
-${isSingleSection ? `* หมายเหตุ: โฟกัสการจัด Phrasing ให้สมบูรณ์แบบเป็นพิเศษในท่อน [${options.targetSectionType || `Section ${options.targetSectionIndex! + 1}`}] โดยรักษาท่อนอื่นให้คงเดิม` : ''}
+${isSingleSection ? `* หมายเหตุ: โฟกัสการจัด Phrasing และแก้คำสัมผัสให้สมบูรณ์แบบเป็นพิเศษในท่อน [${options.targetSectionType || `Section ${options.targetSectionIndex! + 1}`}] โดยรักษาท่อนอื่นให้คงเดิม` : ''}
 
-โปรดส่งคืน JSON ของ sections ทั้งหมด ที่ผ่านการจัด Phrasing และ Line Breaks ให้พร้อมสำหรับการร้องและ Suno อย่างสมบูรณ์แบบ`;
+โปรดส่งคืน JSON ของ sections ทั้งหมด ที่ผ่านการตรวจสัมผัสและเกลาคำร้องให้พร้อมสำหรับการร้องจริงอย่างสมบูรณ์แบบ`;
 
     const { response } = await callGeminiWithFallback(ai, {
       contents: prompt,

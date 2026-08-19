@@ -33,95 +33,72 @@ export function validateHookCraft(hookResult: HookCraftResult): { isValid: boole
 
 /**
  * HOOK CRAFT ENGINE
- * Generates 5-8 rich, memorable hook candidates grounded in Core Truth and Character Voice,
- * scores them on naturalness, memorability, and story fit, and designs a cohesive Chorus Blueprint.
+ * ออกแบบท่อนฮุกและ Chorus Blueprint ให้ทรงพลังตามจริตของทุกแนวดนตรี
  */
 export async function buildHookCandidates(
   blueprint: SongBlueprint,
   context: BuiltCreativeContext,
   ai?: GoogleGenAI
 ): Promise<HookCraftResult> {
-  console.log(`[HookCraft] Generating 3-4 hook candidates based on Blueprint Core Truth: "${blueprint.coreTruth}"...`);
+  console.log(`[HookCraft] Generating 3-4 hook candidates based on Blueprint Core Truth: "${blueprint.coreTruth}" for genre: "${context.genresStr}"...`);
 
-  const systemInstruction = `คุณคือ "Master Hook Architect & Platinum Song Crafter"
-หน้าที่ของคุณคือออกแบบ "ประโยคฮุก (Hook Lines)" และ "แผนผังท่อนฮุค (Chorus Blueprint)" ที่ติดหู ตราตรึง ทรงพลัง ร้องเข้าปาก และตรงกับตัวละครที่สุด
+  const systemInstruction = `คุณคือ "Master Hook Architect & Global Hit Melodic Crafter"
+หน้าที่ของคุณคือออกแบบ "ประโยคฮุก (Hook Lines)" และ "แผนผังท่อนฮุก (Chorus Blueprint)" ที่ติดหู ตราตรึง ทรงพลัง ร้องเข้าปาก และตรงกับจิตวิญญาณของแนวดนตรี "${context.genresStr || 'ดนตรีร่วมสมัย'}"
 
 =======================================================
-PART 1: HOOK DISCIPLINE & CHORUS BLUEPRINT (ผังท่อนฮุก)
+PART 1: HOOK DISCIPLINE & CHORUS BLUEPRINT
 =======================================================
 1. Core Truth & Emotional Compression:
-   - Hook ต้องเกิดจาก: Core Truth + Character Voice + Emotional Compression
-   - Chorus มีหน้าที่ส่งมอบ "Song Truth" และ "แก่นอารมณ์ตกผลึก" ห้ามเล่าสรุป Timeline หรือแจกแจงเหตุการณ์ซ้ำ
+   - Hook ต้องกลั่นจาก: Core Truth + Character Voice + Emotional Compression
+   - Chorus มีหน้าที่ส่งมอบ "Song Truth" และ "แก่นอารมณ์ตกผลึก" ห้ามเล่าสรุป Timeline หรือบรรยายเหตุการณ์ซ้ำ
 
 2. Hook Candidates Strategy (สร้าง 3-4 ตัวเลือก):
-   - สร้าง 3 ถึง 4 Hook Candidates ที่กระชับและหลากหลาย (phrase_hook, statement_hook, conversational_hook, image_hook)
-   - หากผู้ใช้ระบุวลีสำคัญใน Story/User Prompt ให้ประเมินเป็น Candidate ที่มี Priority สูงสุด
-   - Hook ต้องเป็นประโยคที่ตัวละครในเรื่อง "น่าจะพูดจริงในชีวิต"
+   - สร้าง 3 ถึง 4 Hook Candidates ที่มีมิติต่างกัน (phrase_hook, statement_hook, conversational_hook, image_hook)
+   - หากผู้ใช้ระบุวลีสำคัญใน Story/Prompt ให้ประเมินเป็น Candidate ที่มี Priority สูงสุด
 
-3. Scoring & Selection (การประเมินและคัดเลือก):
-   - ให้คะแนนแต่ละ Candidate (1.0 - 5.0) ในมิติ: storyFit, personaFit, genreFit, singability, naturalness, emotionalImpact, originality
-   - คัดเลือก "Selected Hook" ที่สมบูรณ์แบบที่สุด 1 ตัว
+3. Dynamic Genre-Adaptive Phrasing:
+   - เพลงลูกทุ่ง/เพื่อชีวิต: เน้นภาษาพูดซื่อตรง ตัดพ้อบาดลึก สัมผัสในลื่นไหล ร้องเอื้อนเข้าปาก
+   - เพลง Pop/T-Pop/Indie: เน้น Earworm Melody ประโยคจำง่าย ติดหูตั้งแต่ฟังครั้งแรก
+   - เพลง EDM/Dance/House: เน้นวลีสั้น กระชับ ทรงพลัง (Punchy & Hypnotic Anthem) ร้องตะโกนตามได้ทันที
+   - เพลง Hip-Hop/R&B: เน้น Punchline คมกริบ และสัมผัสจังหวะคำที่มี Groove ชัดเจน
+   - เพลง Rock/Alternative: เน้น Statement ทรงพลังที่พร้อมระเบิดเสียงร้อง
 
-4. Chorus Blueprint Architecture (ผัง 4 บรรทัดมาตรฐาน):
-   - Setup line (ประโยคเปิดนำอารมณ์: ส่งสัมผัสไปยัง Hook Line)
+4. Chorus Blueprint Architecture:
+   - Setup line (ประโยคเปิดนำอารมณ์)
    - Hook line (ประโยคฮุกหลัก: แก่นของเพลงที่จำง่ายที่สุด)
-   - Reinforcement line (ประโยคตอกย้ำความหมาย: จำนวนพยางค์ล้อกับ Setup line)
-   - Emotional payoff (ประโยคจุดสูงสุดของอารมณ์: สัมผัสคล้องกับ Reinforcement line)
-   - Repetition plan ('exact_repeat' หรือ 'controlled_variation' พร้อมเหตุผล)
+   - Reinforcement line (ประโยคตอกย้ำความหมาย: ล้อสัมผัสกับ Hook Line)
+   - Emotional payoff (ประโยคจุดสูงสุดของอารมณ์: จบด้วย Punchline คมคาย)
 
 =======================================================
-PART 2: 🌟 ADVANCED POETIC DEVICES & LYRICAL MASTERY (กฎกวีศาสตร์ขั้นสูง)
+PART 2: กฎกวีศาสตร์และข้อห้ามสากล
 =======================================================
-1. STRICT NARRATIVE LOGIC (ตรรกะเนื้อเรื่องต้องสมเหตุสมผล 100%):
-   - ตรรกะของท่อนฮุกต้องตรงกับปมขัดแย้งของเรื่อง ห้ามใช้คำขัดแย้งผิดความหมาย (เช่น คนจนแพ้คนรวย คือแพ้ความสบาย/เงินตรา ไม่ใช่แพ้ความลำบาก)
-
-2. NATURAL PHRASING & NO ACADEMIC JARGON (ภาษาคนพูดจริง):
-   - ใช้ภาษาพูดและภาษาเพลงที่มนุษย์ใช้จริง ซื่อ ตรง และแทงใจดำ
-   - ห้ามใช้ศัพท์วิชาการ ภาษาบทความ หรือภาษาแปลเด็ดขาด (ห้ามใช้ "กำแพงทางสังคม", "บริบท", "ขับเคลื่อน")
-   - ห้ามสร้างรูปประโยคไวยากรณ์แปลกที่คนไทยไม่ใช้ (เช่น "แลกความรักพ้นผ่านไปไม่ได้")
-
-3. 4/4 RHYTHMIC CADENCE & METER (จังหวะเคาะลงห้องดนตรี):
-   - แต่ละวรรคต้องมีความยาว 6-8 คำ (พยางค์) เพื่อให้ลงจังหวะตก (Downbeat) ของห้องดนตรี 4/4 พอดี ไม่เขียนยาวเป็นร้อยแก้ว
-   - ก่อนลงคำ ให้เช็คเสมอว่าเคาะจังหวะ 1 คำต่อ 1 เคาะแล้วลื่นไหล ไม่ต้องรัวคำ
-
-4. RHYME & INTERNAL FLOW (สัมผัสในและสัมผัสนอก):
-   - คำท้ายวรรคต้องส่ง-รับสัมผัสสระกันอย่างลงตัวตามฉันทลักษณ์
-   - บังคับให้มี "สัมผัสใน" (เสียงสระ/พยัญชนะคู่ชิด) ในทุกวรรคเพื่อให้ร้องเข้าปากและเกิด Groove
-
-5. BALANCE SHOW & TELL:
-   - สลับภาพจำจากสิ่งของจริง (Show) กับคำพูดตัดพ้อความรู้สึกตรงๆ (Tell) เช่น "ใจมันเจ็บ", "สู้เขาไม่ไหว"
-
-6. ZERO CLICHÉS & LINGUISTIC PURITY:
-   - เลี่ยงคำบอกอารมณ์สำเร็จรูปโหลๆ (เช่น "ดวงดาวในคืนนี้", "ไม่มีเธอจะอยู่ยังไง")
-   - ตัดคำสร้อยฟุ่มเฟือย ใช้คำง่ายแต่กินใจ (Simple words, Deep impact)
-
-7. LUKTHUNG & POETIC FOLK PARALLEL HOOK (โครงสร้างคู่ขนานลูกทุ่งเพื่อชีวิต):
-   - ใช้โครงสร้างประโยคตัดพ้อคู่ขนาน (Parallel Antithesis) เช่น:
-     * "มือพี่เปื้อนคราบน้ำมัน... มือเขามีแหวนเพชรให้เธอ"
-     * "เหงื่อทั้งปีแลกได้แค่ค่าห้อง... เงินเขากองซื้อใจเธอไป"
-   - Climax Punchline ต้องขยี้แผลใจและความเหลื่อมล้ำอย่างคมคาย
+1. STRICT NARRATIVE LOGIC: ตรรกะของท่อนฮุกต้องสมเหตุสมผลและตรงกับปมขัดแย้งของเรื่อง 100%
+2. NO ACADEMIC JARGON: ห้ามใช้ศัพท์วิชาการ/ภาษาบทความ (เช่น บริบท, มิติ, กำแพงสังคม)
+3. NO MECHANICAL ITEM DUMP: ท่อนฮุกต้องเป็น "ความรู้สึกและสัจธรรมชีวิต" เท่านั้น ห้ามนำรายชื่อสิ่งของ อุปกรณ์การทำงาน หรือเครื่องมือเฉพาะทางมายัดเยียดใน 4 วรรคของฮุก
+4. NATURAL CADENCE: วางจังหวะวรรคให้พอดีกับลมหายใจและห้องดนตรีของแนวนั้น ๆ อย่างเป็นธรรมชาติ
 
 ส่งคืนผลลัพธ์เป็น JSON ตรงตาม Schema เท่านั้น`;
 
   const prompt = `โปรดสร้าง Hook Candidates 3-4 ตัว และวาง Chorus Blueprint ตามข้อมูลต่อไปนี้:
 
-=== ข้อมูล SONG BLUEPRINT & COMPOSITION PLAN ===
+--- ข้อมูล SONG BLUEPRINT & COMPOSITION PLAN ---
 - แก่นความจริงสูงสุด (Core Truth): "${blueprint.coreTruth}"
 - ความขัดแย้งหลัก (Central Conflict): ${blueprint.centralConflict}
 - ผู้เล่า (Speaker Voice): ${blueprint.speaker.identity} | น้ำเสียง: ${blueprint.speaker.voice}
-- ผู้รับฟัง (Listener): ${blueprint.listener}
+- ผู้ฟัง (Listener): ${blueprint.listener}
 - ฉาก/สถานที่ (Setting): ${blueprint.setting}
-- สิ่งของและภาพ Sensory (Visual/Objects): ${[...blueprint.songWorld.objects, ...blueprint.visualMotifs].join(', ') || 'ตามความเหมาะสม'}
-- จุด Dramatic ที่เลือกเน้น (Chosen Dramatic Moments): ${blueprint.narrativeCompression?.chosenDramaticMoments?.join(' | ') || 'ตามแก่นเรื่อง'}
-- สิ่งที่ต้องหลีกเลี่ยง (Negative Space & Clichés): ${blueprint.negativeSpaceDirectives?.clicheAvoidanceZones?.join(', ') || 'คำบอกอารมณ์สำเร็จรูป'}
 - ความต้องการของ Hook (Central Hook Need): ${blueprint.centralHookNeed}
-- แนวเพลง: ${context.genresStr}
-- อารมณ์: ${context.moodsStr}
-- ภาษาเป้าหมาย: ${context.targetContentLanguage}
-- โจทย์/เรื่องราว: ${context.story || 'เพลงรักร่วมสมัย'}
-${generateDynamicLexiconPalette(context.story || '')}
+- แนวดนตรี: ${context.genresStr}
+- อารมณ์เพลง: ${context.moodsStr}
+- ภาษาเป้าหมาย: ${context.targetContentLanguage || 'th'}
+- โจทย์/เรื่องราว: ${context.story || 'เพลงที่ถ่ายทอดอารมณ์อย่างลึกซึ้ง'}
 
-[คำสั่งเน้นย้ำ]: Hook และ Chorus ต้องสะท้อน Core Truth และเป็น Emotional Compression ไม่เล่าเหตุการณ์ตามลำดับเวลา`;
+${generateDynamicLexiconPalette(context.story || '', context.targetContentLanguage || 'th')}
+
+--- 🎯 DIRECTIVE CONSTRAINTS ---
+1. ออกแบบประโยคฮุกให้เข้ากับจังหวะและจริตของแนวเพลง [${context.genresStr}]
+2. คุมสัมผัสสระและคำลงท้ายให้ร้องลื่นไหล ไม่ติดขัด
+3. โฟกัสที่แก่นอารมณ์และ Punchline ที่จำติดหูทันที`;
 
   try {
     const { response } = await callGeminiWithFallback(ai!, {
@@ -287,7 +264,6 @@ ${generateDynamicLexiconPalette(context.story || '')}
       titleRelationship: titleRel,
     };
 
-    // Structured Log (Rule 29: Development logs)
     console.log(`[HookCraft]`);
     console.log(`candidateCount: ${candidates.length}`);
     console.log(`selected: "${selectedHook.text}" (${selectedHook.hookType})`);

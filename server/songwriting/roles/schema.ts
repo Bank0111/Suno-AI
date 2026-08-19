@@ -82,3 +82,44 @@ export interface ResolvedSongwriterRole {
   resolutionSource: 'EXPLICIT_USER' | 'GENRE_LANGUAGE_MATCH' | 'GENRE_FAMILY_MATCH' | 'GENERIC_FALLBACK';
   matchReason: string;
 }
+
+/**
+ * Validation Report for Role Profiles Integrity
+ */
+export interface RoleValidationReport {
+  isValid: boolean;
+  totalRoles: number;
+  validRolesCount: number;
+  errors: string[];
+  warnings: string[];
+}
+
+/**
+ * Benchmark Test Case for Role Resolution Accuracy
+ */
+export interface RoleResolutionTestCase {
+  id: string;
+  description: string;
+  input: SongwriterRoleResolutionInput;
+  expectedRoleId: string;
+  expectedResolutionSource?: 'EXPLICIT_USER' | 'GENRE_LANGUAGE_MATCH' | 'GENRE_FAMILY_MATCH' | 'GENERIC_FALLBACK';
+}
+
+/**
+ * Summary Report for Automated Role Benchmarking
+ */
+export interface RoleBenchmarkSuiteReport {
+  timestamp: string;
+  profilesValidation: RoleValidationReport;
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  accuracy: number; // 0.0 to 1.0 (or percentage)
+  failures: Array<{
+    testId: string;
+    description: string;
+    expected: string;
+    actual: string;
+    reason: string;
+  }>;
+}

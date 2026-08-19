@@ -6,3 +6,8 @@ coverage/
 *.log
 .env*
 !.env.example
+# Ignore large lexicon data files
+server/lexicon/data/languages/*/vocabulary.json
+server/lexicon/data/languages/*/vocabulary.validated.json
+server/lexicon/data/languages/*/*.bak
+server/lexicon/data/wordbank/

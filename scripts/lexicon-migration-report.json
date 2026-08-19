@@ -1,0 +1,108 @@
+{
+  "generatedAt": "2026-08-18T18:16:44.971Z",
+  "languages": [
+    {
+      "language": "th",
+      "vocabulary": 29519,
+      "domains": 3,
+      "rhymes": 5,
+      "mode": "legacy-th"
+    },
+    {
+      "language": "en",
+      "vocabulary": 480427,
+      "domains": 5,
+      "rhymes": 464,
+      "mode": "generated"
+    },
+    {
+      "language": "zh",
+      "vocabulary": 163341,
+      "domains": 5,
+      "rhymes": 500,
+      "mode": "generated"
+    },
+    {
+      "language": "ja",
+      "vocabulary": 62041,
+      "domains": 5,
+      "rhymes": 500,
+      "mode": "generated"
+    },
+    {
+      "language": "ko",
+      "vocabulary": 860,
+      "domains": 5,
+      "rhymes": 147,
+      "mode": "generated"
+    },
+    {
+      "language": "de",
+      "vocabulary": 60660,
+      "domains": 5,
+      "rhymes": 199,
+      "mode": "generated"
+    },
+    {
+      "language": "es",
+      "vocabulary": 480783,
+      "domains": 5,
+      "rhymes": 227,
+      "mode": "generated"
+    },
+    {
+      "language": "fr",
+      "vocabulary": 213493,
+      "domains": 5,
+      "rhymes": 211,
+      "mode": "generated"
+    },
+    {
+      "language": "pt",
+      "vocabulary": 231740,
+      "domains": 5,
+      "rhymes": 192,
+      "mode": "generated"
+    },
+    {
+      "language": "id",
+      "vocabulary": 433,
+      "domains": 5,
+      "rhymes": 75,
+      "mode": "generated"
+    },
+    {
+      "language": "vi",
+      "vocabulary": 1229,
+      "domains": 5,
+      "rhymes": 166,
+      "mode": "generated"
+    },
+    {
+      "language": "hi",
+      "vocabulary": 3854,
+      "domains": 5,
+      "rhymes": 270,
+      "mode": "generated"
+    },
+    {
+      "language": "ar",
+      "vocabulary": 216,
+      "domains": 5,
+      "rhymes": 41,
+      "mode": "generated"
+    },
+    {
+      "language": "lo",
+      "vocabulary": 14007,
+      "domains": 5,
+      "rhymes": 500,
+      "mode": "generated"
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "success": 14,
+    "failed": 0
+  }
+}

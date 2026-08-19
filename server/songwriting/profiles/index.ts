@@ -10,10 +10,10 @@ export * from './genericProfile';
 
 /**
  * Resolves the appropriate LanguageLyricProfile for a given target language.
- * Ensures language isolation: Never applies Thai rules to English, or vice versa.
+ * Ensures language isolation: Never applies Thai rules to English, or vice versa (Phase 5.7 Gate).
  */
 export function getLanguageProfile(language?: string): LanguageLyricProfile {
-  if (!language) {
+  if (!language || !language.trim()) {
     return ThaiLyricProfile; // default system language
   }
 
@@ -40,6 +40,6 @@ export function getLanguageProfile(language?: string): LanguageLyricProfile {
     return EnglishLyricProfile;
   }
 
-  // Unsupported languages (Japanese, Korean, Spanish, Chinese, etc.)
-  return createGenericLyricProfile(language);
+  // Unsupported or Dynamic languages (Japanese, Korean, Spanish, Chinese, French, etc.)
+  return createGenericLyricProfile(language.trim());
 }

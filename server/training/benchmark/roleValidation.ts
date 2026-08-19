@@ -131,19 +131,29 @@ export function validateRoleProfiles(): {
 } {
   const allRoles = listAllRoles();
   const results: RoleValidationResult[] = allRoles.map((role) => {
-    const hasIdentity = Boolean(role.identity?.profession && role.identity?.expertise?.length > 0);
-    const hasMusicalContext = Boolean(role.musicalContext?.genre && role.musicalContext?.subgenre?.length > 0);
+    const hasIdentity = Boolean(role.identity?.profession && (role.identity?.expertise?.length || 0) > 0);
+    const hasMusicalContext = Boolean(role.musicalContext?.genre && (role.musicalContext?.subgenre?.length || 0) > 0);
     const hasLanguage = Boolean(role.language?.primary && role.language?.languageProfile);
-    const hasPersona = Boolean(role.persona?.voice && role.persona?.attitude && role.persona?.storytellingStyle?.length > 0);
+
+    const storytellingStyleValid = Array.isArray(role.persona?.storytellingStyle)
+      ? role.persona.storytellingStyle.length > 0
+      : Boolean(role.persona?.storytellingStyle);
+
+    const hasPersona = Boolean(role.persona?.voice && role.persona?.attitude && storytellingStyleValid);
     const hasVocabulary = Boolean(role.vocabulary?.preferred && role.vocabulary?.avoid && role.vocabulary?.registerRules);
     const hasImagery = Boolean(role.imagery?.preferred && role.imagery?.rules);
     const hasSongcraft = Boolean(role.songcraft?.hookStyle && role.songcraft?.rhymeApproach && role.songcraft?.phrasing);
-    const hasAuthenticity = Boolean(role.authenticity?.principles?.length > 0);
-    const hasConstraints = Boolean(role.constraints?.mustDo?.length > 0 && role.constraints?.mustAvoid?.length > 0);
-    const hasEvaluation = Boolean(role.evaluation?.primaryMetrics?.length > 0);
+    const hasAuthenticity = Boolean((role.authenticity?.principles?.length || 0) > 0);
+    const hasConstraints = Boolean((role.constraints?.mustDo?.length || 0) > 0 && (role.constraints?.mustAvoid?.length || 0) > 0);
+    const hasEvaluation = Boolean((role.evaluation?.primaryMetrics?.length || 0) > 0);
 
-    const prompt = buildRolePrompt(role, { targetContentLanguage: 'th', sectionType: 'Chorus' });
-    const promptGeneratedLength = prompt.length;
+    let promptGeneratedLength = 0;
+    try {
+      const prompt = buildRolePrompt(role, { targetContentLanguage: 'th', sectionType: 'Chorus' });
+      promptGeneratedLength = prompt.length;
+    } catch {
+      promptGeneratedLength = 0;
+    }
 
     const isValid =
       hasIdentity &&

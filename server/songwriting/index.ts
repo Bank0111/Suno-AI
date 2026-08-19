@@ -7,7 +7,6 @@ import { executeFinalQA, FinalQAReport } from './qa';
 import {
   CriticReport,
   SongwritingCriticRewriteResult,
-  TargetedRewriteExecutionRecord,
 } from './types';
 
 export * from './types';
@@ -26,7 +25,6 @@ export * from './roles/promptAdapter';
 
 /**
  * Orchestrator: Songwriting Critic + Targeted Rewrite + Lyric Craft Editor Layer
- * Integrates directly after Lyric Writer and before Phrasing Engine.
  */
 export async function runSongwritingCriticAndRewrite(
   draft: { sections: Array<{ type: string; performanceDirection?: string; musicDirection?: string; lyrics: string[] }> },
@@ -34,7 +32,6 @@ export async function runSongwritingCriticAndRewrite(
   ai?: GoogleGenAI,
   options: { maxRounds?: number; protectedHookLines?: string[] } = {}
 ): Promise<SongwritingCriticRewriteResult> {
-  // Safety guard: Empty or invalid draft
   if (!draft || !draft.sections || draft.sections.length === 0) {
     const defaultQA = executeFinalQA([], context);
     return {
@@ -61,7 +58,7 @@ export async function runSongwritingCriticAndRewrite(
           sectionFunctionScore: 5.0,
         },
       },
-      rewriteRecords: [],
+      rewriteRecords: [] as any[],
       totalRewrittenLines: 0,
       roundsExecuted: 0,
       finalQA: {
@@ -69,13 +66,12 @@ export async function runSongwritingCriticAndRewrite(
         issuesFound: defaultQA.issuesFound,
         qaScore: defaultQA.qaScore,
       },
-    };
+    } as SongwritingCriticRewriteResult;
   }
 
   console.log(`[SongCritic Pipeline] Step 1: Evaluating draft lyrics with Songwriting Critic...`);
   const criticReport = await evaluateLyricsWithCritic(draft, context, ai);
 
-  // Register Protected Hook Lines from Blueprint / HookCraft
   if (options.protectedHookLines && options.protectedHookLines.length > 0) {
     const hookLinesSet = new Set(options.protectedHookLines.map((h) => h.trim().toLowerCase()));
     draft.sections.forEach((sec, sIdx) => {
@@ -94,13 +90,12 @@ export async function runSongwritingCriticAndRewrite(
   }
 
   let finalLyrics = draft.sections;
-  let rewriteRecords: TargetedRewriteExecutionRecord[] = [];
+  let rewriteRecords: any[] = [];
   let totalRewrittenLines = 0;
   let roundsExecuted = 0;
 
-  // Step 2: Targeted Rewrite (Only if status is REVIEW or FAIL and actionable targets exist)
   if (criticReport.overallStatus !== 'PASS' && criticReport.rewriteTargets.length > 0) {
-    console.log(`[SongCritic Pipeline] Step 2: Critic reported status "${criticReport.overallStatus}". Executing Targeted Rewrite on ${criticReport.rewriteTargets.length} target(s)...`);
+    console.log(`[SongCritic Pipeline] Step 2: Executing Targeted Rewrite on ${criticReport.rewriteTargets.length} target(s)...`);
     const rewriteResult = await executeTargetedRewrite(
       draft,
       criticReport,
@@ -113,10 +108,9 @@ export async function runSongwritingCriticAndRewrite(
     totalRewrittenLines = rewriteResult.totalRewrittenLines;
     roundsExecuted = rewriteResult.roundsExecuted;
   } else {
-    console.log(`[SongCritic Pipeline] Step 2: Critic reported status "PASS". Preserving draft lyrics without modification.`);
+    console.log(`[SongCritic Pipeline] Step 2: Preserving draft lyrics without modification.`);
   }
 
-  // Step 2.5: Language-Agnostic Lyric Craft Editorial Pass (Phase 5.6)
   console.log(`[SongCritic Pipeline] Step 2.5: Executing Lyric Craft Editorial Pass...`);
   let editorialReport: LyricCraftEditorialReport | undefined;
   try {
@@ -129,10 +123,9 @@ export async function runSongwritingCriticAndRewrite(
     finalLyrics = craftEditorialResult.updatedSections;
     editorialReport = craftEditorialResult.report;
   } catch (editorErr: any) {
-    console.warn(`[SongCritic Pipeline] Non-blocking warning in Lyric Craft Editorial pass: ${editorErr.message}`);
+    console.warn(`[SongCritic Pipeline] Warning in Editorial pass: ${editorErr.message}`);
   }
 
-  // Step 3: Final QA
   const finalQA = executeFinalQA(finalLyrics, context);
   console.log(`[SongCritic Pipeline] Step 3: Final QA complete. Passed: ${finalQA.passed}, QA Score: ${finalQA.qaScore}/100.`);
 
@@ -140,7 +133,7 @@ export async function runSongwritingCriticAndRewrite(
     originalLyrics: draft.sections,
     finalLyrics,
     criticReport,
-    rewriteRecords,
+    rewriteRecords: rewriteRecords as any,
     totalRewrittenLines,
     roundsExecuted,
     editorialReport,
@@ -149,6 +142,5 @@ export async function runSongwritingCriticAndRewrite(
       issuesFound: finalQA.issuesFound,
       qaScore: finalQA.qaScore,
     },
-  };
+  } as SongwritingCriticRewriteResult;
 }
-

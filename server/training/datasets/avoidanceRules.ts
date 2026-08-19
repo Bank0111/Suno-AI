@@ -3,10 +3,12 @@ import { AvoidanceRuleEntry } from '../types';
 /**
  * AVOIDANCE KNOWLEDGE DATASET (MULTI-TIERED AVOIDANCE RULES)
  * Categorized constraints for fine-grained vocabulary control, preventing generic clichés,
- * awkward robotic phrases, and context clashes without excessive global blacklisting.
+ * awkward robotic phrases, academic jargon, and context clashes without excessive global blacklisting.
  */
 export const AVOIDANCE_RULES: AvoidanceRuleEntry[] = [
+  // =========================================================================
   // 1. HARD_BLOCK: Offensive, illegal, or strictly forbidden terms
+  // =========================================================================
   {
     id: 'avoid-hard-001',
     termOrPhrase: 'คำหยาบคายรุนแรง / เหยียดเชื้อชาติ / ละเมิดสิทธิ',
@@ -17,13 +19,15 @@ export const AVOIDANCE_RULES: AvoidanceRuleEntry[] = [
     sourceType: 'synthetic-expert',
   },
 
-  // 2. CONTEXTUAL_AVOID: Awkward robotic metaphors & forced math
+  // =========================================================================
+  // 2. CONTEXTUAL_AVOID: Robotic, Academic Jargon & Genre Mismatches
+  // =========================================================================
   {
     id: 'avoid-ctx-001',
-    termOrPhrase: 'คูณสอง / บวกหนึ่ง / เปอร์เซ็นต์ / ตัวคูณ',
+    termOrPhrase: 'คูณสอง / บวกหนึ่ง / เปอร์เซ็นต์ / ตัวคูณ / 100%',
     tier: 'CONTEXTUAL_AVOID',
     contextConditions: {
-      genres: ['Country / Folk', 'Lukthung', 'R&B / Soul', 'Indie / Pop'],
+      genres: ['Country / Folk', 'Lukthung', 'R&B / Soul', 'Indie / Pop', 'Hip-Hop / Rap'],
     },
     reason: 'ศัพท์คณิตศาสตร์ทำให้เพลงรักหรือเพลงโฟล์กฟังดูเหมือนโปรโมชั่นสินค้าหรือระบบคอมพิวเตอร์ ขาดความเป็นมนุษย์',
     suggestedAlternatives: ['ยิ่งกว่าเดิม', 'ทวีคูณ (ในบริบทที่เหมาะสม)', 'มากมาย', 'เต็มหัวใจ'],
@@ -53,20 +57,60 @@ export const AVOIDANCE_RULES: AvoidanceRuleEntry[] = [
   },
   {
     id: 'avoid-ctx-004',
-    termOrPhrase: 'ข้าพเจ้า / ประจักษ์ / สุริยัน / นภา / สรวงสวรรค์',
+    termOrPhrase: 'ข้าพเจ้า / ประจักษ์ / สุริยัน / นภา / สรวงสวรรค์ / กานดา',
     tier: 'CONTEXTUAL_AVOID',
     contextConditions: {
-      genres: ['Hip-Hop / Rap', 'R&B / Soul', 'Indie / Pop'],
+      genres: ['Hip-Hop / Rap', 'R&B / Soul', 'Indie / Pop', 'Rock'],
     },
     reason: 'ศัพท์วรรณศิลป์ชั้นสูงหรือคำราชาศัพท์ขัดแย้งกับสไตล์ดนตรีร่วมสมัยและภาษาพูดริมถนน',
-    suggestedAlternatives: ['ฉัน / ผม / ตัวกู', 'มองเห็น / พิสูจน์', 'ท้องฟ้า / แสงแดด', 'โลกความจริง'],
+    suggestedAlternatives: ['ฉัน / ผม / ตัวกู', 'มองเห็น / พิสูจน์', 'ท้องฟ้า / แสงแดด', 'โลกความจริง', 'คนดี / เธอ'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'avoid-ctx-005',
+    termOrPhrase: 'บริบท / มิติใหม่ / กำแพงชนชั้น / ขับเคลื่อน / โครงสร้างทางสังคม / ปัจจัย',
+    tier: 'CONTEXTUAL_AVOID',
+    contextConditions: {},
+    reason: 'ศัพท์เชิงวิชาการ รายงานข่าว หรือภาษาบทความวิจัย ไม่ใช่ภาษาที่มนุษย์ใช้ร้องเพลงเพื่อถ่ายทอดความรู้สึก',
+    suggestedAlternatives: ['เรื่องราวรอบตัว', 'ความต่างของสองเรา', 'แรงผลักดันในใจ', 'โลกความเป็นจริง'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'avoid-ctx-006',
+    termOrPhrase: 'ประแจ / น็อต / ไขควง / คราบน้ำมัน / ชุดเซฟตี้ / หัวเทียน / สายพาน (ในท่อน Chorus / Hook / Bridge)',
+    tier: 'CONTEXTUAL_AVOID',
+    contextConditions: {
+      sections: ['Chorus', 'Hook', 'Bridge'],
+    },
+    reason: 'ท่อนฮุกและบริดจ์ต้องเป็นพื้นที่ของแก่นอารมณ์และสัจธรรมชีวิต การยัดเยียดชื่ออุปกรณ์ช่างทำให้เพลงเสียความลึกซึ้ง (Mechanical Dump)',
+    suggestedAlternatives: ['สองมือที่เปื้อน', 'หยาดเหงื่อ', 'ทางเดินชีวิต', 'ความจน', 'หัวใจที่สู้ไม่ถอย'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'avoid-ctx-007',
+    termOrPhrase: 'จากนั้นก็... / แล้วจึง... / ขั้นตอนต่อไป / ในลำดับแรก (Narrative Prose Reporting)',
+    tier: 'CONTEXTUAL_AVOID',
+    contextConditions: {},
+    reason: 'ภาษาแจกแจงลำดับเหตุการณ์การเดินทางแบบร้อยแก้วหรือบันทึกประจำวัน ขาดความเป็นบทกวีและจังหวะดนตรี',
+    suggestedAlternatives: ['ตัดภาพไปที่การกระทำสำคัญทันที', 'ใช้ภาพสัมผัสบอกบรรยากาศแทนการแจงขั้นตอน'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'avoid-ctx-008',
+    termOrPhrase: 'ทำให้ฉันรู้สึกเศร้า / บอกตรงๆ ว่าเหงาใจ / อธิบายความเจ็บ (Emotional Over-Explanation)',
+    tier: 'CONTEXTUAL_AVOID',
+    contextConditions: {},
+    reason: 'เขียนบรรยายบอกความรู้สึกตรงๆ ซ้ำซ้อนหลังสร้างภาพฉากไปแล้ว ไม่เปิดพื้นที่ว่าง (Negative Space) ให้ผู้ฟังรู้สึกเอง',
+    suggestedAlternatives: ['ปล่อยให้ภาพและเหตุการณ์ทำหน้าที่สื่ออารมณ์ (Show Don\'t Tell)'],
     sourceType: 'synthetic-expert',
   },
 
+  // =========================================================================
   // 3. LOW_PREFERENCE: Overused Clichés that weaken lyric quality
+  // =========================================================================
   {
     id: 'avoid-low-001',
-    termOrPhrase: 'รักเธอสุดหัวใจ',
+    termOrPhrase: 'รักเธอสุดหัวใจ / คิดถึงเธอสุดหัวใจ',
     tier: 'LOW_PREFERENCE',
     contextConditions: {},
     reason: 'วลีสำเร็จรูปซ้ำซาก ขาดความสดใหม่และเอกลักษณ์เฉพาะตัวของเพลง',
@@ -98,6 +142,15 @@ export const AVOIDANCE_RULES: AvoidanceRuleEntry[] = [
     contextConditions: {},
     reason: 'คำสัญญาลอยๆ ที่เป็นนามธรรมเกินไป ขาดความสมจริง',
     suggestedAlternatives: ['อยู่ข้างกันไปทุกวัน', 'จนผมขาวไปด้วยกัน', 'ในวันที่แก่เฒ่า'],
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'avoid-low-005',
+    termOrPhrase: 'ใจดวงน้อย / โลกมืดมน / รอวันเธอกลับมา',
+    tier: 'LOW_PREFERENCE',
+    contextConditions: {},
+    reason: 'ประโยคสำเร็จรูปที่สามารถสลับไปใส่เพลงไหนก็ได้ ขาดความเฉพาะเจาะจงของเรื่องเล่า',
+    suggestedAlternatives: ['ระบุสิ่งของ สถานที่ หรือเหตุการณ์ที่ตัวละครในเพลงกำลังเผชิญจริง'],
     sourceType: 'synthetic-expert',
   },
 ];

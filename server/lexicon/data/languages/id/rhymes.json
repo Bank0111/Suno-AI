@@ -1,0 +1,788 @@
+{
+  "language": "id",
+  "rhymeGroups": [
+    {
+      "key": "an",
+      "words": [
+        "Iran",
+        "kecelakaan",
+        "lengan",
+        "kehidupan",
+        "ikan",
+        "taman",
+        "sarapan",
+        "badan",
+        "perbatasan",
+        "kotoran",
+        "makan",
+        "tangan",
+        "ketinggian",
+        "peringatan",
+        "ASEAN",
+        "durian",
+        "bulan",
+        "hujan",
+        "awan",
+        "dan",
+        "berjalan",
+        "dengan",
+        "Bandar Seri Begawan",
+        "Al-Qur'an",
+        "cairan",
+        "keamanan",
+        "jalan",
+        "hutan",
+        "makanan",
+        "santan",
+        "lautan",
+        "Afganistan",
+        "peperangan",
+        "cendawan",
+        "Tailan"
+      ]
+    },
+    {
+      "key": "ng",
+      "words": [
+        "hidung",
+        "ranjang",
+        "ruang",
+        "belakang",
+        "keranjang",
+        "kacang",
+        "beruang",
+        "burung",
+        "tulang",
+        "udang",
+        "orang",
+        "lubang",
+        "datang",
+        "pisang",
+        "natang",
+        "perang",
+        "kepiting",
+        "kucing",
+        "kambing",
+        "jagung",
+        "musang",
+        "anjing",
+        "uang",
+        "daging",
+        "binatang",
+        "kentang",
+        "nasi goreng",
+        "topeng",
+        "dading"
+      ]
+    },
+    {
+      "key": "at",
+      "words": [
+        "wat",
+        "lompat",
+        "syarat",
+        "ulat",
+        "alat",
+        "jelawat",
+        "sepat",
+        "pencak silat",
+        "ayat",
+        "tomat",
+        "cokelat",
+        "donat",
+        "kata sifat",
+        "salat",
+        "jagat",
+        "selat"
+      ]
+    },
+    {
+      "key": "ri",
+      "words": [
+        "dormitori",
+        "hari",
+        "pari",
+        "Januari",
+        "Februari",
+        "nuri",
+        "berlari",
+        "histori",
+        "biri",
+        "stroberi",
+        "jari",
+        "tari",
+        "mengairi",
+        "bakeri",
+        "entri"
+      ]
+    },
+    {
+      "key": "ar",
+      "words": [
+        "Qatar",
+        "dasar",
+        "khabar",
+        "pasar",
+        "ular",
+        "mawar",
+        "mendengar",
+        "lapar",
+        "dinar",
+        "telur dadar",
+        "bakar",
+        "pelajar",
+        "zat pembakar"
+      ]
+    },
+    {
+      "key": "ah",
+      "words": [
+        "darah",
+        "rumah",
+        "sekolah",
+        "kerang darah",
+        "gajah",
+        "merah",
+        "tanah",
+        "buah",
+        "sejarah",
+        "tapah",
+        "murah",
+        "salah"
+      ]
+    },
+    {
+      "key": "as",
+      "words": [
+        "beras",
+        "universitas",
+        "lunas",
+        "nanas",
+        "kertas",
+        "gelas",
+        "kapas",
+        "musim panas",
+        "remas",
+        "horas",
+        "alamas"
+      ]
+    },
+    {
+      "key": "ur",
+      "words": [
+        "mur",
+        "kamar tidur",
+        "Timor Timur",
+        "ubur-ubur",
+        "telur",
+        "anggur",
+        "Kuala Lumpur",
+        "jamur",
+        "sayur",
+        "tidur"
+      ]
+    },
+    {
+      "key": "ra",
+      "words": [
+        "aksara",
+        "Singapura",
+        "zebra",
+        "batu bara",
+        "negara",
+        "nara",
+        "samudra",
+        "kapibara",
+        "jalan zebra",
+        "Amerika Utara"
+      ]
+    },
+    {
+      "key": "ta",
+      "words": [
+        "cinta",
+        "pesta",
+        "kota",
+        "mata",
+        "wanita",
+        "kata",
+        "unta",
+        "Jakarta",
+        "gurita",
+        "buta"
+      ]
+    },
+    {
+      "key": "ak",
+      "words": [
+        "kotak",
+        "emak",
+        "katak",
+        "anak",
+        "arak",
+        "tak",
+        "mak",
+        "badak",
+        "nebak"
+      ]
+    },
+    {
+      "key": "ga",
+      "words": [
+        "surga",
+        "tembaga",
+        "bunga",
+        "singa",
+        "olahraga",
+        "harga",
+        "mentega",
+        "mangga",
+        "serangga"
+      ]
+    },
+    {
+      "key": "am",
+      "words": [
+        "gram",
+        "ayam",
+        "logam",
+        "jam",
+        "tiram",
+        "garam",
+        "paham",
+        "karam"
+      ]
+    },
+    {
+      "key": "ik",
+      "words": [
+        "itik",
+        "politik",
+        "baik",
+        "administrasi publik",
+        "ilmu ekonomi politik",
+        "bistik",
+        "persik",
+        "detik"
+      ]
+    },
+    {
+      "key": "au",
+      "words": [
+        "pulau",
+        "kerang hijau",
+        "kerbau",
+        "danau",
+        "harimau",
+        "pisau",
+        "wau",
+        "cincau"
+      ]
+    },
+    {
+      "key": "ir",
+      "words": [
+        "air",
+        "pikir",
+        "bir",
+        "pasir",
+        "cangkir",
+        "supir",
+        "berair"
+      ]
+    },
+    {
+      "key": "ka",
+      "words": [
+        "Sri Lanka",
+        "neraka",
+        "nangka",
+        "cempaka",
+        "merdeka",
+        "aerodinamika",
+        "matematika"
+      ]
+    },
+    {
+      "key": "si",
+      "words": [
+        "akomodasi",
+        "besi",
+        "nasi",
+        "demokrasi",
+        "kursi",
+        "fungsi",
+        "visi"
+      ]
+    },
+    {
+      "key": "in",
+      "words": [
+        "kain",
+        "cincin",
+        "asin",
+        "cermin",
+        "masin",
+        "jasmin",
+        "djalin"
+      ]
+    },
+    {
+      "key": "pi",
+      "words": [
+        "kereta api",
+        "api",
+        "pipi",
+        "mimpi",
+        "sapi",
+        "kopi"
+      ]
+    },
+    {
+      "key": "es",
+      "words": [
+        "apes",
+        "males",
+        "leges",
+        "bates",
+        "peres",
+        "rames"
+      ]
+    },
+    {
+      "key": "il",
+      "words": [
+        "April",
+        "bentil",
+        "pensil",
+        "kecil",
+        "reptil"
+      ]
+    },
+    {
+      "key": "sa",
+      "words": [
+        "bahasa",
+        "angsa",
+        "dosa",
+        "rusa",
+        "dansa"
+      ]
+    },
+    {
+      "key": "ai",
+      "words": [
+        "pantai",
+        "sungai",
+        "keledai",
+        "badai",
+        "materai"
+      ]
+    },
+    {
+      "key": "uk",
+      "words": [
+        "mangkuk",
+        "teluk",
+        "merbuk",
+        "jeruk",
+        "nyamuk"
+      ]
+    },
+    {
+      "key": "us",
+      "words": [
+        "ikan paus",
+        "tikus",
+        "kamus",
+        "gajus",
+        "rumus"
+      ]
+    },
+    {
+      "key": "na",
+      "words": [
+        "Filipina",
+        "warna",
+        "mana",
+        "alena",
+        "hapax legomena"
+      ]
+    },
+    {
+      "key": "er",
+      "words": [
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+        "komputer"
+      ]
+    },
+    {
+      "key": "is",
+      "words": [
+        "majlis",
+        "jeruk nipis",
+        "sosis",
+        "manggis",
+        "salaris"
+      ]
+    },
+    {
+      "key": "ma",
+      "words": [
+        "nama",
+        "agama",
+        "rama-rama",
+        "MA"
+      ]
+    },
+    {
+      "key": "gi",
+      "words": [
+        "alergi",
+        "pagi",
+        "tinggi",
+        "sosiologi"
+      ]
+    },
+    {
+      "key": "di",
+      "words": [
+        "kamar mandi",
+        "padi",
+        "kadi",
+        "bodi"
+      ]
+    },
+    {
+      "key": "ia",
+      "words": [
+        "manusia",
+        "Indonesia",
+        "rumbia",
+        "rahasia"
+      ]
+    },
+    {
+      "key": "la",
+      "words": [
+        "bola",
+        "serigala",
+        "gula",
+        "jala"
+      ]
+    },
+    {
+      "key": "un",
+      "words": [
+        "ulang tahun",
+        "daun",
+        "tahun",
+        "sabun"
+      ]
+    },
+    {
+      "key": "ni",
+      "words": [
+        "air seni",
+        "Juni",
+        "lini",
+        "Yunani"
+      ]
+    },
+    {
+      "key": "et",
+      "words": [
+        "dompet",
+        "monyet",
+        "Maret",
+        "universitet"
+      ]
+    },
+    {
+      "key": "ut",
+      "words": [
+        "mulut",
+        "laut",
+        "kabut",
+        "sekaut"
+      ]
+    },
+    {
+      "key": "pa",
+      "words": [
+        "pipa",
+        "tapa",
+        "kelapa",
+        "gempa"
+      ]
+    },
+    {
+      "key": "os",
+      "words": [
+        "Laos",
+        "ongkos",
+        "bros"
+      ]
+    },
+    {
+      "key": "ek",
+      "words": [
+        "bebek",
+        "nenek",
+        "pendek"
+      ]
+    },
+    {
+      "key": "ol",
+      "words": [
+        "alkohol",
+        "botol",
+        "wol"
+      ]
+    },
+    {
+      "key": "ti",
+      "words": [
+        "hati",
+        "roti",
+        "meranti"
+      ]
+    },
+    {
+      "key": "wa",
+      "words": [
+        "Dewa",
+        "asam jawa",
+        "kahwa"
+      ]
+    },
+    {
+      "key": "mi",
+      "words": [
+        "bumi",
+        "cumi-cumi",
+        "gempa bumi"
+      ]
+    },
+    {
+      "key": "ja",
+      "words": [
+        "Kamboja",
+        "ganja",
+        "meja"
+      ]
+    },
+    {
+      "key": "al",
+      "words": [
+        "mahal",
+        "selamat tinggal",
+        "tebal"
+      ]
+    },
+    {
+      "key": "ap",
+      "words": [
+        "urap",
+        "sedap",
+        "sayap"
+      ]
+    },
+    {
+      "key": "en",
+      "words": [
+        "apen",
+        "pulpen",
+        "handschoen"
+      ]
+    },
+    {
+      "key": "da",
+      "words": [
+        "lada",
+        "kuda",
+        "garuda"
+      ]
+    },
+    {
+      "key": "um",
+      "words": [
+        "hukum",
+        "jarum",
+        "minum"
+      ]
+    },
+    {
+      "key": "ok",
+      "words": [
+        "sendok",
+        "kedok",
+        "besok"
+      ]
+    },
+    {
+      "key": "or",
+      "words": [
+        "sepeda motor",
+        "nomor"
+      ]
+    },
+    {
+      "key": "yi",
+      "words": [
+        "bayi",
+        "nyanyi"
+      ]
+    },
+    {
+      "key": "gu",
+      "words": [
+        "lagu",
+        "minggu"
+      ]
+    },
+    {
+      "key": "it",
+      "words": [
+        "kulit",
+        "rumah sakit"
+      ]
+    },
+    {
+      "key": "ku",
+      "words": [
+        "buku",
+        "kuku"
+      ]
+    },
+    {
+      "key": "mu",
+      "words": [
+        "ilmu",
+        "-mu"
+      ]
+    },
+    {
+      "key": "ki",
+      "words": [
+        "anak laki-laki",
+        "kaki"
+      ]
+    },
+    {
+      "key": "pu",
+      "words": [
+        "sapu",
+        "garpu"
+      ]
+    },
+    {
+      "key": "su",
+      "words": [
+        "susu",
+        "asu"
+      ]
+    },
+    {
+      "key": "li",
+      "words": [
+        "Juli",
+        "beli"
+      ]
+    },
+    {
+      "key": "ul",
+      "words": [
+        "gul",
+        "betul"
+      ]
+    },
+    {
+      "key": "ba",
+      "words": [
+        "lumba-lumba",
+        "laba-laba"
+      ]
+    },
+    {
+      "key": "tu",
+      "words": [
+        "satu",
+        "batu"
+      ]
+    },
+    {
+      "key": "ca",
+      "words": [
+        "ca",
+        "kaca"
+      ]
+    },
+    {
+      "key": "ya",
+      "words": [
+        "buaya",
+        "pepaya"
+      ]
+    },
+    {
+      "key": "ci",
+      "words": [
+        "kelinci",
+        "leci"
+      ]
+    },
+    {
+      "key": "eh",
+      "words": [
+        "teh",
+        "lipeh"
+      ]
+    },
+    {
+      "key": "uh",
+      "words": [
+        "pembunuh",
+        "nyatuh"
+      ]
+    },
+    {
+      "key": "el",
+      "words": [
+        "apel",
+        "wortel"
+      ]
+    },
+    {
+      "key": "ju",
+      "words": [
+        "salju",
+        "baju"
+      ]
+    },
+    {
+      "key": "im",
+      "words": [
+        "musim",
+        "es krim"
+      ]
+    },
+    {
+      "key": "bu",
+      "words": [
+        "lembu",
+        "kalbu"
+      ]
+    },
+    {
+      "key": "ih",
+      "words": [
+        "terima kasih",
+        "bawang putih"
+      ]
+    }
+  ]
+}

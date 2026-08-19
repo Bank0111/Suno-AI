@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-08-18T15:15:38.639Z",
+  "input": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\th\\vocabulary.json",
+  "output": "C:\\Users\\THAWATCHAI\\Downloads\\Intelligent AI Song Writer 2\\server\\lexicon\\data\\languages\\th\\vocabulary.validated.json",
+  "sourceTotal": 29412,
+  "uniqueAfterNormalization": 29412,
+  "duplicatesRemoved": 0,
+  "pass": 29409,
+  "review": 0,
+  "reject": 3,
+  "acceptedForLyricBank": 29409,
+  "note": "PASS/REVIEW are quality triage results, not proof of 100% linguistic correctness."
+}
