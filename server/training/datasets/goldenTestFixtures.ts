@@ -158,4 +158,127 @@ export const GOLDEN_TEST_FIXTURES: GoldenTestFixture[] = [
     ],
     sourceType: 'synthetic-expert',
   },
+
+  // E. Thai Lukthung / อีสาน
+  {
+    id: 'golden-test-lukthung',
+    title: 'Thai Lukthung: Isan Farmer\'s Longing',
+    targetLanguage: 'ไทย',
+    config: {
+      genre: 'Lukthung',
+      moods: ['เศร้า (Melancholic)', 'อาลัยอาวรณ์ (Longing)'],
+      story: 'ชาวนาอีสานรักผู้หญิงคนหนึ่งที่ต้องไปทำงานไกลบ้าน เฝ้ารอด้วยความคิดถึงและหวังว่าเธอจะกลับมา',
+      pointOfView: 'first-person',
+      wordTone: 'จริงใจ เข้มข้น',
+      languageStyle: 'สำเนียงอีสานธรรมชาติ',
+      bpm: 82,
+      tempo: 'ปานกลางถึงช้า (82 BPM)',
+      vocalType: 'ชาย',
+    },
+    expectedLexicalBehavior: {
+      requiredVoicePersona: 'คนอีสานหัวใจเข้มข้น พูดตรงไปตรงมา (isan-sincere-heart)',
+      targetRegister: 'dialect',
+      mustIncludeSemanticThemes: ['การรอคอย', 'คิดฮอด', 'ทุ่งนา', 'ความเข้มแข็ง'],
+      mustAvoidPatterns: ['รักเธอสุดหัวใจ', 'ประแจ', 'น็อต', 'คราบน้ำมัน', 'เครื่องยนต์', 'บริบท', 'ขับเคลื่อน'],
+    },
+    knownFailurePatternsToDetect: [
+      'unsupported-genre-decoration',
+      'generic-central-thai-phrasing',
+      'dialect-inconsistency',
+      'cliche-overload',
+    ],
+    sourceType: 'synthetic-expert',
+  },
+
+  // F. Rock / Alternative
+  {
+    id: 'golden-test-rock',
+    title: 'Rock: Defiance After Heartbreak',
+    targetLanguage: 'ไทย',
+    config: {
+      genre: 'Rock',
+      moods: ['โกรธ (Angry)', 'มีพลัง (Empowered)'],
+      story: 'คนที่เพิ่งผ่านความสัมพันธ์ที่เจ็บปวดมา ตัดสินใจลุกขึ้นสู้และไม่ยอมให้ใครมาทำร้ายจิตใจอีก',
+      pointOfView: 'first-person',
+      wordTone: 'ดิบ ตรงไปตรงมา มีพลัง',
+      languageStyle: 'ภาษาพูดหนักแน่น',
+      bpm: 140,
+      tempo: 'เร็ว หนักแน่น (140 BPM)',
+      vocalType: 'ไม่ระบุ',
+    },
+    expectedLexicalBehavior: {
+      requiredVoicePersona: 'คนหัวขบถ ไม่ยอมจำนน (rock-defiant-soul)',
+      targetRegister: 'spoken',
+      mustIncludeSemanticThemes: ['การลุกขึ้นสู้', 'ความโกรธ', 'พลัง', 'การไม่ยอมแพ้'],
+      mustAvoidPatterns: ['รักเธอสุดหัวใจ', 'ดวงฤทัย', 'ข้าพเจ้า', 'บริบท', 'อธิบายความเจ็บ'],
+    },
+    knownFailurePatternsToDetect: [
+      'register-mismatch',
+      'generic-emotional-filler',
+      'forced-rhyme',
+      'passive-sentimentality',
+    ],
+    sourceType: 'synthetic-expert',
+  },
+
+  // G. City Pop
+  {
+    id: 'golden-test-citypop',
+    title: 'City Pop: Late Night Drive Alone',
+    targetLanguage: 'ไทย',
+    config: {
+      genre: 'City Pop',
+      moods: ['เหงา (Lonely)', 'เท่ (Cool / Detached)'],
+      story: 'คนทำงานในเมืองใหญ่ขับรถเล่นยามค่ำคืนคนเดียว นึกถึงความสัมพันธ์ที่จบไปแล้วแต่ไม่แสดงความอ่อนแอออกมาตรงๆ',
+      pointOfView: 'first-person',
+      wordTone: 'เท่ นิ่ง แต่แฝงความเหงา',
+      languageStyle: 'ภาษาเมืองร่วมสมัย',
+      bpm: 100,
+      tempo: 'กลาง กรูฟลื่นไหล (100 BPM)',
+      vocalType: 'หญิง',
+    },
+    expectedLexicalBehavior: {
+      requiredVoicePersona: 'คนเมืองยามค่ำคืน เท่แต่โดดเดี่ยว (city-pop-night-drifter)',
+      targetRegister: 'conversational',
+      mustIncludeSemanticThemes: ['ไฟเมือง', 'การขับรถ', 'ความเหงา', 'ระยะห่างทางอารมณ์'],
+      mustAvoidPatterns: ['รักเธอสุดหัวใจ', 'คิดฮอด', 'สำเนียงอีสาน', 'อธิบายความเจ็บ'],
+    },
+    knownFailurePatternsToDetect: [
+      'dialect-leak',
+      'emotional-over-explanation',
+      'generic-emotional-filler',
+      'register-mismatch',
+    ],
+    sourceType: 'synthetic-expert',
+  },
+
+  // H. Pop (Mainstream)
+  {
+    id: 'golden-test-pop',
+    title: 'Pop: First Love at School Gate',
+    targetLanguage: 'ไทย',
+    config: {
+      genre: 'Pop',
+      moods: ['สดใส (Upbeat)', 'มีความหวัง (Hopeful)'],
+      story: 'นักเรียนสองคนตกหลุมรักกันครั้งแรกที่หน้าประตูโรงเรียน ความรู้สึกใสซื่อและเรียบง่าย',
+      pointOfView: 'first-person',
+      wordTone: 'สดใส เข้าถึงง่าย',
+      languageStyle: 'ภาษาพูดธรรมดา',
+      bpm: 118,
+      tempo: 'สนุกสนาน (118 BPM)',
+      vocalType: 'ไม่ระบุ',
+    },
+    expectedLexicalBehavior: {
+      requiredVoicePersona: 'คนธรรมดาที่มองโลกในแง่ดี (universal-pop-optimist)',
+      targetRegister: 'conversational',
+      mustIncludeSemanticThemes: ['ความรักครั้งแรก', 'ความสุข', 'ความหวัง'],
+      mustAvoidPatterns: ['บริบท', 'ปัจจัย', 'ประโยคยาวซับซ้อน', 'ศัพท์เฉพาะทาง'],
+    },
+    knownFailurePatternsToDetect: [
+      'rhythm-stumble',
+      'awkward-collocation',
+      'genre-mismatch',
+    ],
+    sourceType: 'synthetic-expert',
+  },
 ];

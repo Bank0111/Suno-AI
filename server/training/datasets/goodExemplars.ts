@@ -303,4 +303,258 @@ export const GOOD_EXEMPLARS: GoodLyricExemplar[] = [
     },
     sourceType: 'synthetic-expert',
   },
+
+  // =========================================================================
+  // 6. Thai Lukthung / อีสาน (Isan Regional Folk — Sincere, Dialect-Rich)
+  // =========================================================================
+  {
+    id: 'good-lukthung-001',
+    genre: 'Lukthung',
+    personaVoice: 'คนอีสานรอคอยคนรักที่ไปทำงานไกลบ้าน คิดฮอดทุกวันแต่ยังเข้มแข็ง',
+    personaKey: 'isan-sincere-heart',
+    sectionType: 'Verse',
+    lines: [
+      'แดดยามเช้าส่องผ่านทุ่งนา',
+      'เสียงไก่ขันปลุกให้ตื่นทุกวัน',
+      'เจ้าเคยเดินผ่านคันนาเส้นนั้น',
+      'ยิ้มให้กันก่อนเจ้าจากไปไกล',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.5,
+      imageryType: 'concrete',
+      characterConsistency: 'ใช้ภาพชนบทที่แท้จริง (ทุ่งนา, คันนา, ไก่ขัน) เพียงพอสร้างบรรยากาศ ไม่ยัดคำเกษตรกรรมซ้อนกันเกินจำเป็น',
+      singabilityPacing: 'จังหวะช้าแบบลูกทุ่งดั้งเดิม พยางค์ 8-8-8-8 สม่ำเสมอ',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-lukthung-002',
+    genre: 'Lukthung',
+    personaVoice: 'คนอีสานรอคอยคนรักที่ไปทำงานไกลบ้าน คิดฮอดทุกวันแต่ยังเข้มแข็ง',
+    personaKey: 'isan-sincere-heart',
+    sectionType: 'Chorus',
+    lines: [
+      'อ้ายเกิดมาจน แต่หัวใจอ้ายบ่จน',
+      'คิดฮอดเจ้าทุกคืนวันจนนอนบ่หลับ',
+      'ไกลแค่ไหนอ้ายกะยังฮักเจ้าคนเดียว',
+      'บ่มีวันเปลี่ยนแปรผันไปหาใคร',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.6,
+      imageryType: 'emotional',
+      characterConsistency: 'ใช้คำอีสานธรรมชาติ (ฮัก, คิดฮอด, บ่) พูดจากใจตรงไปตรงมาแบบคนอีสานแท้ ไม่ประดิษฐ์คำ',
+      singabilityPacing: 'สัมผัสใน "จน-จน" วนซ้ำสร้าง Hook จำง่าย เอื้อนเสียงลงตัวกับจังหวะลูกทุ่ง',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-lukthung-003',
+    genre: 'Lukthung',
+    personaVoice: 'คนอีสานตกผลึกความเข้าใจเรื่องความรักที่แท้จริง',
+    personaKey: 'isan-sincere-heart',
+    sectionType: 'Bridge',
+    lines: [
+      'เพิ่งฮู้ว่าความฮักที่แท้จริง',
+      'บ่ได้อยู่ที่เงินทองหรือของกำนัล',
+      'อยู่ที่ใจที่มั่นคงบ่เปลี่ยนผัน',
+      'แม้วันคืนจะพาเฮาห่างไกลกัน',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.4,
+      imageryType: 'emotional',
+      characterConsistency: 'Perspective Shift ชัดเจนจากการเล่าความคิดถึงสู่การตกผลึกความเข้าใจเรื่องความรัก ไม่ตัดพ้อซ้ำ',
+      singabilityPacing: 'จังหวะช้าลงเน้นคำร้อง เปิดพื้นที่ให้เอื้อนเสียงตอนท้ายวรรค',
+    },
+    sourceType: 'synthetic-expert',
+  },
+
+  // =========================================================================
+  // 7. Rock / Alternative (ดิบ ตรง มีพลัง)
+  // =========================================================================
+  {
+    id: 'good-rock-001',
+    genre: 'Rock',
+    personaVoice: 'คนที่ผ่านความเจ็บปวดมาและเลือกลุกขึ้นสู้ ไม่ยอมจำนน',
+    personaKey: 'rock-defiant-soul',
+    sectionType: 'Verse',
+    lines: [
+      'ฝ่าฝนที่กระหน่ำลงมาทุกคืน',
+      'ล้มกี่ครั้งก็ยังลุกขึ้นยืน',
+      'ไม่มีใครเข้าใจแต่ช่างมัน',
+      'กูเดินเส้นทางที่กูเลือกเอง',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.3,
+      imageryType: 'narrative',
+      characterConsistency: 'ภาษาดิบ ตรงไปตรงมา ไม่ปรุงแต่งคำ สื่อพลังต่อสู้ผ่านการกระทำ (ล้ม-ลุก) แทนการอธิบายความรู้สึก',
+      singabilityPacing: 'วรรคสั้นกระแทกจังหวะ ลง Downbeat ชัดเจนตรงกับดนตรีร็อค',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-rock-002',
+    genre: 'Rock',
+    personaVoice: 'คนที่ผ่านความเจ็บปวดมาและเลือกลุกขึ้นสู้ ไม่ยอมจำนน',
+    personaKey: 'rock-defiant-soul',
+    sectionType: 'Chorus',
+    lines: [
+      'ทลายกำแพงที่กั้นขวางหัวใจ',
+      'ปล่อยเสียงกรีดร้องให้ดังก้อง',
+      'ต่อให้โลกจะบดขยี้กูแค่ไหน',
+      'กูจะยืนสู้จนวินาทีสุดท้าย',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.5,
+      imageryType: 'emotional',
+      characterConsistency: 'Punchline ทรงพลัง ("กูจะยืนสู้จนวินาทีสุดท้าย") ไม่ประนีประนอมทางอารมณ์ ตรงตาม Character Voice ของแนวเพลง',
+      singabilityPacing: 'วรรคไต่ระดับความเข้มขึ้นเรื่อยๆ เปิดพื้นที่ให้ Belt เสียงในวรรคท้าย',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-rock-003',
+    genre: 'Rock',
+    personaVoice: 'คนที่ตกผลึกว่าความเจ็บปวดคือบทเรียน ไม่ใช่ความพ่ายแพ้',
+    personaKey: 'rock-defiant-soul',
+    sectionType: 'Bridge',
+    lines: [
+      'เพิ่งเข้าใจว่าที่ผ่านมาทั้งหมด',
+      'ไม่ใช่ความพ่ายแพ้แต่คือบทเรียน',
+      'ทุกแผลเป็นคือหลักฐานว่ากูยังยืนอยู่',
+      'และกูจะไม่มีวันคุกเข่าให้ใคร',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.6,
+      imageryType: 'emotional',
+      characterConsistency: 'Perspective Shift จากความเจ็บปวดสู่การตระหนักรู้ ("แผลเป็นคือหลักฐาน") คงความดิบและพลังไว้ตลอด',
+      singabilityPacing: 'จังหวะลดลงชั่วคราวก่อนไต่กลับสู่จุดพีกใน Chorus สุดท้าย',
+    },
+    sourceType: 'synthetic-expert',
+  },
+
+  // =========================================================================
+  // 8. City Pop (เมืองยามค่ำคืน หรูหราแต่โดดเดี่ยว)
+  // =========================================================================
+  {
+    id: 'good-citypop-001',
+    genre: 'City Pop',
+    personaVoice: 'คนเมืองยามค่ำคืน ดูมั่นใจภายนอกแต่มีความเหงาซ่อนอยู่',
+    personaKey: 'city-pop-night-drifter',
+    sectionType: 'Verse',
+    lines: [
+      'ไฟถนนวิ่งผ่านกระจกรถคันนี้',
+      'วิทยุเปิดเพลงเก่าที่เราเคยฟัง',
+      'ตึกสูงสะท้อนแสงในค่ำคืนเดียวดาย',
+      'เมืองนี้กว้างใหญ่แต่ทำไมใจฉันแคบลง',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.4,
+      imageryType: 'sensory',
+      characterConsistency: 'ใช้ภาพเมืองยามค่ำคืน (ไฟถนน, กระจกรถ, ตึกสูง) สื่อความเหงาโดยไม่พูดตรงๆ ตรงกับความเท่นิ่งของแนวเพลง',
+      singabilityPacing: 'กรูฟลื่นไหลสม่ำเสมอ วรรคยาวปานกลางเข้ากับจังหวะ Smooth Groove',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-citypop-002',
+    genre: 'City Pop',
+    personaVoice: 'คนเมืองยามค่ำคืน ดูมั่นใจภายนอกแต่มีความเหงาซ่อนอยู่',
+    personaKey: 'city-pop-night-drifter',
+    sectionType: 'Chorus',
+    lines: [
+      'แค่ขับรถไปเรื่อยไม่มีจุดหมาย',
+      'ให้ไฟสีในเมืองพาใจลอยไป',
+      'คืนนี้ขอเป็นแค่คนแปลกหน้า',
+      'ที่ไม่ต้องอธิบายว่าเหงาแค่ไหน',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.2,
+      imageryType: 'emotional',
+      characterConsistency: 'รักษาระยะห่างทางอารมณ์ ("ไม่ต้องอธิบายว่าเหงาแค่ไหน") แทนการฟูมฟาย ตรงกับบุคลิกเท่แต่เปราะบางของ City Pop',
+      singabilityPacing: 'เมโลดี้ไหลลื่นไม่มีจุดสะดุด เอื้อต่อการร้องแบบผ่อนคลาย',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-citypop-003',
+    genre: 'City Pop',
+    personaVoice: 'คนเมืองทิ้งภาพจำสุดท้ายของค่ำคืนอันเดียวดาย',
+    personaKey: 'city-pop-night-drifter',
+    sectionType: 'Outro',
+    lines: [
+      'รถจอดสนิทที่ดาดฟ้าเดิม',
+      'มองไฟเมืองกระพริบจนเช้าตรู่',
+      'คืนนี้ก็ผ่านไปอีกคืนเหมือนเดิม',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.7,
+      imageryType: 'sensory',
+      characterConsistency: 'Closure แบบไม่ปิดเรื่องสมบูรณ์ ทิ้งภาพจำ (ดาดฟ้า, ไฟเมืองกระพริบ) ให้ผู้ฟังรู้สึกตามเอง ตรงกับ Negative Space ของแนวเพลง',
+      singabilityPacing: 'ท่วงทำนองค่อยๆ เฟดลง วรรคสั้นลงเรื่อยๆ',
+    },
+    sourceType: 'synthetic-expert',
+  },
+
+  // =========================================================================
+  // 9. Pop (Mainstream — จำง่าย เข้าถึงง่าย สดใส)
+  // =========================================================================
+  {
+    id: 'good-pop-001',
+    genre: 'Pop',
+    personaVoice: 'นักเรียนสองคนตกหลุมรักกันครั้งแรก ความรู้สึกใสซื่อเรียบง่าย',
+    personaKey: 'universal-pop-optimist',
+    sectionType: 'Verse',
+    lines: [
+      'เจอเธอวันแรกที่หน้าประตูโรงเรียน',
+      'ยิ้มให้กันแล้วโลกก็เปลี่ยนไปทันที',
+      'ไม่รู้ทำไมใจถึงเต้นแรงแบบนี้',
+      'แค่มองตาเธอก็ลืมทุกอย่างรอบกาย',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.3,
+      imageryType: 'narrative',
+      characterConsistency: 'ภาษาเรียบง่ายตรงไปตรงมา เข้าถึงคนฟังทุกวัยได้ทันทีโดยไม่ต้องตีความ',
+      singabilityPacing: 'พยางค์สม่ำเสมอ 9-9-9-9 ร้องตามได้ง่ายตั้งแต่ฟังครั้งแรก',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-pop-002',
+    genre: 'Pop',
+    personaVoice: 'คนที่พบความสุขและความหวังจากการมีใครสักคนอยู่ข้างๆ',
+    personaKey: 'universal-pop-optimist',
+    sectionType: 'Chorus',
+    lines: [
+      'เธอคือแสงแดดในวันที่มืดมน',
+      'เธอคือเหตุผลให้ฉันยิ้มได้ทุกวัน',
+      'ไม่ว่าจะเกิดอะไรขึ้นข้างหน้า',
+      'มีเธออยู่ตรงนี้ก็พอแล้วสำหรับฉัน',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.4,
+      imageryType: 'emotional',
+      characterConsistency: 'Hook Line จำง่ายและเป็นสากล ("เธอคือแสงแดด") เหมาะกับผู้ฟังวงกว้างโดยไม่ต้องมีบริบทเฉพาะทาง',
+      singabilityPacing: 'จังหวะเปิดกว้าง ร้องตามได้ทันทีตั้งแต่ครั้งแรกที่ได้ยิน',
+    },
+    sourceType: 'synthetic-expert',
+  },
+  {
+    id: 'good-pop-003',
+    genre: 'Pop',
+    personaVoice: 'คนที่มั่นใจในความรักและพร้อมเผชิญทุกอย่างไปด้วยกัน',
+    personaKey: 'universal-pop-optimist',
+    sectionType: 'Outro',
+    lines: [
+      'จับมือเดินไปด้วยกันตลอดไป',
+      'ไม่ว่าฝนจะตกหรือแดดจะแรง',
+      'มีเธอข้างกาย ฉันพร้อมสู้ทุกวัน',
+    ],
+    whyItWorks: {
+      naturalnessScore: 9.5,
+      imageryType: 'emotional',
+      characterConsistency: 'ปิดเรื่องด้วยความหวังและความมั่นใจ ตรงตามอารมณ์สดใสที่ Pop mainstream ต้องการ',
+      singabilityPacing: 'วรรคสั้นกระชับ ปิดท้ายด้วยประโยคที่ติดหูง่าย',
+    },
+    sourceType: 'synthetic-expert',
+  },
 ];

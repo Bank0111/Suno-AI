@@ -79,17 +79,31 @@ export function executeFinalQA(
     }
   });
 
-  // 5. Check Mechanical / Vocational Tool Intrusion in Chorus & Bridge
-  const vocationalRegex = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร)/;
+  // 5. Vocational Dump Check (density-based, NOT a single-word ban)
+  //    A single functional vocational word (e.g. one symbolic tool image) is legitimate
+  //    craft and should NOT fail QA. Only a genuine cluster of such terms in one section
+  //    — i.e. an actual "dump" — is flagged here. This mirrors the logic in editor.ts /
+  //    critic.ts so QA doesn't re-penalize a detail those layers already accepted.
+  const vocationalRegex = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|น้ำมันเครื่อง|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร|อู่ซ่อมรถ|แม่กุญแจ|เครื่องยนต์|อะไหล่รถ)/g;
   sections.forEach((sec) => {
     const secType = sec.type.toLowerCase();
-    if (secType.includes('chorus') || secType.includes('hook') || secType.includes('bridge')) {
-      (sec.lyrics || []).forEach((line, lIdx) => {
-        const match = line.match(vocationalRegex);
-        if (match) {
-          issuesFound.push(`[Vocational Leak in Hook] Found vocational tool "${match[0]}" in ${sec.type} Line ${lIdx + 1}: "${line}"`);
-        }
-      });
+    const isChorusOrBridge = secType.includes('chorus') || secType.includes('hook') || secType.includes('bridge');
+    const dumpThreshold = isChorusOrBridge ? 2 : 3;
+
+    const sectionHits = (sec.lyrics || []).reduce((total, line) => {
+      const matches = line.match(vocationalRegex);
+      return total + (matches ? matches.length : 0);
+    }, 0);
+
+    if (sectionHits >= dumpThreshold) {
+      const foundTerms = Array.from(
+        new Set(
+          (sec.lyrics || []).flatMap((line) => line.match(vocationalRegex) || [])
+        )
+      );
+      issuesFound.push(
+        `[Vocational Dump] Section ${sec.type} has ${sectionHits} occupational/tool terms clustered together (${foundTerms.join(', ')}) — reads as Story-detail dumping rather than a functional image.`
+      );
     }
   });
 

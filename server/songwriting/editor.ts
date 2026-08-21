@@ -139,13 +139,41 @@ function extractEndWord(line: string): string {
 }
 
 /**
+ * VOCATIONAL / TOOL TERM DETECTION
+ * -----------------------------------------------------------
+ * IMPORTANT: This regex is used to MEASURE DENSITY, not to ban words outright.
+ * A single, well-placed vocational word (e.g. "ประแจ" used once as a symbolic
+ * closing image) is legitimate craft ("Vocational Detail"). Only when several
+ * of these terms are clustered together in the same section with no narrative
+ * function does it become "Vocational Dump". See getSectionVocationalDumpVerdict().
+ */
+const VOCATIONAL_TERM_REGEX = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|น้ำมันเครื่อง|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร|อู่ซ่อมรถ|แม่กุญแจ|เครื่องยนต์|อะไหล่รถ)/gi;
+
+function countVocationalHits(text: string): number {
+  const matches = text.match(VOCATIONAL_TERM_REGEX);
+  return matches ? matches.length : 0;
+}
+
+/**
+ * Decide, at the SECTION level, whether repeated vocational/tool terms constitute
+ * a genuine "dump" (many terms crammed in with no function) rather than a single
+ * grounded detail. Chorus/Bridge get a stricter (lower) tolerance because those
+ * sections are meant to carry Core Truth, not occupational inventory.
+ */
+function getSectionVocationalDumpVerdict(sectionVocationalHits: number, isChorusOrBridge: boolean): boolean {
+  const dumpThreshold = isChorusOrBridge ? 2 : 3;
+  return sectionVocationalHits >= dumpThreshold;
+}
+
+/**
  * Universal Line-Level Craft Evaluator
  */
 function evaluateUniversalLineCraft(
   line: string,
   sectionType: string,
   context: BuiltCreativeContext,
-  languageProfile: LanguageLyricProfile
+  languageProfile: LanguageLyricProfile,
+  sectionVocationalHits: number = 0
 ): { scores: UniversalCraftScores; issues: CraftIssue[]; recommendedStrategy: CraftStrategyType; reason: string } {
   const trimmed = line.trim();
   const issues: CraftIssue[] = [];
@@ -166,22 +194,30 @@ function evaluateUniversalLineCraft(
   const isThai = languageProfile.languageCode === 'th';
   const isChorusOrBridge = sectionType.toLowerCase().includes('chorus') || sectionType.toLowerCase().includes('bridge');
 
-  // 1. ดักจับการยัดเยียดชื่ออุปกรณ์ช่างในท่อน Chorus / Bridge
-  if (isChorusOrBridge) {
-    const vocationalBannedRegex = /(ประแจ|น็อต|ไขควง|คราบน้ำมัน|ชุดเซฟตี้|หัวเทียน|สายพาน|เครื่องจักร)/gi;
-    if (vocationalBannedRegex.test(trimmed)) {
-      contextualFit -= 2.5;
-      emotionalSpecificity -= 2.0;
+  // 1. Vocational Detail vs Vocational Dump (density-based, NOT a single-word ban)
+  //    A lone, functional occupational word is legitimate craft. Only a genuine
+  //    cluster of such terms in one section is penalized as critical.
+  const vocationalHitsInLine = countVocationalHits(trimmed);
+  if (vocationalHitsInLine > 0) {
+    const isDump = getSectionVocationalDumpVerdict(sectionVocationalHits, isChorusOrBridge);
+
+    if (isDump) {
+      contextualFit -= 2.2;
+      emotionalSpecificity -= 1.6;
       issues.push({
-        type: 'unsupported-genre-decoration',
+        type: 'inappropriate-vocational-dump',
         severity: 'critical',
-        diagnosis: `ท่อน ${sectionType} มีการยัดเยียดชื่ออุปกรณ์เฉพาะทาง ซึ่งควรเป็นพื้นที่ของแก่นอารมณ์และสัจธรรมชีวิต`,
+        diagnosis: `ท่อน ${sectionType} มีคำศัพท์เฉพาะอาชีพ/อุปกรณ์ปรากฏรวมกัน ${sectionVocationalHits} ครั้งในท่อนเดียวกัน เข้าข่าย Vocational Dump (ยัดศัพท์เพื่อให้ Story ดูตรง) ไม่ใช่รายละเอียดที่มีหน้าที่จริง`,
         evidence: trimmed,
-        suggestedAction: 'เปลี่ยนชื่ออุปกรณ์เป็นภาพความรู้สึกหรือสัจธรรมชีวิตที่ลึกซึ้ง',
+        suggestedAction: 'เก็บไว้เพียง 1 คำที่มีความหมายเชิงภาพ/สัญลักษณ์ชัดเจนที่สุด แล้วเปลี่ยนคำอื่นเป็นอารมณ์หรือการกระทำแทน',
         strategy: 'reduce_decoration',
       });
       recommendedStrategy = 'reduce_decoration';
-      reason = 'Chorus/Bridge must focus on Core Truth, not vocational tool names.';
+      reason = `Vocational dump detected: ${sectionVocationalHits} occupational terms clustered in ${sectionType}.`;
+    } else if (isChorusOrBridge) {
+      // Single/occasional vocational detail in Chorus/Bridge: nudge gently, but let the
+      // evidence-tier grounding check below make the real call instead of forcing a rewrite.
+      contextualFit -= 0.3;
     }
   }
 
@@ -367,6 +403,12 @@ export async function executeLyricCraftEditorialPass(
       }
     });
 
+    // นับความหนาแน่นของคำศัพท์เฉพาะอาชีพ/อุปกรณ์ทั้ง Section (ใช้แยก Dump vs Detail)
+    const sectionVocationalHits = (sec.lyrics || []).reduce(
+      (total, line) => total + countVocationalHits(line),
+      0
+    );
+
     for (let lIdx = 0; lIdx < (sec.lyrics || []).length; lIdx++) {
       const lineText = sec.lyrics[lIdx];
       totalLines++;
@@ -374,7 +416,7 @@ export async function executeLyricCraftEditorialPass(
       const isProtected = protectedSet.has(lineText.trim().toLowerCase());
 
       // 1. Universal Craft Assessment
-      const universalResult = evaluateUniversalLineCraft(lineText, sec.type, context, languageProfile);
+      const universalResult = evaluateUniversalLineCraft(lineText, sec.type, context, languageProfile, sectionVocationalHits);
 
       // 2. Language-Specific Assessment
       const languageResult = languageProfile.evaluateLanguageSpecifics(lineText, sec.type, {

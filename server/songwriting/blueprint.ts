@@ -388,7 +388,7 @@ ${generateDynamicLexiconPalette(context.story || '', context.targetContentLangua
         ? parsed.sectionInformationBudget
         : [
             { sectionType: 'Verse 1', newInformationQuota: 'บรรยากาศและจุดเริ่มต้น', forbiddenRedundancy: [], lyricDensityLevel: 'balanced' },
-            { sectionType: 'Chorus', newInformationQuota: 'แก่นความจริงหลักและ Hook', forbiddenRedundancy: ['การเล่าเหตุการณ์ซ้ำ', 'คำศัพท์เครื่องมือช่าง', 'อุปกรณ์เฉพาะทาง'], lyricDensityLevel: 'balanced' },
+            { sectionType: 'Chorus', newInformationQuota: 'แก่นความจริงหลักและ Hook', forbiddenRedundancy: ['การเล่าเหตุการณ์ซ้ำ', 'การยัดเยียดคำศัพท์เครื่องมือช่าง/อุปกรณ์เฉพาะทางหลายคำติดกันโดยไม่มีหน้าที่ทางอารมณ์'], lyricDensityLevel: 'balanced' },
             { sectionType: 'Verse 2', newInformationQuota: 'ข้อมูลใหม่และผลกระทบ', forbiddenRedundancy: ['ฉากเปิด Verse 1', 'อุปกรณ์และสิ่งของที่ใช้ไปแล้วใน Verse 1'], lyricDensityLevel: 'balanced' },
           ],
       bridgeEpiphany: {

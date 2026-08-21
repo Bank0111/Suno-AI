@@ -74,8 +74,10 @@ export async function evaluateLyricsWithCritic(
 มิติคุณภาพและกฎเหล็กที่ต้องตรวจสอบ (Critical Gates):
 1. [ตรวจคำลงท้ายซ้ำ - Repetitive End-Rhyme]:
    - ตรวจดูคำท้ายวรรคใน Section เดียวกัน หากลงท้ายด้วย "คำเดิมซ้ำกัน" (เช่น ลงท้าย เล่น-เล่น-เล่น หรือ ดี-ดี) ให้ Flag ทันทีเป็น "repetitive-end-rhyme" (Severity: critical) และระบุ lineIndices ให้แก้ไข
-2. [ตรวจการยัดเยียดสิ่งของ/เครื่องมือช่าง - Mechanical Intrusion in Chorus/Bridge]:
-   - หากพบชื่ออุปกรณ์ช่าง เครื่องจักร หรือสิ่งของเฉพาะทาง (เช่น ประแจ, น็อต, ไขควง, คราบน้ำมัน, ชุดเซฟตี้) ปรากฏในท่อน Chorus, Hook หรือ Bridge ให้ Flag เป็น "inappropriate-vocational-dump" (Severity: critical)
+2. [แยก Vocational Detail vs Vocational Dump - อย่า Ban คำตรงๆ]:
+   - "Vocational Detail" คือคำศัพท์อาชีพ/อุปกรณ์ 1 คำ ที่ถูกใช้อย่างมีหน้าที่ทางภาพหรืออารมณ์ (เช่น ใช้เป็นสัญลักษณ์ปิดเรื่อง) — นี่คือสิ่งที่ "ยอมรับได้" แม้อยู่ใน Chorus/Bridge
+   - "Vocational Dump" คือการยัดคำศัพท์อาชีพ/อุปกรณ์ "หลายคำ" (ตั้งแต่ 2-3 คำขึ้นไปในท่อนเดียวกัน) เรียงต่อกันเพียงเพื่อให้ Story ดูตรง โดยไม่มีหน้าที่ทางอารมณ์หรือภาพ — ให้ Flag เป็น "inappropriate-vocational-dump" (Severity: critical) เฉพาะกรณีนี้เท่านั้น
+   - ห้าม Flag เพียงเพราะเจอคำศัพท์อาชีพคำเดียวโผล่มา ต้องประเมินจากความหนาแน่นและหน้าที่ของคำนั้นในบริบท ไม่ใช่แบนคำเป็นรายคำ
 3. Naturalness & Lyrical Sharpness (L3 > L2 > L1):
    - ประโยคคมคาย เป็นธรรมชาติ ติดหู ไม่ประดิดประดอยหรือเป็นภาษาหุ่นยนต์/วิชาการ
 4. Genericness Critic (ตรวจจับความโหล/วลีสำเร็จรูป):

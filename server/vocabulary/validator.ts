@@ -76,12 +76,23 @@ export function validateSongVocabulary(
   }
 
   // 6. Check Vocational Tool Dumping in Chorus/Hook/Bridge (Phase 5.7 Gate)
-  const vocationalTools = ['ประแจ', 'น็อต', 'ชุดเซฟตี้', 'หัวเทียน', 'สายพาน', 'คราบน้ำมัน', 'สว่าน'];
+  //    NOT a single-word ban: a lone, functional vocational word (e.g. one symbolic
+  //    closing image) is legitimate craft ("Vocational Detail") and should NOT be
+  //    penalized. Only when 2+ DISTINCT occupational/tool terms cluster together in
+  //    the same Chorus/Hook/Bridge space does it read as "Vocational Dump" (Story
+  //    detail stuffing). This mirrors the density threshold used in editor.ts / qa.ts / ranker.ts.
+  const vocationalTools = ['ประแจ', 'น็อต', 'ไขควง', 'ชุดเซฟตี้', 'หัวเทียน', 'สายพาน', 'คราบน้ำมัน', 'น้ำมันเครื่อง', 'สว่าน', 'เครื่องจักร', 'อู่ซ่อมรถ', 'แม่กุญแจ', 'เครื่องยนต์', 'อะไหล่รถ'];
   const chorusOrHookSections = extractSectionsByTags(lyricsText, ['chorus', 'hook', 'bridge']);
+  const vocationalToolsPresent: string[] = [];
   for (const tool of vocationalTools) {
     if (chorusOrHookSections.toLowerCase().includes(tool)) {
-      vocationalDumpFound.push(tool);
+      vocationalToolsPresent.push(tool);
     }
+  }
+  // Only treat as a genuine "dump" when 2+ distinct terms cluster together.
+  // A single grounded term is fine and is intentionally NOT added to vocationalDumpFound.
+  if (vocationalToolsPresent.length >= 2) {
+    vocationalDumpFound.push(...vocationalToolsPresent);
   }
 
   // Calculate Quality Score (Base 100)

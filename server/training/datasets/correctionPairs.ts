@@ -209,4 +209,140 @@ export const CORRECTION_PAIRS: LyricCorrectionPair[] = [
     improvementTechnique: 'เปลี่ยนคำลงท้ายให้หลากหลาย ("ข้างกัน", "ไปวันๆ", "กว่าใคร") พร้อมสร้างสัมผัสสระที่ไพเราะและส่งพลัง',
     sourceType: 'synthetic-expert',
   },
+
+  // Pair 13: Central Thai Cliché -> Natural Isan Dialect (Lukthung)
+  {
+    id: 'pair-lukthung-001',
+    context: {
+      genre: 'Lukthung',
+      persona: 'คนอีสานหัวใจเข้มข้น',
+      personaKey: 'isan-sincere-heart',
+      mood: 'Melancholic / Longing',
+      section: 'Chorus',
+    },
+    originalFlawed: 'รักเธอสุดหัวใจ คิดถึงเธอทุกลมหายใจที่มี',
+    diagnosis: 'ใช้สำนวนภาษากลางสำเร็จรูปที่ไม่มีกลิ่นอายอีสาน ขาดเอกลักษณ์เฉพาะแนวเพลง ฟังดูเหมือนเพลงป๊อปทั่วไปมากกว่าลูกทุ่ง',
+    correctedNatural: 'ฮักเจ้าจนบ่ฮู้เจ้าสิเข้าใจบ่ คิดฮอดจนนอนบ่หลับกะยังคิดฮอด',
+    improvementTechnique: 'เปลี่ยนจากสำนวนภาษากลางเป็นคำอีสานธรรมชาติ (ฮัก, บ่, คิดฮอด) ที่สื่อความรู้สึกเดียวกันแต่มีเอกลักษณ์เฉพาะแนวชัดเจน',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 14: Vocational Object Dumping -> Single Grounded Detail (Lukthung)
+  {
+    id: 'pair-lukthung-002',
+    context: {
+      genre: 'Lukthung',
+      persona: 'คนอีสานหัวใจเข้มข้น',
+      personaKey: 'isan-sincere-heart',
+      mood: 'Sincere / Sacrificial',
+      section: 'Verse',
+    },
+    originalFlawed: 'อ้ายเป็นชาวนาแบกคันไถ ใส่ปุ๋ยรดน้ำเกี่ยวข้าวทุกวัน ควายเดินตามหลังอ้ายทุกทาง เหนื่อยยากแค่ไหนอ้ายกะบ่บ่นไป',
+    diagnosis: 'ยัดเยียดรายละเอียดอาชีพชาวนาหลายอย่างเรียงติดกัน (คันไถ, ปุ๋ย, เกี่ยวข้าว, ควาย) เป็น Object Dumping ทำให้ท่อนนี้เหมือนพรรณนาอาชีพมากกว่าสื่ออารมณ์',
+    correctedNatural: 'อ้ายเป็นชาวนาสู้แดดสู้ฝน แต่ใจอ้ายอ่อนเมื่อคิดฮอดเจ้า',
+    improvementTechnique: 'ตัดรายละเอียดอาชีพให้เหลือภาพเดียว ("สู้แดดสู้ฝน") แล้วเชื่อมเข้าสู่อารมณ์ทันที ไม่พรรณนาอุปกรณ์การเกษตรยืดยาว',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 15: Overly Polite Ballad Tone -> Raw Rock Defiance
+  {
+    id: 'pair-rock-001',
+    context: {
+      genre: 'Rock',
+      persona: 'คนหัวขบถ ไม่ยอมจำนน',
+      personaKey: 'rock-defiant-soul',
+      mood: 'Angry / Empowered',
+      section: 'Chorus',
+    },
+    originalFlawed: 'ฉันเสียใจมากที่เธอไม่รักฉัน อยากจะร้องไห้แต่ก็ต้องทน',
+    diagnosis: 'ภาษาสุภาพเรียบเกินไป ไม่มีพลังหรือความดิบแบบร็อค ฟังดูเหมือนเพลงบัลลาดมากกว่าเพลงแนวนี้',
+    correctedNatural: 'เธอเดินจากไปแล้วทิ้งกูไว้กับซาก แต่กูจะไม่มีวันคุกเข่าให้ความเจ็บปวด',
+    improvementTechnique: 'เปลี่ยนจากการอธิบายความเสียใจแบบสุภาพ เป็นภาพที่ดิบและแสดงพลังต่อต้าน ("ซาก", "คุกเข่า") ตรงกับ Character Voice ของร็อค',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 16: Vague Complaint -> Clear Defiant Stance (Rock)
+  {
+    id: 'pair-rock-002',
+    context: {
+      genre: 'Rock',
+      persona: 'คนหัวขบถ ไม่ยอมจำนน',
+      personaKey: 'rock-defiant-soul',
+      mood: 'Angry / Empowered',
+      section: 'Verse',
+    },
+    originalFlawed: 'ทุกอย่างมันแย่มากเลย ฉันไม่รู้จะทำยังไงกับชีวิตนี้ต่อไป',
+    diagnosis: 'เป็นการบ่นทั่วไปไม่มีภาพหรือพลังผลักดัน ขาดจุดยืนแบบตัวละครร็อคที่ควรมีไฟต่อสู้',
+    correctedNatural: 'โลกทั้งใบจะพังก็ปล่อยให้มันพัง กูจะยืนอยู่ตรงนี้จนกว่าจะหมดลมหายใจ',
+    improvementTechnique: 'เปลี่ยนจากคำบ่นเรียบๆ เป็นประโยคที่มีจุดยืนชัดเจนและพลังต่อสู้ ตรงกับอารมณ์แนวร็อค',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 17: Rural Phrasing -> Urban Nightscape Imagery (City Pop)
+  {
+    id: 'pair-citypop-001',
+    context: {
+      genre: 'City Pop',
+      persona: 'คนเมืองยามค่ำคืน เท่แต่โดดเดี่ยว',
+      personaKey: 'city-pop-night-drifter',
+      mood: 'Lonely / Cool',
+      section: 'Verse',
+    },
+    originalFlawed: 'อยู่ในเมืองก็เหงามาก คิดถึงบ้านที่ต่างจังหวัดจัง',
+    diagnosis: 'ใช้ภาษาบ้านนอก/ถิ่นที่ขัดกับบรรยากาศเมืองหรูของ City Pop และบรรยายความเหงาตรงเกินไปโดยไม่มีภาพเมือง',
+    correctedNatural: 'ไฟนีออนข้างถนนไม่เคยดับ แต่ทำไมในใจฉันถึงมืดสนิท',
+    improvementTechnique: 'แทนที่การพูดถึงบ้านนอกตรงๆ ด้วยภาพเมืองยามค่ำคืน (ไฟนีออน) ที่ตัดกับความรู้สึกภายใน สร้างบรรยากาศ City Pop ชัดเจน',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 18: Sweet Cliché -> Cool Emotional Distance (City Pop)
+  {
+    id: 'pair-citypop-002',
+    context: {
+      genre: 'City Pop',
+      persona: 'คนเมืองยามค่ำคืน เท่แต่โดดเดี่ยว',
+      personaKey: 'city-pop-night-drifter',
+      mood: 'Bittersweet',
+      section: 'Chorus',
+    },
+    originalFlawed: 'รักเธอสุดหัวใจ อยากอยู่ด้วยกันตลอดไปไม่แยกจาก',
+    diagnosis: 'สำนวนหวานเลี่ยนแบบเพลงรักทั่วไป ขาดความเท่และระยะห่างทางอารมณ์ที่เป็นเอกลักษณ์ของ City Pop',
+    correctedNatural: 'แค่ขับรถผ่านตึกที่เราเคยไปด้วยกัน ก็พอแล้วสำหรับคืนนี้ ไม่ต้องมีคำสัญญา',
+    improvementTechnique: 'เปลี่ยนจากคำสัญญารักตรงๆ เป็นภาพช่วงเวลาสั้นๆ ผ่านการขับรถ สร้างความรู้สึกเท่ ห่างเหิน แต่ยังอ่อนไหวอยู่ข้างใน',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 19: Overwrought Sentence -> Simple Singable Line (Pop)
+  {
+    id: 'pair-pop-003',
+    context: {
+      genre: 'Pop',
+      persona: 'คนธรรมดาที่มองโลกในแง่ดี',
+      personaKey: 'universal-pop-optimist',
+      mood: 'Sincere',
+      section: 'Verse',
+    },
+    originalFlawed: 'ความรู้สึกที่ฉันมีต่อเธอนั้นมันช่างซับซ้อนและลึกซึ้งเกินกว่าจะบรรยายเป็นคำพูดได้',
+    diagnosis: 'ประโยคยาวซับซ้อนเกินไป ร้องตามยาก ไม่เหมาะกับ Pop mainstream ที่ต้องการความจำง่ายเข้าถึงคนหมู่มาก',
+    correctedNatural: 'เธอทำให้หัวใจฉันเต้นแรง บอกไม่ถูกว่ามันคืออะไร',
+    improvementTechnique: 'ตัดประโยคให้สั้นกระชับ ใช้คำง่ายๆ ที่ร้องตามได้ทันที ตรงกับความเป็นสากลของ Pop',
+    sourceType: 'synthetic-expert',
+  },
+
+  // Pair 20: Academic Jargon -> Plain Heartfelt Speech (Pop)
+  {
+    id: 'pair-pop-004',
+    context: {
+      genre: 'Pop',
+      persona: 'คนธรรมดาที่มองโลกในแง่ดี',
+      personaKey: 'universal-pop-optimist',
+      mood: 'Sincere',
+      section: 'Verse',
+    },
+    originalFlawed: 'ในบริบทของความสัมพันธ์นี้ ปัจจัยด้านความไว้ใจถือเป็นสิ่งสำคัญที่สุด',
+    diagnosis: 'ใช้ศัพท์วิชาการ ("บริบท", "ปัจจัย") ที่ไม่เหมาะกับเพลงป๊อปที่ต้องเข้าถึงง่ายและจริงใจ',
+    correctedNatural: 'ระหว่างเรามีแค่ความไว้ใจที่ทำให้เราไปต่อได้',
+    improvementTechnique: 'ตัดศัพท์วิชาการออกทั้งหมด แทนที่ด้วยประโยคพูดคุยธรรมดาที่ทุกคนเข้าใจทันที',
+    sourceType: 'synthetic-expert',
+  },
 ];

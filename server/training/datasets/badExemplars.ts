@@ -200,4 +200,69 @@ export const BAD_EXEMPLARS: BadLyricExemplar[] = [
     detectedSignals: ['เล่น', 'เล่นๆ', 'เล่น'],
     sourceType: 'synthetic-failure-case',
   },
+
+  // 13. Vocational/Agricultural Object Dumping in Chorus (Lukthung)
+  {
+    id: 'bad-lukthung-001',
+    genre: 'Lukthung',
+    sectionType: 'Chorus',
+    flawedLines: [
+      'อ้ายเป็นชาวนาแบกคันไถทุกเช้า',
+      'หว่านข้าวใส่ปุ๋ยเกี่ยวข้าวจนมือด้าน',
+      'ต้อนควายไถนาจนหลังคด',
+      'รักเจ้าคือสิ่งเดียวที่อ้ายยังมี',
+    ],
+    flawType: 'unsupported-genre-decoration',
+    rootCause: 'ท่อนฮุกถูกยัดเยียดรายละเอียดอาชีพชาวนาหลายอย่างเรียงติดกัน (คันไถ, หว่านข้าว, ใส่ปุ๋ย, เกี่ยวข้าว, ต้อนควาย) แทนที่จะเป็นพื้นที่ของแก่นอารมณ์รัก',
+    detectedSignals: ['คันไถ', 'หว่านข้าว', 'ใส่ปุ๋ย', 'เกี่ยวข้าว', 'ต้อนควาย'],
+    sourceType: 'synthetic-failure-case',
+  },
+
+  // 14. Overly Polite Register in Rock (Register Mismatch)
+  {
+    id: 'bad-rock-001',
+    genre: 'Rock',
+    sectionType: 'Chorus',
+    flawedLines: [
+      'ฉันรู้สึกเสียใจที่เธอไม่รักฉันอีกต่อไป',
+      'อยากขอร้องให้เธอกลับมารักฉันเหมือนเดิม',
+      'ฉันจะรอคอยเธออย่างอดทนตลอดไป',
+    ],
+    flawType: 'register-mismatch',
+    rootCause: 'ใช้ภาษาสุภาพอ่อนโยนแบบเพลงบัลลาด ขาดพลังและความดิบที่ควรมีในแนวร็อค ทำลาย Character Voice ของแนวเพลงโดยสิ้นเชิง',
+    detectedSignals: ['รู้สึกเสียใจ', 'ขอร้องให้เธอกลับมา', 'รอคอยอย่างอดทน'],
+    sourceType: 'synthetic-failure-case',
+  },
+
+  // 15. Dialect Leak Breaking Urban Atmosphere (City Pop)
+  {
+    id: 'bad-citypop-001',
+    genre: 'City Pop',
+    sectionType: 'Verse',
+    flawedLines: [
+      'อยู่ในเมืองแล้วคิดฮอดบ้านเก่าหลาย',
+      'อยากกลับไปนอนเปลที่ใต้ถุนบ้าน',
+      'เมืองนี้มันวุ่นวายบ่เหมือนบ้านเฮา',
+    ],
+    flawType: 'register-mismatch',
+    rootCause: 'ใช้สำเนียงถิ่น/อีสาน (คิดฮอด, บ่, เฮา) ที่ขัดแย้งอย่างรุนแรงกับบรรยากาศเมืองหรูเท่ของ City Pop ทำลายความสอดคล้องของแนวเพลง',
+    detectedSignals: ['คิดฮอด', 'บ่เหมือนบ้านเฮา', 'ใต้ถุนบ้าน'],
+    sourceType: 'synthetic-failure-case',
+  },
+
+  // 16. Academic Jargon & Sentence Bloat in Mainstream Pop
+  {
+    id: 'bad-pop-001',
+    genre: 'Pop',
+    sectionType: 'Verse',
+    flawedLines: [
+      'ความรู้สึกที่ฉันมีต่อเธอในบริบทของความสัมพันธ์นี้',
+      'มันช่างซับซ้อนและมีปัจจัยหลายอย่างที่ส่งผลกระทบ',
+      'จนยากจะอธิบายออกมาเป็นคำพูดที่ชัดเจนได้',
+    ],
+    flawType: 'awkward-collocation',
+    rootCause: 'ใช้ศัพท์วิชาการ (บริบท, ปัจจัย, ส่งผลกระทบ) และประโยคยาวซับซ้อนเกินไป ขัดกับความเรียบง่ายจำง่ายที่ Pop mainstream ต้องการ',
+    detectedSignals: ['บริบท', 'ปัจจัย', 'ส่งผลกระทบ'],
+    sourceType: 'synthetic-failure-case',
+  },
 ];

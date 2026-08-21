@@ -396,7 +396,8 @@ export function evaluateSectionFit(
   term: string,
   item: VocabularyItem | undefined,
   vector: LexicalContextVector,
-  sectionType?: string
+  sectionType?: string,
+  evidenceTier?: EvidenceTier
 ): number {
   const targetSection = sectionType || vector.sectionType;
   if (!targetSection) return 0.80;
@@ -404,9 +405,14 @@ export function evaluateSectionFit(
   const sectionNormalized = targetSection.toLowerCase();
   const termLower = term.toLowerCase();
 
-  // Vocational Tools / Mechanical Equipment (Banned from Hook/Chorus/Bridge)
+  // Vocational Tools / Mechanical Equipment: NOT a categorical ban from Hook/Chorus/Bridge.
+  // If the term is directly grounded in the user's own story (TIER_1_USER_GROUNDED),
+  // it is a legitimate Vocational Detail (e.g. a single symbolic closing image) and only
+  // gets a mild discount. Ungrounded/decorative use of the same term still gets the harsh
+  // penalty, since that's when it reads as random Vocational Dump rather than story truth.
   const vocationalTools = ['ประแจ', 'น็อต', 'ชุดเซฟตี้', 'หัวเทียน', 'สายพาน', 'คราบน้ำมัน', 'สว่าน'];
   const isTool = vocationalTools.some((t) => termLower.includes(t));
+  const isStoryGrounded = evidenceTier === 'TIER_1_USER_GROUNDED';
 
   const isImageryWord = ['สายลมยามเย็น', 'กลิ่นฝน', 'ตะวัน', 'ดอกไม้', 'แสงไฟเมืองหลวง', 'รถติด', 'แก้วกาแฟ', 'มองดู', 'เฝ้ามอง', 'หน้าต่าง', 'โต๊ะไม้'].includes(term);
   const isChorusCoreWord = ['หัวใจ', 'ความรัก', 'คิดถึง', 'คิดฮอด', 'สัญญา', 'รักแท้', 'โอบกอด', 'เคียงข้าง', 'ไม่ไหว', 'กำลังใจ', 'เชื่อ', 'ให้ใจ', 'สองมือ', 'ความจริง'].includes(term);
@@ -426,14 +432,14 @@ export function evaluateSectionFit(
   }
 
   if (sectionNormalized.includes('chorus') || sectionNormalized.includes('hook')) {
-    if (isTool) return 0.10; // Harsh penalty for vocational tools in Hook/Chorus
+    if (isTool) return isStoryGrounded ? 0.55 : 0.10; // Harsh penalty only when NOT story-grounded
     if (isChorusCoreWord) return 0.98;
     if (isImageryWord) return 0.65;
     return 0.80;
   }
 
   if (sectionNormalized.includes('bridge')) {
-    if (isTool) return 0.15;
+    if (isTool) return isStoryGrounded ? 0.55 : 0.15;
     if (isBridgeReflectionWord) return 0.98;
     return 0.80;
   }
@@ -782,7 +788,7 @@ export function rankLexicalCandidate(
   const sceneGrounding = evaluateSceneGrounding(term, item, vector);
 
   // 9. Section Fit (Phase 5.7 Gate)
-  const sectionFit = evaluateSectionFit(term, item, vector, sectionType);
+  const sectionFit = evaluateSectionFit(term, item, vector, sectionType, evidenceTier);
 
   // 10. Affinity Boost
   const affinityBoost = evaluateAffinityBoost(term, item, vector);
