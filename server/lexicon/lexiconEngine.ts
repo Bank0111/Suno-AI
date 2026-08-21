@@ -1,8 +1,7 @@
 // server/lexicon/lexiconEngine.ts
 
 import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
 /**
  * Legacy wordBank.json remains the fallback/source for the existing
@@ -41,7 +40,7 @@ type LanguageRhymes = {
   }>;
 };
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const PROJECT_ROOT = resolve(process.cwd());
 
 function readJsonFile<T>(filePath: string): T | null {
@@ -56,7 +55,7 @@ function readJsonFile<T>(filePath: string): T | null {
 
 const loadedLegacyWordBank =
   readJsonFile<RawWordBank>(
-    resolve(__dirname, "data", "wordBank.json")
+    resolve(PROJECT_ROOT, "server", "lexicon", "data", "wordBank.json")
   );
 
 if (!loadedLegacyWordBank) {
