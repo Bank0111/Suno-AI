@@ -95,29 +95,27 @@ function classifyRhyme(rawText: string): RhymeSignature | null {
 }
 
 /**
- * Returns the rhyme signature of the LAST syllable of a line (used for both
- * the end of the previous line, and for checking end-to-end rhyme schemes).
+ * Returns the rhyme signature of the LAST syllable of a line (used for the
+ * end of the previous line).
  */
 function getEndRhymeSignature(line: string): RhymeSignature | null {
   const clean = line.replace(/[\s.,!?()[\]"]/g, '');
   if (clean.length < 2) return null;
+  // Look at the trailing ~4 characters — enough context for coda + vowel + one
+  // extra leading character, without pulling in unrelated earlier syllables.
   const tail = clean.slice(-4);
   return classifyRhyme(tail);
 }
 
-function signaturesMatch(a: RhymeSignature | null, b: RhymeSignature | null): boolean {
-  return !!a && !!b && a.group === b.group && a.matra === b.matra;
-}
-
 /**
- * Scans the first ~N characters of a line, checking every prefix ending
- * position, to see if any syllable boundary there matches the target rhyme
- * signature (group + matra class). This approximates "does word 1-3 of this
- * line carry the same rhyme sound" without needing full Thai syllable
- * segmentation.
+ * Scans the first ~N characters of the NEXT line, checking every prefix
+ * ending position, to see if any syllable boundary there matches the target
+ * rhyme signature (group + matra class). This approximates "does word 1-3 of
+ * the next line carry the same rhyme sound" without needing full Thai
+ * syllable segmentation.
  */
-function linePrefixCarriesRhyme(line: string, target: RhymeSignature, maxChars = 18): boolean {
-  const clean = line.replace(/[\s.,!?()[\]"]/g, '');
+function nextLineCarriesRhyme(nextLine: string, target: RhymeSignature, maxChars = 18): boolean {
+  const clean = nextLine.replace(/[\s.,!?()[\]"]/g, '');
   const limit = Math.min(clean.length, maxChars);
 
   for (let end = 2; end <= limit; end++) {
@@ -244,15 +242,11 @@ export function validateLyricPhrasing(sections: any[], context?: any): PhrasingV
       });
     }
 
-    // Check 6: Line-to-line rhyme connection (สัมผัสระหว่างวรรค)
-    // Heuristic-based. Thai lyrics commonly use ANY of several rhyme scheme
-    // patterns — checking only one pattern caused near-100% false positives
-    // in testing, so a line is only flagged if it satisfies NONE of:
-    //   (a) end of this line -> start (word 1-3) of next line  [directive.ts's stated rule]
-    //   (b) end of this line -> end of next line               [AABB, very common in Thai pop/folk]
-    //   (c) end of this line -> end of line after next          [ABAB alternating]
-    // Reported at 'info' severity since this remains an approximation, not a
-    // hard rule — it's a craft nudge for the Pass 2 rewrite, not a failure.
+    // Check 6: Line-to-line rhyme connection (สัมผัสสระท้ายวรรคส่งขึ้นวรรคถัดไป)
+    // Heuristic-based, per directive.ts's rule. Reported at 'info' severity since
+    // this classifier is approximate and not every consecutive line pair is
+    // necessarily intended to rhyme (some schemes rhyme every-other-line) — this
+    // is a craft nudge for the Pass 2 rewrite, not a hard failure.
     for (let i = 0; i < lyrics.length - 1; i++) {
       const currentLine = (lyrics[i] || '').trim();
       const nextLine = (lyrics[i + 1] || '').trim();
@@ -262,21 +256,14 @@ export function validateLyricPhrasing(sections: any[], context?: any): PhrasingV
       const targetRhyme = getEndRhymeSignature(currentLine);
       if (!targetRhyme) continue; // not confident enough to judge — skip
 
-      const matchesStartOfNext = linePrefixCarriesRhyme(nextLine, targetRhyme);
-      const matchesEndOfNext = signaturesMatch(targetRhyme, getEndRhymeSignature(nextLine));
-
-      const lineAfterNext = (lyrics[i + 2] || '').trim();
-      const matchesEndOfSkipOne =
-        lineAfterNext.length >= 3 && signaturesMatch(targetRhyme, getEndRhymeSignature(lineAfterNext));
-
-      if (!matchesStartOfNext && !matchesEndOfNext && !matchesEndOfSkipOne) {
+      if (!nextLineCarriesRhyme(nextLine, targetRhyme)) {
         issues.push({
           sectionIndex: secIdx,
           sectionType: secType,
           lineIndex: i + 1,
           lineText: nextLine,
           type: 'missing_line_rhyme_connection',
-          message: `คำท้ายวรรค "${currentLine.slice(-4)}" (กลุ่มสัมผัส "${targetRhyme.group}") ไม่พบคำรับสัมผัสทั้งในวรรคถัดไปและวรรคถัดถัดไป อาจทำให้จังหวะการร้องสะดุด`,
+          message: `คำท้ายวรรค "${currentLine.slice(-4)}" (กลุ่มสัมผัส "${targetRhyme.group}") ไม่พบคำรับสัมผัสในช่วงต้นของวรรคถัดไป ("${nextLine.slice(0, 12)}...") อาจทำให้จังหวะการร้องสะดุด`,
           severity: 'info',
         });
       }
