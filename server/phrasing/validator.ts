@@ -1,5 +1,135 @@
 import { PhrasingValidationReport, PhrasingValidationIssue } from './types';
 
+// =============================================================================
+// THAI RHYME (สัมผัสสระ) DETECTION
+// -----------------------------------------------------------------------------
+// This is a HEURISTIC classifier, not a full Thai phonology engine. It maps the
+// end of a syllable to a "vowel group" (คล้ายกลุ่มสัมผัสที่ใช้ในพจนานุกรมคำคล้องจอง)
+// plus a "matra class" (มาตราตัวสะกด) for the final consonant, if any. Two
+// syllables are considered to rhyme if both the vowel group AND the matra class
+// match. This mirrors the rule already written in directive.ts:
+//   "คำสุดท้ายของวรรคก่อนหน้า ควรส่งสัมผัสสระไปยังคำที่ 1-3 ของวรรคถัดไปเสมอ"
+// =============================================================================
+
+const THAI_TONE_MARKS = /[่้๊๋]/g;
+
+function stripTone(s: string): string {
+  return s.replace(THAI_TONE_MARKS, '');
+}
+
+function isThaiConsonant(ch: string): boolean {
+  return /[ก-ฮ]/.test(ch);
+}
+
+// มาตราตัวสะกด (final-consonant class) — syllables only truly rhyme if the coda
+// belongs to the same class, not just visually the same letter.
+const MATRA_CLASSES: Record<string, string> = {
+  ก: 'กก', ข: 'กก', ค: 'กก', ฆ: 'กก',
+  จ: 'กด', ฉ: 'กด', ช: 'กด', ซ: 'กด', ฌ: 'กด', ฎ: 'กด', ฏ: 'กด', ฐ: 'กด',
+  ฑ: 'กด', ฒ: 'กด', ด: 'กด', ต: 'กด', ถ: 'กด', ท: 'กด', ธ: 'กด', ศ: 'กด', ษ: 'กด', ส: 'กด',
+  บ: 'กบ', ป: 'กบ', พ: 'กบ', ฟ: 'กบ', ภ: 'กบ',
+  ง: 'กง',
+  ญ: 'กน', ณ: 'กน', น: 'กน', ร: 'กน', ล: 'กน', ฬ: 'กน',
+  ม: 'กม',
+  ย: 'เกย',
+  ว: 'เกอว',
+};
+
+interface RhymeSignature {
+  group: string;
+  matra: string; // มาตราตัวสะกด class, or 'open' for a live/open syllable (แม่ ก กา)
+}
+
+// Combined vowel+final patterns that must be checked BEFORE generic single-mark
+// patterns, since the trailing ย/ว/า here are part of the vowel sound itself,
+// not a separate coda consonant (e.g. "อาย", "อาว", "เอา" are single vowel units).
+const DIPHTHONG_PATTERNS: Array<{ regex: RegExp; group: string }> = [
+  { regex: /วย$/, group: 'อวย' },     // ด้วย, ช่วย
+  { regex: /อย$/, group: 'ออย' },     // คอย, ลอย, รอย
+  { regex: /าย$/, group: 'อาย' },     // ตาย, สาย, หาย
+  { regex: /าว$/, group: 'อาว' },     // ยาว, หนาว, ราว
+  { regex: /ีย$/, group: 'เอีย' },     // เสีย, เพลีย
+  { regex: /ัว$/, group: 'อัว' },     // ตัว, กลัว
+  { regex: /เ[ก-ฮ]า$/, group: 'เอา' }, // เขา, เรา, เช่า (already tone-stripped)
+];
+
+function classifyRhyme(rawText: string): RhymeSignature | null {
+  const s = stripTone(rawText);
+  if (!s) return null;
+
+  for (const { regex, group } of DIPHTHONG_PATTERNS) {
+    if (regex.test(s)) return { group, matra: 'open' };
+  }
+
+  let core = s;
+  let coda = '';
+  const last = s[s.length - 1];
+
+  if (isThaiConsonant(last) && last !== 'อ') {
+    coda = last;
+    core = s.slice(0, -1);
+  }
+
+  let group: string | null = null;
+  if (/ือ$/.test(core) || /ื$/.test(core)) group = 'อือ';
+  else if (/ั$/.test(core)) group = 'อะ';
+  else if (/ี$/.test(core)) group = 'อี';
+  else if (/ึ$/.test(core)) group = 'อึ';
+  else if (/ุ$/.test(core)) group = 'อุ';
+  else if (/ู$/.test(core)) group = 'อู';
+  else if (/ิ$/.test(core)) group = 'อิ';
+  else if (/ำ$/.test(core)) group = 'อำ';
+  else if (/า$/.test(core)) group = 'อา';
+  else if (/อ$/.test(core)) group = 'ออ';
+  else if (/^เ.*ะ$/.test(core)) group = 'เอะ';
+  else if (/^เ/.test(core)) group = 'เอ';
+  else if (/^แ/.test(core)) group = 'แอ';
+  else if (/^โ/.test(core)) group = 'โอ';
+  else if (/^ไ/.test(core) || /^ใ/.test(core)) group = 'ไอ';
+  else if (coda) group = 'อะ'; // implicit short vowel before a coda (e.g. "คน", "ทน")
+
+  if (!group) return null; // ambiguous / not confident enough — skip rather than guess
+
+  const matra = coda ? MATRA_CLASSES[coda] || 'อื่นๆ' : 'open';
+  return { group, matra };
+}
+
+/**
+ * Returns the rhyme signature of the LAST syllable of a line (used for the
+ * end of the previous line).
+ */
+function getEndRhymeSignature(line: string): RhymeSignature | null {
+  const clean = line.replace(/[\s.,!?()[\]"]/g, '');
+  if (clean.length < 2) return null;
+  // Look at the trailing ~4 characters — enough context for coda + vowel + one
+  // extra leading character, without pulling in unrelated earlier syllables.
+  const tail = clean.slice(-4);
+  return classifyRhyme(tail);
+}
+
+/**
+ * Scans the first ~N characters of the NEXT line, checking every prefix
+ * ending position, to see if any syllable boundary there matches the target
+ * rhyme signature (group + matra class). This approximates "does word 1-3 of
+ * the next line carry the same rhyme sound" without needing full Thai
+ * syllable segmentation.
+ */
+function nextLineCarriesRhyme(nextLine: string, target: RhymeSignature, maxChars = 18): boolean {
+  const clean = nextLine.replace(/[\s.,!?()[\]"]/g, '');
+  const limit = Math.min(clean.length, maxChars);
+
+  for (let end = 2; end <= limit; end++) {
+    const window = clean.slice(0, end);
+    const sig = classifyRhyme(window);
+    if (sig && sig.group === target.group && sig.matra === target.matra) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// =============================================================================
+
 export function validateLyricPhrasing(sections: any[], context?: any): PhrasingValidationReport {
   const issues: PhrasingValidationIssue[] = [];
   let totalLines = 0;
@@ -111,10 +241,37 @@ export function validateLyricPhrasing(sections: any[], context?: any): PhrasingV
         severity: 'warning',
       });
     }
+
+    // Check 6: Line-to-line rhyme connection (สัมผัสสระท้ายวรรคส่งขึ้นวรรคถัดไป)
+    // Heuristic-based, per directive.ts's rule. Reported at 'info' severity since
+    // this classifier is approximate and not every consecutive line pair is
+    // necessarily intended to rhyme (some schemes rhyme every-other-line) — this
+    // is a craft nudge for the Pass 2 rewrite, not a hard failure.
+    for (let i = 0; i < lyrics.length - 1; i++) {
+      const currentLine = (lyrics[i] || '').trim();
+      const nextLine = (lyrics[i + 1] || '').trim();
+      if (!currentLine || !nextLine) continue;
+      if (currentLine.length < 3 || nextLine.length < 3) continue;
+
+      const targetRhyme = getEndRhymeSignature(currentLine);
+      if (!targetRhyme) continue; // not confident enough to judge — skip
+
+      if (!nextLineCarriesRhyme(nextLine, targetRhyme)) {
+        issues.push({
+          sectionIndex: secIdx,
+          sectionType: secType,
+          lineIndex: i + 1,
+          lineText: nextLine,
+          type: 'missing_line_rhyme_connection',
+          message: `คำท้ายวรรค "${currentLine.slice(-4)}" (กลุ่มสัมผัส "${targetRhyme.group}") ไม่พบคำรับสัมผัสในช่วงต้นของวรรคถัดไป ("${nextLine.slice(0, 12)}...") อาจทำให้จังหวะการร้องสะดุด`,
+          severity: 'info',
+        });
+      }
+    }
   });
 
   const avgWordsPerLine = totalLines > 0 ? Math.round((totalWords / totalLines) * 10) / 10 : 0;
-  
+
   // Calculate score
   let score = 100;
   for (const issue of issues) {

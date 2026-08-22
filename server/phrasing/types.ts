@@ -22,7 +22,13 @@ export interface PhrasingValidationIssue {
   sectionType: string;
   lineIndex: number;
   lineText: string;
-  type: 'line_length_outlier' | 'unnatural_break' | 'broken_phrase' | 'excessive_density' | 'hook_fragmentation';
+  type:
+    | 'line_length_outlier'
+    | 'unnatural_break'
+    | 'broken_phrase'
+    | 'excessive_density'
+    | 'hook_fragmentation'
+    | 'missing_line_rhyme_connection';
   message: string;
   severity: 'warning' | 'info';
 }
